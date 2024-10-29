@@ -3,12 +3,12 @@ package Model;
 public class SessionDate {
     public String weekDay;
     public String date;
-    public double price;
+    public Session session;
 
-    public SessionDate(String weekDay, String date, double price) {
+    public SessionDate(String weekDay, String date, Session session) {
         this.weekDay = weekDay;
         this.date = date;
-        this.price = price;
+        this.session=session;
     }
 
 
