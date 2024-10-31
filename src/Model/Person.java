@@ -10,7 +10,8 @@ public abstract class Person {
     public String number;
     public String beltLevel;
 
-    public Person(String name, String lastName, String email, String address, int dateOfBirth, String number, String beltLevel) {
+    public Person(Integer id,String name, String lastName, String email, String address, int dateOfBirth, String number, String beltLevel) {
+        this.id=id;
         this.name = name;
         LastName = lastName;
         this.email = email;
@@ -22,7 +23,8 @@ public abstract class Person {
 
 
 
-    public Person(String name, String lastName, String email, String address, int dateOfBirth) {
+    public Person(Integer id,String name, String lastName, String email, String address, int dateOfBirth) {
+        this.id=id;
         this.name = name;
         LastName = lastName;
         this.email = email;

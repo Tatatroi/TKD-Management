@@ -9,13 +9,13 @@ import java.util.Map;
 public class InMemoryRepo<T extends Person> implements IRepo<T>{
 
     Map<Integer, T> data;
-    private int firstFreeId = 0;
+//    private int firstFreeId = 0;
 
     @Override
     public void add(T obj) {
-        data.put(firstFreeId, obj);
-        obj.setId(firstFreeId);
-        firstFreeId++;
+        data.put(obj.getId(), obj);
+//        obj.setId(firstFreeId);
+//        firstFreeId++;
     }
 
     @Override
