@@ -1,6 +1,7 @@
 package Model;
 
 public abstract class Person {
+    private int id = 0;
     public String name;
     public String LastName;
     public String email;
@@ -28,4 +29,7 @@ public abstract class Person {
         this.address = address;
         this.dateOfBirth = dateOfBirth;
     }
+
+    public void setId(int id) {this.id = id;}
+    public int getId() {return id;}
 }
