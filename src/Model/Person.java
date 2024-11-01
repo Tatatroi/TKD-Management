@@ -1,7 +1,7 @@
 package Model;
 
-public abstract class Person {
-    private int id = 0;
+public abstract class Person implements HasID{
+    private int id;
     public String name;
     public String LastName;
     public String email;
@@ -33,5 +33,63 @@ public abstract class Person {
     }
 
     public void setId(int id) {this.id = id;}
-    public int getId() {return id;}
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getLastName() {
+        return LastName;
+    }
+
+    public void setLastName(String lastName) {
+        LastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public int getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(int dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getBeltLevel() {
+        return beltLevel;
+    }
+
+    public void setBeltLevel(String beltLevel) {
+        this.beltLevel = beltLevel;
+    }
+
+    @Override
+    public Integer getId() {return id;}
 }

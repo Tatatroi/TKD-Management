@@ -1,5 +1,7 @@
 package Model;
 
+import java.util.List;
+
 public class SessionDate {
     public String weekDay;
     public String date;

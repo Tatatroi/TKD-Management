@@ -1,12 +1,12 @@
 package Repo;
 
+import Model.HasID;
 import Model.Person;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class InMemoryRepo<T extends Person> implements IRepo<T>{
+public class InMemoryRepo<T extends HasID> implements IRepo<T>{
 
     Map<Integer, T> data;
 //    private int firstFreeId = 0;
