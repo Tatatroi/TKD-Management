@@ -13,6 +13,27 @@ public class SessionDate {
         this.session=session;
     }
 
+    public String getWeekDay() {
+        return weekDay;
+    }
 
+    public void setWeekDay(String weekDay) {
+        this.weekDay = weekDay;
+    }
 
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public Session getSession() {
+        return session;
+    }
+
+    public void setSession(Session session) {
+        this.session = session;
+    }
 }

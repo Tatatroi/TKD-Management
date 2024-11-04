@@ -10,7 +10,7 @@ public class TKD_Service {
 
     private InMemoryRepo<Trainer> trainers;
 
-    private InMemoryRepo<Parent> parent;
+    private InMemoryRepo<Parent> parents;
 
     private InMemoryRepo<Session> sessions;
 
@@ -23,20 +23,11 @@ public class TKD_Service {
     public TKD_Service(InMemoryRepo<Student> students, InMemoryRepo<Trainer> trainers, InMemoryRepo<Parent> parent, InMemoryRepo<Session> sessions, InMemoryRepo<Contest> contests, InMemoryRepo<TrainingCamp> trainingCamps) {
         this.students = students;
         this.trainers = trainers;
-        this.parent = parent;
+        this.parents = parent;
         this.sessions = sessions;
         this.contests = contests;
         this.trainingCamps = trainingCamps;
     }
-
-    /* old constructor
-    public TKD_Service(InMemoryRepo<Student> students, InMemoryRepo<Trainer> trainers, InMemoryRepo<Parent> parent, InMemoryRepo<Session> sessions) {
-        this.students = students;
-        this.trainers = trainers;
-        this.parent = parent;
-        this.sessions = sessions;
-    }
-    */
 
     public void assignGroupToTrainer(int trainerId, int sessionId){
         Trainer tr = trainers.get(trainerId);
@@ -50,12 +41,15 @@ public class TKD_Service {
         Session ss = sessions.get(sessionId);
         ss.getSessionStudents().add(st);
         st.setSession(ss);
+        students.update(st);
+        sessions.update(ss);
     }
 
     public void changeBeltlevel(BeltExam beltExam){
         for(Student st: beltExam.getListOfResults().keySet()){
             if(beltExam.getListOfResults().get(st)==1){
                 st.setBeltLevel(beltExam.getBeltColor());
+                students.update(st);
             }
         }
     }
@@ -86,12 +80,7 @@ public class TKD_Service {
     4: numararea prezentelor si absentelor unui copil
      */
 
-    public void newContest(Contest newContest){
-        contests.add(newContest);
-    }
-
-    private void findCombinations(List<Map.Entry<Integer, Double>> eventPairs, double remainingAmount,
-                                  int start, List<Integer> currentCombination, List<List<Integer>> results) {
+    private void findCombinations(List<Map.Entry<Integer, Double>> eventPairs, double remainingAmount,int start, List<Integer> currentCombination, List<List<Integer>> results) {
         if (remainingAmount == 0) {
             results.add(new ArrayList<>(currentCombination));
             return;
@@ -153,31 +142,72 @@ public class TKD_Service {
         beltExams.update(belt);
     }
 
-    public void addStudent(Student newStudent){
-        students.add(newStudent);
+    public void addAttendance(int studentId,int sessionId,boolean attendance,String weekday,String date){
+        Student s=students.get(studentId);
+        Session ss = sessions.get(sessionId);
+        SessionDate sessionDate = new SessionDate(weekday,date,ss);
+        s.getSessionDateList().put(sessionDate,attendance);
+        students.update(s);
     }
 
-    public void addTrainer(Trainer newTrainer){
-        trainers.add(newTrainer);
+    public void addStudentToContest(int studentId,int contestId){
+        Student st = students.get(studentId);
+        Contest ct = contests.get(contestId);
+        st.getContestList().add(ct);
+        students.update(st);
     }
 
-    public void addParent(Parent newParent){
-        parent.add(newParent);
+    public void addStudentToTraining(int studentId,int trainingCampId){
+        Student st = students.get(studentId);
+        TrainingCamp tc = trainingCamps.get(trainingCampId);
+        st.getTrainingCampList().add(tc);
+        students.update(st);
+    }
+    public void addObject(Object o){
+        if(o instanceof Student){
+            students.add((Student) o);
+        }
+        else if(o instanceof Trainer){
+            trainers.add((Trainer) o);
+        }
+        else if(o instanceof Parent){
+            parents.add((Parent) o);
+        }
+        else if(o instanceof Session){
+            sessions.add((Session) o);
+        }
+        else if(o instanceof BeltExam){
+            beltExams.add((BeltExam) o);
+        }
+        else if(o instanceof Contest){
+            contests.add((Contest) o);
+        }
+        else if(o instanceof TrainingCamp){
+            trainingCamps.add((TrainingCamp) o);
+        }
+    }
+    public void removeObjects(Object o){
+        if(o instanceof Student){
+            students.remove(((Student) o).getId());
+        }
+        else if(o instanceof Trainer){
+            trainers.remove(((Trainer) o).getId());
+        }
+        else if(o instanceof Parent){
+            parents.remove(((Parent) o).getId());
+        }
+        else if(o instanceof Session){
+            sessions.remove(((Session) o).getId());
+        }
+        else if(o instanceof BeltExam){
+            beltExams.remove(((BeltExam) o).getId());
+        }
+        else if(o instanceof Contest){
+            contests.remove(((Contest) o).getId());
+        }
+        else if(o instanceof TrainingCamp){
+            trainingCamps.remove(((TrainingCamp) o).getId());
+        }
     }
 
-    public void addSession(Session newSession){
-        sessions.add(newSession);
-    }
-
-    public void addBeltExam(BeltExam newBeltExam){
-        beltExams.add(newBeltExam);
-    }
-
-    public void addContest(Contest newContest){
-        contests.add(newContest);
-    }
-
-    public void addTrainingCamp(TrainingCamp newCamp){
-        trainingCamps.add(newCamp);
-    }
 }
