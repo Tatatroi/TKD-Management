@@ -1,7 +1,9 @@
 package Repo;
 
+import Model.Contest;
 import Model.HasID;
 import Model.Person;
+import Model.TrainingCamp;
 
 import java.util.List;
 import java.util.Map;
@@ -9,6 +11,7 @@ import java.util.Map;
 public class InMemoryRepo<T extends HasID> implements IRepo<T>{
 
     Map<Integer, T> data;
+
 //    private int firstFreeId = 0;
 
     @Override

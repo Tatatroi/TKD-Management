@@ -1,6 +1,7 @@
 package Model;
 
-public abstract class Event {
+public abstract class Event implements HasID{
+    private int id;
     public String startDate;
     public String endDate;
     public double price;
@@ -16,4 +17,7 @@ public abstract class Event {
         this.city = city;
         this.address = address;
     }
+
+    @Override
+    public Integer getId() {return id;}
 }
