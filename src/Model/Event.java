@@ -9,6 +9,7 @@ public abstract class Event implements HasID{
     public String city;
     public String address;
 
+
     public Event(String startDate, String endDate, double price, String country, String city, String address) {
         this.startDate = startDate;
         this.endDate = endDate;
