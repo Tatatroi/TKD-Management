@@ -15,6 +15,9 @@ Die Teilnehmer konnen auch an Veranstaltungen(Trainingslager,Wettberwerb,Gurtelp
 
 ->Die Teilnahme bei Wettbewerben kann den Lehrlingen auch Rabatts an den Stundenpreis bringen. 
 
+![image](https://github.com/user-attachments/assets/3e0abb8b-d709-4e57-b6a0-f1ab4537f2d2)
+
+
 ->Mit der Anwendung kann der Trainer eine Rechnung fur den Eltern/Lehrlinge generieren, wo alle seine Kindern(fur Eltern), die bei der Kursen teilnehmen erscheinen.
 
 ->Ein Trainer kann seine Lehrlinge filtrieren, um zum Beispiel die fortgeschrittesten Teilnehmern zu sehen oder die mit den mindesten Abwesenheiten.
