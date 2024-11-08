@@ -3,6 +3,7 @@ package Service;
 import Model.*;
 import Repo.InMemoryRepo;
 
+import java.io.IOException;
 import java.util.*;
 
 public class TKD_Service {
@@ -163,51 +164,75 @@ public class TKD_Service {
         st.getTrainingCampList().add(tc);
         students.update(st);
     }
-    public void addObject(Object o){
+
+    public void addObject(Object o) throws IOException {
         if(o instanceof Student){
+            if(students.getAll().stream().anyMatch(st->st.getId()==((Student) o).getId())){
+                throw new RuntimeException();
+            }
             students.add((Student) o);
+
         }
         else if(o instanceof Trainer){
+            if(trainers.getAll().stream().anyMatch(tr->tr.getId()==((Trainer) o).getId())){
+                throw new RuntimeException();
+            }
             trainers.add((Trainer) o);
         }
         else if(o instanceof Parent){
+            if(parents.getAll().stream().anyMatch(pt->pt.getId()==((Parent) o).getId())){
+                throw new RuntimeException();
+            }
             parents.add((Parent) o);
         }
         else if(o instanceof Session){
+            if(sessions.getAll().stream().anyMatch(ss->ss.getId()==((Session) o).getId())){
+                throw new RuntimeException();
+            }
             sessions.add((Session) o);
         }
         else if(o instanceof BeltExam){
+            if(beltExams.getAll().stream().anyMatch(bx->bx.getId()==((BeltExam) o).getId())){
+                throw new RuntimeException();
+            }
             beltExams.add((BeltExam) o);
         }
         else if(o instanceof Contest){
+            if(contests.getAll().stream().anyMatch(ct->ct.getId()==((Contest) o).getId())){
+                throw new RuntimeException();
+            }
             contests.add((Contest) o);
         }
         else if(o instanceof TrainingCamp){
+            if(trainingCamps.getAll().stream().anyMatch(tc->tc.getId()==((TrainingCamp) o).getId())){
+                throw new RuntimeException();
+            }
             trainingCamps.add((TrainingCamp) o);
         }
     }
-    public void removeObjects(Object o){
-        if(o instanceof Student){
-            students.remove(((Student) o).getId());
-        }
-        else if(o instanceof Trainer){
-            trainers.remove(((Trainer) o).getId());
-        }
-        else if(o instanceof Parent){
-            parents.remove(((Parent) o).getId());
-        }
-        else if(o instanceof Session){
-            sessions.remove(((Session) o).getId());
-        }
-        else if(o instanceof BeltExam){
-            beltExams.remove(((BeltExam) o).getId());
-        }
-        else if(o instanceof Contest){
-            contests.remove(((Contest) o).getId());
-        }
-        else if(o instanceof TrainingCamp){
-            trainingCamps.remove(((TrainingCamp) o).getId());
-        }
+
+
+    public void removeStudent(Integer studentID){
+        students.remove(studentID);
     }
+    public void removeTrainer(Integer trainerID){
+        trainers.remove(trainerID);
+    }
+    public void removeParent(Integer parentID){
+        parents.remove(parentID);
+    }
+    public void removeSession(Integer sessionID){
+        sessions.remove(sessionID);
+    }
+    public void removeBeltExam(Integer beltExamID){
+        beltExams.remove(beltExamID);
+    }
+    public void removeContest(Integer contestID){
+        contests.remove(contestID);
+    }
+    public void removeTrainingCamp(Integer trainingCampID){
+        trainingCamps.remove(trainingCampID);
+    }
+
 
 }
