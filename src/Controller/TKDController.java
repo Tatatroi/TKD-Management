@@ -128,5 +128,11 @@ public class TKDController {
         tkdService.addStudentToTraining(idStudent, idTrainingCamp);
         System.out.println("Student with id " + idStudent + " has been added to training camp with id " + idTrainingCamp);
     }
+    public void addStudentToParent(Student student, Parent parent){
+        tkdService.addStudentToParent(student,parent);
+    }
 
+    public void generateInvoice(Integer parentID,String month){
+        System.out.println(tkdService.generateInvoice(parentID,month));
+    }
 }

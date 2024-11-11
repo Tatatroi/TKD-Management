@@ -6,6 +6,8 @@ import Repo.InMemoryRepo;
 import java.io.IOException;
 import java.util.*;
 
+import static java.lang.foreign.MemorySegment.NULL;
+
 public class TKD_Service {
     private InMemoryRepo<Student> students;
 
@@ -165,6 +167,21 @@ public class TKD_Service {
         students.update(st);
     }
 
+    public void addStudentToParent(Student student, Parent parent){
+        if(findParent(parent.getEmail())){
+            parent.getChildren().add(student);
+            parents.update(parent);
+            student.setParent(parent);
+        }
+        else {
+            parent.getChildren().add(student);
+            parents.add(parent);
+        }
+    }
+    public boolean findParent(String email){
+        return parents.getAll().stream() .anyMatch(pt -> Objects.equals(pt.getEmail(), email));
+    }
+
     public void addObject(Object o) throws IOException {
         if(o instanceof Student){
             if(students.getAll().stream().anyMatch(st->st.getId()==((Student) o).getId())){
@@ -211,6 +228,25 @@ public class TKD_Service {
         }
     }
 
+    public String generateInvoice(Integer parentID,String month){
+        Parent parent = parents.get(parentID);
+        String invoice="Invoice for the month " + month + "\nParent name: " + parent.getLastName() + " " + parent.getName() + "\n";
+        double total = 0;
+        for(Student student: parent.getChildren()){
+            int presences=0;
+            double individualTotal = 0;
+            for(SessionDate sd: student.getSessionDateList().keySet()){
+                if(student.getSessionDateList().get(sd)){
+                    presences++;
+                }
+            }
+            individualTotal += presences*student.getSession().getPricePerSession();
+            total+= individualTotal;
+            invoice += "Student name: " + student.getLastName() + " " + student.getName() + "\n Total for student: " + individualTotal + "\n";
+        }
+        invoice += "Total: " + total +"\n";
+        return invoice;
+    }
 
     public void removeStudent(Integer studentID){
         students.remove(studentID);

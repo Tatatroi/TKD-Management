@@ -106,12 +106,10 @@ public class Student extends Person{
      * @param dateOfBirth   The date of birth of the student.
      * @param number        The telephone number of the student.
      * @param beltLevel     The belt level of the student.
-     * @param parent        Thw parent of the student.
      * @param session       The session to which the student belongs.
      */
-    public Student(Integer id, String name, String lastName, String email, String address, int dateOfBirth, String number, String beltLevel, Parent parent, Session session) {
+    public Student(Integer id, String name, String lastName, String email, String address, int dateOfBirth, String number, String beltLevel, Session session) {
         super(id,name, lastName, email, address, dateOfBirth, number, beltLevel);
-        this.parent=parent;
         this.session=session;
         //setId(idFromRepo);
     }

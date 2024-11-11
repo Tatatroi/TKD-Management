@@ -1,12 +1,12 @@
 package Model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Parent extends Person{
-    List<Student> children;
-    public Parent(Integer id,String name, String lastName, String email, String address, int dateOfBirth,List<Student> children) {
+    List<Student> children = new ArrayList<>();
+    public Parent(Integer id,String name, String lastName, String email, String address, int dateOfBirth) {
         super(id,name, lastName, email, address, dateOfBirth);
-        this.children=children;
     }
 
     public List<Student> getChildren() {
