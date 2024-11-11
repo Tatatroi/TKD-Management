@@ -46,10 +46,10 @@ public class TKD_Service {
         sessions.update(ss);
     }
 
-    public void changeBeltlevel(BeltExam beltExam){
-        for(Student st: beltExam.getListOfResults().keySet()){
-            if(beltExam.getListOfResults().get(st)==1){
-                st.setBeltLevel(beltExam.getBeltColor());
+    public void changeBeltlevel(Integer beltExamID){
+        for(Student st: beltExams.get(beltExamID).getListOfResults().keySet()){
+            if(beltExams.get(beltExamID).getListOfResults().get(st)==1){
+                st.setBeltLevel(beltExams.get(beltExamID).getBeltColor());
                 students.update(st);
             }
         }
