@@ -10,6 +10,7 @@ public abstract class Person implements HasID{
     public String number;
     public String beltLevel;
 
+
     public Person(Integer id,String name, String lastName, String email, String address, int dateOfBirth, String number, String beltLevel) {
         this.id=id;
         this.name = name;
