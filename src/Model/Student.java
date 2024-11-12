@@ -114,4 +114,21 @@ public class Student extends Person{
         //setId(idFromRepo);
     }
 
+    @Override
+    public String toString() {
+        return "Student{" +
+                "contestList=" + contestList +
+                ", trainingCampList=" + trainingCampList +
+                ", session=" + session +
+                ", sessionDateList=" + sessionDateList +
+                ", parent=" + parent +
+                ", name='" + name + '\'' +
+                ", LastName='" + LastName + '\'' +
+                ", email='" + email + '\'' +
+                ", address='" + address + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                ", number='" + number + '\'' +
+                ", beltLevel='" + beltLevel + '\'' +
+                '}';
+    }
 }

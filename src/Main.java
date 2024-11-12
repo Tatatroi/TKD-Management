@@ -5,6 +5,9 @@ import Controller.TKDController;
 import Service.TKD_Service;
 import Model.*;
 import Repo.*;
+
+import static Model.DifficultyLevel.beginner;
+
 public class Main {
     public static void main(String[] args) {
 
@@ -41,10 +44,21 @@ public class Main {
         InMemoryRepo<Trainer> trainerRepo = new InMemoryRepo<>();
         InMemoryRepo<BeltExam> beltExamRepo = new InMemoryRepo<>();
         InMemoryRepo<TrainingCamp> trainingCampRepo = new InMemoryRepo<>();
+        Trainer t1 = new Trainer(1,"asda","asdaf","asfaf","asfasf",2000,"023423","black");
+        trainerRepo.add(t1);
+        Session session = new Session(1,beginner,5,t1,50);
+        sessionRepo.add(session);
 
+        Parent parent = new Parent(1,"asfasf","asdas","asfasf","asfasf",1980,"01832431");
+        Student student = new Student(1,"asfasf","asfasf","asfaf","asfasf",2004,"12414","white",sessionRepo.get(1));
+        session.getSessionStudents().add(student);
+        sessionRepo.update(session);
+        parent.getChildren().add(student);
+        student.setParent(parent);
+        parentRepo.add(parent);
+        studentRepo.add(student);
 
-
-        TKD_Service tkdService = new TKD_Service(studentRepo,trainerRepo,parentRepo,sessionRepo,contestRepo,trainingCampRepo);
+        TKD_Service tkdService = new TKD_Service(studentRepo,trainerRepo,parentRepo,sessionRepo,contestRepo,trainingCampRepo,beltExamRepo);
         TKDController tkdController = new TKDController(tkdService);
         TKDUI newUi = new TKDUI(tkdController);
 

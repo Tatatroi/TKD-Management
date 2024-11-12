@@ -378,22 +378,65 @@ public class TKD_Service {
     }
 
     public String viewAllStudents(){
-        String allStudents="";
+        StringBuilder allStudents= new StringBuilder();
         for(Session s: sessions.getAll()){
             for(Student st: s.getSessionStudents()){
-                allStudents += "Student with id " + st.getId() + " and name " + st.getLastName() + " " + st.getName() + " is at " + s.difficultyLevel + " level";
+                allStudents.append("Student with id ").append(st.getId()).append(" and name ").append(st.getLastName()).append(" ").append(st.getName()).append(" is at ").append(s.difficultyLevel).append(" level\n");
             }
+            allStudents.append('\n');
         }
-        return allStudents;
+//        for(Session s: sessions.getAll()){
+//            for(Student st: s.getSessionStudents()){
+//                allStudents.append(st.toString()).append('\n');
+//            }
+//            allStudents.append('\n');
+//        }
+        return allStudents.toString();
     }
     public String viewAllTrainers(){
-        String allTrainers="";
+        StringBuilder allTrainers= new StringBuilder();
         for(Trainer t: trainers.getAll()){
-            allTrainers += "Trainer with id " + t.getId() + " and name " + t.getLastName() + " " + t.getName() + " has belt color " + t.getBeltLevel();
+            allTrainers.append("Trainer with id ").append(t.getId()).append(" and name ").append(t.getLastName()).append(" ").append(t.getName()).append(" has belt color ").append(t.getBeltLevel()+'\n');
         }
-        return allTrainers;
+        return allTrainers.toString();
     }
 
+    public String viewAllContests(){
+        StringBuilder allContests = new StringBuilder();
+        for(Contest c: contests.getAll()){
+            allContests.append("Contest with id ").append(c.getId()).append(", name ").append(c.getName()).append(", start date ").append(c.startDate).
+                    append(", end date ").append(c.endDate).append(", price ").append(c.price).append(" and students: ");
+            for(Student s: c.getStudents()){
+                allContests.append("   Name ").append(s.getLastName()).append(" ").append(s.getName()).append(" and belt level: ").append(s.getBeltLevel()).append('\n');
+            }
+            allContests.append('\n');
+        }
+        return allContests.toString();
+    }
 
+    public String viewTrainingCamps(){
+        StringBuilder allTrainingCamps = new StringBuilder();
+        for(TrainingCamp t: trainingCamps.getAll()){
+            allTrainingCamps.append("Training camp with id ").append(t.getId()).append(", start date ").append(t.startDate).append(", end date ").
+                    append(t.endDate).append(", price ").append(t.price).append(", max number of students ").append(t.getNumberOfParticipants()).append(" and students: ");
+            for(Student s: t.getStudents()){
+                allTrainingCamps.append("   Name ").append(s.getLastName()).append(" ").append(s.getName()).append(" and belt level: ").append(s.getBeltLevel()).append('\n');
+            }
+            allTrainingCamps.append('\n');
+        }
+        return allTrainingCamps.toString();
+    }
 
+    public String viewBeltExams() {
+        StringBuilder allBeltExams = new StringBuilder();
+        for (BeltExam b : beltExams.getAll()) {
+            allBeltExams.append("Belt exam with id ").append(b.getId()).append(", start date ").append(b.startDate).append(", end date ").
+                    append(b.endDate).append(", price ").append(b.price).append(", belt color ").append(b.getBeltColor()).append(" and students: ");
+            for (Student s : b.getListOfResults().keySet()) {
+                allBeltExams.append("   Name ").append(s.getLastName()).append(" ").append(s.getName()).append(", belt level: ").append(s.getBeltLevel()).append(" and status ").append(b.getListOfResults().get(s)).append('\n');
+            }
+            allBeltExams.append('\n');
+        }
+        return allBeltExams.toString();
+    }
 }

@@ -130,8 +130,28 @@ public class TKDController {
     }
 
     public void viewStudents(){
-        System.out.println("Here are all students with id, name and level: ");
-        tkdService.viewAllStudents();
+        System.out.println("Here are all students with id, name and level: \n" + tkdService.viewAllStudents());
+//        System.out.println();
+    }
+
+    public void viewTrainers(){
+        System.out.println("Here are all trainers with id, name, belt color and level: ");
+        System.out.println(tkdService.viewAllTrainers());
+    }
+
+    public void viewContests(){
+        System.out.println("Here are all contests with id, name, start date, end date, price and list of students: ");
+        System.out.println(tkdService.viewAllContests());
+    }
+
+    public void viewTrainingCamps(){
+        System.out.println("Here are all training camps with id, start date, end date, price, max number of participants and list of students: ");
+        System.out.println(tkdService.viewTrainingCamps());
+    }
+
+    public void viewBeltExams(){
+        System.out.println("Here are all belt exams with id, start date, end date, price, belt color and list of students: ");
+        System.out.println(tkdService.viewBeltExams());
     }
 
     public void addStudentToParent(Student student, Parent parent){
