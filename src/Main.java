@@ -1,5 +1,10 @@
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import Ui.TKDUI;
+import Controller.TKDController;
+import Service.TKD_Service;
+import Model.*;
+import Repo.*;
 public class Main {
     public static void main(String[] args) {
 
@@ -27,5 +32,25 @@ public class Main {
          *
          *
          * */
+
+
+        InMemoryRepo<Student> studentRepo = new InMemoryRepo<>();
+        InMemoryRepo<Parent> parentRepo = new InMemoryRepo<>();
+        InMemoryRepo<Session> sessionRepo = new InMemoryRepo<>();
+        InMemoryRepo<Contest> contestRepo = new InMemoryRepo<>();
+        InMemoryRepo<Trainer> trainerRepo = new InMemoryRepo<>();
+        InMemoryRepo<BeltExam> beltExamRepo = new InMemoryRepo<>();
+        InMemoryRepo<TrainingCamp> trainingCampRepo = new InMemoryRepo<>();
+
+
+
+        TKD_Service tkdService = new TKD_Service(studentRepo,trainerRepo,parentRepo,sessionRepo,contestRepo,trainingCampRepo);
+        TKDController tkdController = new TKDController(tkdService);
+        TKDUI newUi = new TKDUI(tkdController);
+
+        newUi.start();
+
+
+
     }
 }

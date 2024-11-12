@@ -270,5 +270,33 @@ public class TKD_Service {
         trainingCamps.remove(trainingCampID);
     }
 
+    public void addStudentToSession(Integer idSession, Integer student){
+
+        Session ss = sessions.get(idSession);
+        Student st = students.get(student);
+
+        ss.getSessionStudents().add(st);
+        sessions.update(ss);
+
+    }
+
+    public Trainer getTrainerById(int trainerId){
+        return trainers.get(trainerId);
+    }
+
+    public Session getSessionById(int sessionId){
+        return sessions.get(sessionId);
+    }
+
+    public void viewAllStudents(){
+        for(Session s: sessions.getAll()){
+            for(Student st: s.getSessionStudents()){
+                System.out.println("Student with id " + st.getId() + " and name " + st.getLastName() + " " + st.getName() + " is at " + s.difficultyLevel + " level");
+            }
+        }
+    }
+
+
+
 
 }

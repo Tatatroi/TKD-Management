@@ -128,6 +128,12 @@ public class TKDController {
         tkdService.addStudentToTraining(idStudent, idTrainingCamp);
         System.out.println("Student with id " + idStudent + " has been added to training camp with id " + idTrainingCamp);
     }
+
+    public void viewStudents(){
+        System.out.println("Here are all students with id, name and level: ");
+        tkdService.viewAllStudents();
+    }
+
     public void addStudentToParent(Student student, Parent parent){
         tkdService.addStudentToParent(student,parent);
     }
@@ -135,4 +141,20 @@ public class TKDController {
     public void generateInvoice(Integer parentID,String month){
         System.out.println(tkdService.generateInvoice(parentID,month));
     }
+
+    public void addStudentToSession(Integer idSession, Integer idStudent){
+        tkdService.addStudentToSession(idSession, idStudent);
+        System.out.println("Student with id " + idStudent + " has been added to session with id " + idSession);
+    }
+
+    public Trainer getTrainerById(Integer idTrainer){
+        return tkdService.getTrainerById(idTrainer);
+    }
+
+    public Session getSessionById(Integer idSession){
+        return tkdService.getSessionById(idSession);
+    }
+
+
+
 }
