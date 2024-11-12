@@ -93,15 +93,18 @@ public class TKDUI {
         System.out.print("Do you want to add a parent to the student? (yes/no) -> if no a person to contact will be necesary: ");
         String parentDecision = scanner.nextLine().trim().toLowerCase();
 
-        Parent parent = null;
-        if (parentDecision.equals("yes")) {
-            parent = addParent();
-        }else if(parentDecision.equals("no")) {
-            System.out.println("You have to enter a person to contact in emergency case, it ca be the same person: ");
-            parent = addParent();
-        }
-
-        tkdController.addObject(parent);
+//        Parent parent = null;
+//        if (parentDecision.equals("yes")) {
+//            parent = addParent();
+//        }else if(parentDecision.equals("no")) {
+//            System.out.println("You have to enter a person to contact in emergency case, it ca be the same person: ");
+//            parent = addParent();
+//        }
+//        System.out.println("caca");
+//        Parent p1 = parent;
+        System.out.println("Every student needs a parent or a contact person:");
+        Parent parent = addParent();
+//        tkdController.addObject(parent);
 
         Student student = new Student(idStudent, name, lastName, email, address, dateOfBirth, telNumber, beltLevel, session);
 
@@ -146,12 +149,12 @@ public class TKDUI {
         System.out.print("Enter Session ID: ");
         int id = Integer.parseInt(scanner.nextLine());
 
-        System.out.print("Enter Difficulty Level (EASY, MEDIUM, HARD): ");
+        System.out.print("Enter Difficulty Level (beginner, intermediary, advanced): ");
         DifficultyLevel difficultyLevel;
         try {
-            difficultyLevel = DifficultyLevel.valueOf(scanner.nextLine().toUpperCase());
+            difficultyLevel = DifficultyLevel.valueOf(scanner.nextLine());
         } catch (IllegalArgumentException e) {
-            System.out.println("Invalid difficulty level. Please enter EASY, MEDIUM, or HARD.");
+            System.out.println("Invalid difficulty level. Please enter beginner, intermediary, advanced.");
             return;
         }
 
@@ -202,6 +205,8 @@ public class TKDUI {
         String beltLevel = scanner.nextLine();
 
         Trainer newTrainer = new Trainer(id, name, lastName, email, address, dateOfBirth, number, beltLevel);
+
+        System.out.println("mata");
         tkdController.addObject(newTrainer);
         System.out.println("Trainer added successfully.");
     }

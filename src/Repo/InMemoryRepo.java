@@ -5,12 +5,13 @@ import Model.HasID;
 import Model.Person;
 import Model.TrainingCamp;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class InMemoryRepo<T extends HasID> implements IRepo<T>{
 
-    Map<Integer, T> data;
+    Map<Integer, T> data = new HashMap<>();
 
 //    private int firstFreeId = 0;
 
