@@ -6,8 +6,9 @@ import Repo.InMemoryRepo;
 import java.io.IOException;
 import java.util.*;
 
-import static java.lang.foreign.MemorySegment.NULL;
-
+/**
+ * A service class that provides the business logic for the university system.
+ */
 public class TKD_Service {
     private InMemoryRepo<Student> students;
 
@@ -23,15 +24,31 @@ public class TKD_Service {
 
     private InMemoryRepo<BeltExam> beltExams;
 
-    public TKD_Service(InMemoryRepo<Student> students, InMemoryRepo<Trainer> trainers, InMemoryRepo<Parent> parent, InMemoryRepo<Session> sessions, InMemoryRepo<Contest> contests, InMemoryRepo<TrainingCamp> trainingCamps) {
+    /**
+     * Constructs a new TKD_Service with the given repositories.
+     * @param students          The repository for students.
+     * @param trainers          The repository for trainers.
+     * @param parent            The repository for parents.
+     * @param sessions          The repository for sessions.
+     * @param contests          The repository for contests.
+     * @param trainingCamps     The repository for training camps.
+     * @param beltExams         The repository for belt exams.
+     */
+    public TKD_Service(InMemoryRepo<Student> students, InMemoryRepo<Trainer> trainers, InMemoryRepo<Parent> parent, InMemoryRepo<Session> sessions, InMemoryRepo<Contest> contests, InMemoryRepo<TrainingCamp> trainingCamps, InMemoryRepo<BeltExam> beltExams) {
         this.students = students;
         this.trainers = trainers;
         this.parents = parent;
         this.sessions = sessions;
         this.contests = contests;
         this.trainingCamps = trainingCamps;
+        this.beltExams = beltExams;
     }
 
+    /**
+     * Change the trainer of a session.
+     * @param trainerId     The unique identifier of a trainer.
+     * @param sessionId     The unique identifier of a session.
+     */
     public void assignGroupToTrainer(int trainerId, int sessionId){
         Trainer tr = trainers.get(trainerId);
         Session ss = sessions.get(sessionId);
@@ -39,15 +56,28 @@ public class TKD_Service {
         sessions.update(ss);
     }
 
+    /**
+     * Change the session of a student and remove him from the previous one.
+     * @param studentId     The unique identifier of a student.
+     * @param sessionId     The unique identifier of a session.
+     */
     public void changeStudentGroup(int studentId,int sessionId){
         Student st = students.get(studentId);
-        Session ss = sessions.get(sessionId);
-        ss.getSessionStudents().add(st);
-        st.setSession(ss);
+        Session new_ss = sessions.get(sessionId);
+        Session old_ss = sessions.get(st.getSession().getId());
+
+        old_ss.getSessionStudents().remove(st);
+        new_ss.getSessionStudents().add(st);
+        st.setSession(new_ss);
         students.update(st);
-        sessions.update(ss);
+        sessions.update(new_ss);
+        sessions.update(old_ss);
     }
 
+    /**
+     * Changes the belt color of a student if he passed the exam.
+     * @param beltExamID    The unique identifier of a belt exam.
+     */
     public void changeBeltlevel(Integer beltExamID){
         for(Student st: beltExams.get(beltExamID).getListOfResults().keySet()){
             if(beltExams.get(beltExamID).getListOfResults().get(st)==1){
@@ -57,6 +87,11 @@ public class TKD_Service {
         }
     }
 
+    /**
+     * Counts the number of attendances and absences of a student.
+     * @param studentId The unique identifier of a student.
+     * @return Map containing the number of attendances and absences of a student.
+     */
     public Map<String,Integer> numberOfAttendencesAndAbsences(int studentId){
         Student st=students.get(studentId);
         Map<String,Integer> attendencesAbsences= new HashMap<>();
@@ -124,6 +159,11 @@ public class TKD_Service {
 
     // atribuire copil la examen de centura
 
+    /**
+     * Adds a student to a belt exam.
+     * @param idStudent     The unique identifier of a student.
+     * @param idBeltExam    The unique identifier of a belt exam.
+     */
     public void addStudentToBeltExam(int idStudent, int idBeltExam){
         Student s = students.get(idStudent);
         BeltExam belt = beltExams.get(idBeltExam);
@@ -133,11 +173,18 @@ public class TKD_Service {
 
     // atribuire rezultat examen de centura
 
+    /**
+     * Updates the result of a belt exam of a student and if promoted changes the belt color.
+     * @param idStudent     The unique identifier of a student.
+     * @param idBeltExam    The unique identifier of a belt exam.
+     * @param promoted      The result of the exam, passed(true) or failed(false).
+     */
     public void addResultBeltExam(int idStudent, int idBeltExam, boolean promoted){
         Student s = students.get(idStudent);
         BeltExam belt = beltExams.get(idBeltExam);
         if(promoted){
             belt.getListOfResults().put(s,1); // promoted
+            changeBeltlevel(idBeltExam);
         }
         else{
             belt.getListOfResults().put(s,0); // failed
@@ -145,6 +192,14 @@ public class TKD_Service {
         beltExams.update(belt);
     }
 
+    /**
+     * Adds an attendance/absence to the list of session dates from the student.
+     * @param studentId     The unique identifier of a student.
+     * @param sessionId     The unique identifier of a session.
+     * @param attendance    The attendance of a student which can be true(was present) or false(wasn't present).
+     * @param weekday       The day of the week of the session.
+     * @param date          The exact date the session took place.
+     */
     public void addAttendance(int studentId,int sessionId,boolean attendance,String weekday,String date){
         Student s=students.get(studentId);
         Session ss = sessions.get(sessionId);
@@ -153,6 +208,11 @@ public class TKD_Service {
         students.update(s);
     }
 
+    /**
+     * Adds a student to a contest.
+     * @param studentId     The unique identifier of a student.
+     * @param contestId     The unique identifier of a contest.
+     */
     public void addStudentToContest(int studentId,int contestId){
         Student st = students.get(studentId);
         Contest ct = contests.get(contestId);
@@ -160,6 +220,11 @@ public class TKD_Service {
         students.update(st);
     }
 
+    /**
+     * Adds a student to a training camp.
+     * @param studentId         The unique identifier of a student.
+     * @param trainingCampId    The unique identifier of a training camp.
+     */
     public void addStudentToTraining(int studentId,int trainingCampId){
         Student st = students.get(studentId);
         TrainingCamp tc = trainingCamps.get(trainingCampId);
@@ -167,17 +232,30 @@ public class TKD_Service {
         students.update(st);
     }
 
+    /**
+     * Adds a student to a parent, by searching the for the parent by email to see if it needs to be added to the repo.
+     * @param student   The student object that needs to be added to the parent.
+     * @param parent    The parent object that needs to be updated/ created.
+     */
     public void addStudentToParent(Student student, Parent parent){
         if(findParent(parent.getEmail())){
-            parent.getChildren().add(student);
-            parents.update(parent);
-            student.setParent(parent);
+            Parent updateParent = parents.getAll().stream().filter(pt ->Objects.equals(pt.getEmail(),parent.getEmail())).findFirst().orElse(null);
+            updateParent.getChildren().add(student);
+            parents.update(updateParent);
+            student.setParent(updateParent);
         }
         else {
             parent.getChildren().add(student);
             parents.add(parent);
+            student.setParent(parent);
         }
     }
+
+    /**
+     * Searches in the parents repo for a parent by email and return true, if he exixts.
+     * @param email
+     * @return
+     */
     public boolean findParent(String email){
         return parents.getAll().stream() .anyMatch(pt -> Objects.equals(pt.getEmail(), email));
     }
@@ -236,7 +314,7 @@ public class TKD_Service {
             int presences=0;
             double individualTotal = 0;
             for(SessionDate sd: student.getSessionDateList().keySet()){
-                if(student.getSessionDateList().get(sd)){
+                if(student.getSessionDateList().get(sd) && sd.getDate().substring(3,5) == month){
                     presences++;
                 }
             }
@@ -249,6 +327,17 @@ public class TKD_Service {
     }
 
     public void removeStudent(Integer studentID){
+        Parent parent = students.get(studentID).getParent();
+        if(parent.getChildren().size()>1){
+            parent.getChildren().remove(students.get(studentID));
+            parents.update(parent);
+        }
+        else{
+            parents.remove(parent.getId());
+        }
+        Session session = students.get(studentID).getSession();
+        session.getSessionStudents().remove( students.get(studentID));
+        sessions.update(session);
         students.remove(studentID);
     }
     public void removeTrainer(Integer trainerID){
@@ -288,14 +377,22 @@ public class TKD_Service {
         return sessions.get(sessionId);
     }
 
-    public void viewAllStudents(){
+    public String viewAllStudents(){
+        String allStudents="";
         for(Session s: sessions.getAll()){
             for(Student st: s.getSessionStudents()){
-                System.out.println("Student with id " + st.getId() + " and name " + st.getLastName() + " " + st.getName() + " is at " + s.difficultyLevel + " level");
+                allStudents += "Student with id " + st.getId() + " and name " + st.getLastName() + " " + st.getName() + " is at " + s.difficultyLevel + " level";
             }
         }
+        return allStudents;
     }
-
+    public String viewAllTrainers(){
+        String allTrainers="";
+        for(Trainer t: trainers.getAll()){
+            allTrainers += "Trainer with id " + t.getId() + " and name " + t.getLastName() + " " + t.getName() + " has belt color " + t.getBeltLevel();
+        }
+        return allTrainers;
+    }
 
 
 

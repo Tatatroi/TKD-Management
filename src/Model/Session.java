@@ -3,6 +3,9 @@ package Model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a session in the TKD management system
+ */
 public class Session implements HasID{
     public Integer id;
     public DifficultyLevel difficultyLevel;
@@ -10,7 +13,7 @@ public class Session implements HasID{
     public Trainer trainer;
     public double pricePerSession;
 
-    private List<Student> sessionStudents;
+    private List<Student> sessionStudents = new ArrayList<>();
 
     public List<Student> getSessionStudents() {
         return sessionStudents;
@@ -20,52 +23,100 @@ public class Session implements HasID{
         this.sessionStudents = sessionStudents;
     }
 
+    /**
+     *
+     * @param id                    The unique identifier of the session.
+     * @param difficultyLevel       The difficulty level of the session( beginner, intermediary, advanced).
+     * @param maximumParticipants   The max number of students that can be part of a session.
+     * @param trainer               The trainer who manages the session and it's students.
+     * @param pricePerSession       The price of one session.
+     */
     public Session(Integer id , DifficultyLevel difficultyLevel, int maximumParticipants, Trainer trainer, double pricePerSession) {
         this.id=id;
         this.difficultyLevel = difficultyLevel;
         this.maximumParticipants = maximumParticipants;
         this.trainer = trainer;
         this.pricePerSession = pricePerSession;
-        this.sessionStudents=new ArrayList<>();
     }
 
+    /**
+     * Gets the id of the session.
+     * @return The id of the session.
+     */
+    @Override
     public Integer getId() {
         return id;
     }
 
 
+    /**
+     * Sets the id of the session.
+     * @param id  The id of the session to set.
+     */
     public void setId(int id) {
         this.id = id;
     }
 
+    /**
+     * Gets the difficulty level of the session.
+     * @return The difficulty level of the session.
+     */
     public DifficultyLevel getDifficultyLevel() {
         return difficultyLevel;
     }
 
+    /**
+     * Sets the difficulty level of the session.
+     * @param difficultyLevel  The difficulty level of the session to set.
+     */
     public void setDifficultyLevel(DifficultyLevel difficultyLevel) {
         this.difficultyLevel = difficultyLevel;
     }
 
+    /**
+     * Gets the maximum number of participants of the session.
+     * @return The maximum number of participants of the session.
+     */
     public int getMaximumParticipants() {
         return maximumParticipants;
     }
 
+    /**
+     * Sets the maximum number of participants of the session.
+     * @param maximumParticipants  The maximum number of participants of the session to set.
+     */
     public void setMaximumParticipants(int maximumParticipants) {
         this.maximumParticipants = maximumParticipants;
     }
 
+    /**
+     * Gets the trainer of the session.
+     * @return The trainer of the session.
+     */
     public Trainer getTrainer() {
         return trainer;
     }
 
+    /**
+     * Sets the trainer of the session.
+     * @param trainer  The trainer of the session to set.
+     */
     public void setTrainer(Trainer trainer) {
         this.trainer = trainer;
     }
 
+    /**
+     * Gets the price per session.
+     * @return The price per session.
+     */
     public double getPricePerSession() {
         return pricePerSession;
     }
 
+    /**
+     * Sets the price per session.
+     * @param pricePerSession  The price per session to set.
+     */
     public void setPricePerSession(double pricePerSession) {
         this.pricePerSession = pricePerSession;
     }
