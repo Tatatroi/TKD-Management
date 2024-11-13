@@ -76,7 +76,7 @@ public class TKD_Service {
 
     /**
      * Changes the belt color of a student if he passed the exam.
-     * @param beltExamID    The unique identifier of a belt exam.
+     * @param beltExamID  The unique identifier of a belt exam.
      */
     public void changeBeltlevel(Integer beltExamID){
         for(Student st: beltExams.get(beltExamID).getListOfResults().keySet()){
@@ -310,7 +310,7 @@ public class TKD_Service {
             int presences=0;
             double individualTotal = 0;
             for(SessionDate sd: student.getSessionDateList().keySet()){
-                if(student.getSessionDateList().get(sd) && sd.getDate().substring(3,5) == month){
+                if(student.getSessionDateList().get(sd) && sd.getDate().substring(3, 5).equals(month)){
                     presences++;
                 }
             }

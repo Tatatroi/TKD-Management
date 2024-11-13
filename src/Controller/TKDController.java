@@ -189,13 +189,14 @@ public class TKDController {
             for(Integer c : combination) {
                 if(c > 100 && c < 200){ // id for Contests
                     Contest cnt = tkdService.getContestById(c);
-                    cnt.toString();
+                    System.out.println(cnt.toString());
                 }
                 else if(c > 10 && c < 100){
                     TrainingCamp tc = tkdService.getTrainingCampByIs(c);
-                    tc.toString();
+                    System.out.println(tc.toString());
                 }
             }
+            System.out.println('\n');
         }
     }
 

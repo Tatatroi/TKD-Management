@@ -90,12 +90,12 @@ public class Main {
         Student student9 = new Student(9, "Vasilescu", "Elena", "elena.vasilescu@gmail.com", "Strada Libertatii nr 5", 2013, "0734123890", "green", session1);
         Student student10 = new Student(10, "Marin", "Paul", "paul.marin@gmail.com", "Strada Primaverii nr 9", 2012, "0712123890", "white", session2);
         Student student11 = new Student(11, "Popa", "Diana", "diana.popa@yahoo.com", "Strada Viitorului nr 2", 2011, "0785123890", "blue", session3);
-        studentRepo.add(student9);
-        studentRepo.add(student10);
-        studentRepo.add(student11);
-        session1.getSessionStudents().add(student9);
-        session2.getSessionStudents().add(student10);
-        session3.getSessionStudents().add(student11);
+        parentChild(session1, student9, parent4, parentRepo, studentRepo, sessionRepo);
+        parentChild(session2, student10, parent5, parentRepo, studentRepo, sessionRepo);
+        parentChild(session3, student11, parent6, parentRepo, studentRepo, sessionRepo);
+//        session1.getSessionStudents().add(student9);
+//        session2.getSessionStudents().add(student10);
+//        session3.getSessionStudents().add(student11);
 
 // Actualizare sesiunii pentru studenții fără părinți
         sessionRepo.update(session1);

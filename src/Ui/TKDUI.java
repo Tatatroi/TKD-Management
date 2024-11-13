@@ -43,9 +43,24 @@ public class TKDUI {
         }
     }
 
+    private void printMenu() {
+        System.out.println("\n==== TKD Management Console ====");
+        System.out.println("1 - Students");
+        System.out.println("2 - Trainers");
+        System.out.println("3 - Sessions");
+        System.out.println("4 - Contests");
+        System.out.println("5 - Training camps");
+        System.out.println("6 - Belt exams");
+        System.out.println("7 - Bill");
+        System.out.println("8 - Parents");
+        System.out.println("9 - Event combinations");
+        System.out.println("0 - Exit");
+        System.out.print("Select an option: ");
+    }
     private void combinationsOfEvents() {
+        System.out.println("Enter the amount of money: ");
+        int amountOfMoney = Integer.parseInt(scanner.nextLine());
         System.out.println("Here is a list of events (contests and/or training camps) within the budget range you specified:");
-        int amountOfMoney = scanner.nextInt();
         tkdController.eventsThatdontExceedAmountOfMoney(amountOfMoney);
 
     }
@@ -263,24 +278,6 @@ public class TKDUI {
         System.out.println("3 - View all Belt Exams");
         System.out.println("4 - Add student to Belt Exam");
         System.out.println("5 - Add result to Belt Exam");
-        System.out.println("0 - Exit");
-        System.out.print("Select an option: ");
-    }
-    private void printMenu() {
-        System.out.println("\n==== TKD Management Console ====");
-        System.out.println("1 - Students");
-        System.out.println("2 - Trainers");
-        System.out.println("3 - Sessions");
-        System.out.println("4 - Contests");
-        System.out.println("5 - Training camps");
-        System.out.println("6 - Belt exams");
-        System.out.println("7 - Bill");
-        System.out.println("15 - Add student to contest");
-        System.out.println("16 - Add training camp");
-        System.out.println("17 - Delete training camp");
-        System.out.println("18 - View training camps");
-        System.out.println("19 - Add student to training camp");
-        System.out.println("20 - Add student to training camp");
         System.out.println("0 - Exit");
         System.out.print("Select an option: ");
     }
