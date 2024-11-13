@@ -58,4 +58,17 @@ public class Contest extends Event{
     public void setStudents(List<Student> students) {
         this.students = students;
     }
+
+
+    /**
+     * Return as a string parameters that I need: name,price
+     * @return
+     */
+    @Override
+    public String toString() {
+        return "Contest{" +
+                "name='" + name + '\'' +
+                ", price=" + price +
+                '}';
+    }
 }

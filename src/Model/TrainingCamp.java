@@ -58,4 +58,17 @@ public class TrainingCamp extends Event{
     public void setStudents(List<Student> students) {
         this.students = students;
     }
+
+
+    /**
+     * Return as a strinf parameters that I need: address, price
+     * @return
+     */
+    @Override
+    public String toString() {
+        return "TrainingCamp{" +
+                "address='" + address + '\'' +
+                ", price=" + price +
+                '}';
+    }
 }

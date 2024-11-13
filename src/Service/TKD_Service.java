@@ -134,7 +134,7 @@ public class TKD_Service {
         }
     }
 
-    public void eventsThatdontExceedAmountOfMoney(double amountOfMoney){
+    public List<List<Integer>> eventsThatdontExceedAmountOfMoney(double amountOfMoney){
         List<Map.Entry<Integer,Double>> eventPairs = new ArrayList<>();
 
         for(int i = 0; i<contests.getAll().size(); i++){
@@ -149,11 +149,7 @@ public class TKD_Service {
         List<List<Integer>> results = new ArrayList<>();
         findCombinations(eventPairs, amountOfMoney, 0, new ArrayList<>(), results);
 
-        // Afișăm rezultatele --> Atentie trebuie modificate
-        System.out.println("Events combinations that don t exceed the sum : " + amountOfMoney);
-        for (List<Integer> combination : results) {
-            System.out.println("ID-urile evenimentelor: " + combination);
-        }
+        return results;
 
     }
 
@@ -373,6 +369,14 @@ public class TKD_Service {
         return trainers.get(trainerId);
     }
 
+    public Contest getContestById(int idContes){
+        return contests.get(idContes);
+    }
+
+    public TrainingCamp getTrainingCampByIs(int idTrainingCamp){
+        return trainingCamps.get(idTrainingCamp);
+    }
+
     public Session getSessionById(int sessionId){
         return sessions.get(sessionId);
     }
@@ -399,6 +403,17 @@ public class TKD_Service {
             allTrainers.append("Trainer with id ").append(t.getId()).append(" and name ").append(t.getLastName()).append(" ").append(t.getName()).append(" has belt color ").append(t.getBeltLevel()+'\n');
         }
         return allTrainers.toString();
+    }
+
+    public String viewAllParents(){
+        StringBuilder allParents= new StringBuilder();
+        for(Parent p: parents.getAll()){
+            allParents.append(" Parent with id: ").append(p.getId()).append(", name ").append(p.getName()).append(" ").append(p.getLastName()).append(" has childrens: " );
+            for(Student s: p.getChildren()){
+                allParents.append("\n").append("Student with id: ").append(s.getId()).append(" ").append(s.getLastName()).append(s.getName()).append(" ").append(s.getLastName());
+            }
+        }
+        return allParents.toString();
     }
 
     public String viewAllContests(){

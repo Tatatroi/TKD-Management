@@ -33,6 +33,8 @@ public class TKDUI {
                     case "5" -> startTrainingCamp();
                     case "6" -> startBeltExam();
                     case "7" -> generateBill();
+                    case "8" -> startParent();
+                    case "9" -> combinationsOfEvents();
                     default -> System.out.println("Invalid option. Please try again.");
                 }
             } catch (Exception e) {
@@ -40,6 +42,14 @@ public class TKDUI {
             }
         }
     }
+
+    private void combinationsOfEvents() {
+        System.out.println("Here is a list of events (contests and/or training camps) within the budget range you specified:");
+        int amountOfMoney = scanner.nextInt();
+        tkdController.eventsThatdontExceedAmountOfMoney(amountOfMoney);
+
+    }
+
     private void startStudent(){
         boolean continueLoop = true;
 
@@ -62,6 +72,35 @@ public class TKDUI {
             }
         }
     }
+
+    private void startParent(){
+        boolean continueLoop = true;
+        while (continueLoop){
+            printParent();
+            String option = scanner.next();
+            try {
+                switch (option) {
+                    case "0" -> continueLoop = false;
+                    case "1" -> addParent();
+                    case "2" -> deleteParent();
+                    case "3" -> viewParents();
+                    default -> System.out.println("Invalid option. Please try again.");
+                }
+            } catch (Exception e) {
+                System.out.println("An error occurred: " + e.getMessage());
+            }
+        }
+    }
+
+    private void printParent(){
+        System.out.println("\n==== TKD Management Console ====");
+        System.out.println("1 - Add Parent");
+        System.out.println("2 - Delete Parent");
+        System.out.println("3 - View Parents");
+        System.out.println("0 - Exit");
+        System.out.print("Select an option: ");
+    }
+
     private void printStudent(){
         System.out.println("\n==== TKD Management Console ====");
         System.out.println("1 - Add Student");
@@ -148,7 +187,7 @@ public class TKDUI {
                     case "1" -> addContest();
                     case "2" -> deleteContest();
                     case "3" -> viewContests();
-//                    case "4" -> addStudentToContest();
+                    case "4" -> addStudentToContest();
                     default -> System.out.println("Invalid option. Please try again.");
                 }
             } catch (Exception e) {
@@ -487,6 +526,48 @@ public class TKDUI {
         tkdController.addObject(beltExam);
         System.out.println("Belt Exam added successfully.");
     }
+
+    private void addStudentToBeltExam()throws IOException{
+        System.out.println("Enter Belt Exam Id: ");
+        int idBeltExam = Integer.parseInt(scanner.nextLine());
+
+        System.out.println("Enter Student Id: ");
+        int studentId = Integer.parseInt(scanner.nextLine());
+
+        tkdController.addStudentToBeltExam(idBeltExam,studentId);
+        System.out.println("Student added successfully.");
+    }
+
+    private void addStudentToContest()throws IOException{
+        System.out.println("Enter Contest Id: ");
+        int idContest = Integer.parseInt(scanner.nextLine());
+
+        System.out.println("Enter Student Id: ");
+        int studentId = Integer.parseInt(scanner.nextLine());
+
+        tkdController.addStudentToContest(idContest,studentId);
+        System.out.println("Student added successfully.");
+    }
+
+    private void addStudentToTrainingCamp()throws IOException {
+        System.out.println("Enter Student Id: ");
+        int idStudent = Integer.parseInt(scanner.nextLine());
+
+        System.out.println("Enter Training Camp Id: ");
+        int idTrainingCamp = Integer.parseInt(scanner.nextLine());
+
+        tkdController.addStudentToTrainingCamp(idStudent,idTrainingCamp);
+        System.out.println("Student added successfully.");
+    }
+
+    private void promoteBeltExam() throws IOException {
+        System.out.println("Enter Belt Exam Id: ");
+        int idBeltExam = Integer.parseInt(scanner.nextLine());
+
+        tkdController.changeBeltLevel(idBeltExam);
+        System.out.println("Belt Exams Results changed successfully.");
+    }
+
     private void deleteStudent() {
         int id = readStudentId();
         tkdController.deleteStudent(id);
@@ -498,7 +579,16 @@ public class TKDUI {
         tkdController.viewStudents();
     }
 
+    private void deleteParent(){
+        int id = readParentId();
+        tkdController.deleteParent(id);
+        System.out.println("Parent deleted successfully.");
+    }
 
+    private void viewParents(){
+        System.out.println("=== List of Parents ===");
+        tkdController.viewParents();
+    }
 
     private void deleteTrainer() {
         int id = readTrainerId();

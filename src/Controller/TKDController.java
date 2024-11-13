@@ -4,6 +4,7 @@ import Model.*;
 import Service.TKD_Service;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 public class TKDController {
@@ -154,6 +155,11 @@ public class TKDController {
         System.out.println(tkdService.viewBeltExams());
     }
 
+    public void viewParents(){
+        System.out.println("Here are parents with id, name and their children: ");
+        System.out.println(tkdService.viewAllParents());
+    }
+
     public void addStudentToParent(Student student, Parent parent){
         tkdService.addStudentToParent(student,parent);
     }
@@ -175,6 +181,22 @@ public class TKDController {
         return tkdService.getSessionById(idSession);
     }
 
-
+    public void eventsThatdontExceedAmountOfMoney(double amountOfMoney){
+        List<List<Integer>> results = tkdService.eventsThatdontExceedAmountOfMoney(amountOfMoney);
+        System.out.println("Events combinations that don t exceed the sum : " + amountOfMoney);
+        for (List<Integer> combination : results) {
+            System.out.println("ID-urile evenimentelor: ");
+            for(Integer c : combination) {
+                if(c > 100 && c < 200){ // id for Contests
+                    Contest cnt = tkdService.getContestById(c);
+                    cnt.toString();
+                }
+                else if(c > 10 && c < 100){
+                    TrainingCamp tc = tkdService.getTrainingCampByIs(c);
+                    tc.toString();
+                }
+            }
+        }
+    }
 
 }
