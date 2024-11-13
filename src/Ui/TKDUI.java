@@ -647,7 +647,7 @@ public class TKDUI {
         System.out.println("Enter Student Id: ");
         int studentId = Integer.parseInt(scanner.nextLine());
 
-        tkdController.addStudentToContest(idContest,studentId);
+        tkdController.addStudentToContest(studentId,idContest);
         System.out.println("Student added successfully.");
     }
 
