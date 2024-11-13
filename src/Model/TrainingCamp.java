@@ -66,9 +66,13 @@ public class TrainingCamp extends Event{
      */
     @Override
     public String toString() {
+        final String ANSI_RED = "\u001B[31m";
+        final String ANSI_RESET = "\u001B[0m";
+
         return "TrainingCamp{" +
                 "address='" + address + '\'' +
-                ", price=" + price +
+                ", price=" + ANSI_RED + price + ANSI_RESET +
                 '}';
     }
+
 }

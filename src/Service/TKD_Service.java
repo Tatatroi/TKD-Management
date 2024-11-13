@@ -110,14 +110,14 @@ public class TKD_Service {
         return attendencesAbsences;
     }
 
-    /*
-    1: atribuirea unei grupe la un trainer
-    (trainer, session)
-    2: schimbarea unui copil de la o grupa la alta
-    3: atribuirea unei centuri
-    4: numararea prezentelor si absentelor unui copil
+    /**
+     * this is a backtrcking function that find evry possible combination between Contests and TrainingCamps
+     * @param eventPairs a list with information that holds all Contest/TrainingCamp and their prices
+     * @param remainingAmount the amount of money after one Contest/TrainingCamp has been chosen
+     * @param start starting point where the function start to search
+     * @param currentCombination the combination on every search
+     * @param results <- this is a parameter where all combinations will be found
      */
-
     private void findCombinations(List<Map.Entry<Integer, Double>> eventPairs, double remainingAmount,int start, List<Integer> currentCombination, List<List<Integer>> results) {
         if (remainingAmount == 0) {
             results.add(new ArrayList<>(currentCombination));
@@ -134,6 +134,12 @@ public class TKD_Service {
         }
     }
 
+
+    /**
+     * it takes the amount of money given by controller and returns a list with every combination
+     * @param amountOfMoney the range that it's forbidden to be exceeded
+     * @return a list of lists with all possible combinations
+     */
     public List<List<Integer>> eventsThatdontExceedAmountOfMoney(double amountOfMoney){
         List<Map.Entry<Integer,Double>> eventPairs = new ArrayList<>();
 
@@ -153,8 +159,6 @@ public class TKD_Service {
 
     }
 
-    // atribuire copil la examen de centura
-
     /**
      * Adds a student to a belt exam.
      * @param idStudent     The unique identifier of a student.
@@ -166,8 +170,6 @@ public class TKD_Service {
         belt.getListOfResults().put(s,-1);
         beltExams.update(belt);
     }
-
-    // atribuire rezultat examen de centura
 
     /**
      * Updates the result of a belt exam of a student and if promoted changes the belt color.
@@ -249,13 +251,18 @@ public class TKD_Service {
 
     /**
      * Searches in the parents repo for a parent by email and return true, if he exixts.
-     * @param email
-     * @return
+     * @param email the unique email of a Parent
+     * @return true/false if parent found
      */
     public boolean findParent(String email){
         return parents.getAll().stream() .anyMatch(pt -> Objects.equals(pt.getEmail(), email));
     }
 
+    /**
+     * this function adds an object in their repo based on their type
+     * @param o represent the given object
+     * @throws IOException
+     */
     public void addObject(Object o) throws IOException {
         if(o instanceof Student){
             if(students.getAll().stream().anyMatch(st->st.getId()==((Student) o).getId())){
@@ -302,6 +309,14 @@ public class TKD_Service {
         }
     }
 
+
+    /**
+     * make an Invoice for every parent based on the month
+     * @param parentID the ID of the parent
+     * @param month the month they want an invoice
+     * @return a string that holds information an invoice need to have (for every child they have)
+     */
+
     public String generateInvoice(Integer parentID,String month){
         Parent parent = parents.get(parentID);
         String invoice="Invoice for the month " + month + "\nParent name: " + parent.getLastName() + " " + parent.getName() + "\n";
@@ -322,6 +337,10 @@ public class TKD_Service {
         return invoice;
     }
 
+    /**
+     * it deletes a student based on their ID
+     * @param studentID the id of the student
+     */
     public void removeStudent(Integer studentID){
         Parent parent = students.get(studentID).getParent();
         if(parent.getChildren().size()>1){
@@ -336,25 +355,61 @@ public class TKD_Service {
         sessions.update(session);
         students.remove(studentID);
     }
+
+    /**
+     * it deletes a trainer based on their ID
+     * @param trainerID the id of the trainer
+     */
     public void removeTrainer(Integer trainerID){
         trainers.remove(trainerID);
     }
+
+    /**
+     * it deletes a parent based on their ID
+     * @param parentID the id of the Parent
+     */
     public void removeParent(Integer parentID){
         parents.remove(parentID);
     }
+
+    /**
+     * it deletes a session based on their ID
+     * @param sessionID the id of the session
+     */
     public void removeSession(Integer sessionID){
         sessions.remove(sessionID);
     }
+
+    /**
+     * it deletes a BeltExam based on their ID
+     * @param beltExamID the id of the BeltExam
+     */
     public void removeBeltExam(Integer beltExamID){
         beltExams.remove(beltExamID);
     }
+
+    /**
+     * it deletes a Contest based on their ID
+     * @param contestID the id of the contest
+     */
     public void removeContest(Integer contestID){
         contests.remove(contestID);
     }
+
+    /**
+     * it deletes a training camp based on their ID
+     * @param trainingCampID the id of the trainingCamp
+     */
     public void removeTrainingCamp(Integer trainingCampID){
         trainingCamps.remove(trainingCampID);
     }
 
+
+    /**
+     * assign a student to a session
+     * @param idSession the id of the session
+     * @param student the id of the Student
+     */
     public void addStudentToSession(Integer idSession, Integer student){
 
         Session ss = sessions.get(idSession);
@@ -365,22 +420,46 @@ public class TKD_Service {
 
     }
 
+    /**
+     * get a Trainer based on their id
+     * @param trainerId the trainer id
+     * @return object of type Trainer
+     */
     public Trainer getTrainerById(int trainerId){
         return trainers.get(trainerId);
     }
 
+    /**
+     * get a Contest based on their id
+     * @param idContes the contest id
+     * @return an object of type Contest
+     */
     public Contest getContestById(int idContes){
         return contests.get(idContes);
     }
 
+    /**
+     * get a Training Camp based on their id
+     * @param idTrainingCamp the Training Camp id
+     * @return an object of type Training Camp
+     */
     public TrainingCamp getTrainingCampByIs(int idTrainingCamp){
         return trainingCamps.get(idTrainingCamp);
     }
 
+    /**
+     * get a session based on their id
+     * @param sessionId the session id
+     * @return an object of type Session
+     */
     public Session getSessionById(int sessionId){
         return sessions.get(sessionId);
     }
 
+    /** display all Students
+     *
+     * @return a String that holds all students
+     */
     public String viewAllStudents(){
         StringBuilder allStudents= new StringBuilder();
         for(Session s: sessions.getAll()){
@@ -389,14 +468,13 @@ public class TKD_Service {
             }
             allStudents.append('\n');
         }
-//        for(Session s: sessions.getAll()){
-//            for(Student st: s.getSessionStudents()){
-//                allStudents.append(st.toString()).append('\n');
-//            }
-//            allStudents.append('\n');
-//        }
         return allStudents.toString();
     }
+
+    /**
+     * display all Trainers
+     * @return a String that holds all trainers
+     */
     public String viewAllTrainers(){
         StringBuilder allTrainers= new StringBuilder();
         for(Trainer t: trainers.getAll()){
@@ -405,30 +483,96 @@ public class TKD_Service {
         return allTrainers.toString();
     }
 
-    public String viewAllParents(){
-        StringBuilder allParents= new StringBuilder();
-        for(Parent p: parents.getAll()){
-            allParents.append(" Parent with id: ").append(p.getId()).append(", name ").append(p.getName()).append(" ").append(p.getLastName()).append(" has childrens: " );
-            for(Student s: p.getChildren()){
-                allParents.append("\n").append("Student with id: ").append(s.getId()).append(" ").append(s.getLastName()).append(s.getName()).append(" ").append(s.getLastName());
+    /**
+     * dispaly all Parents
+     * @return a String that holds all Parents
+     */
+//    public String viewAllParents(){
+//        StringBuilder allParents= new StringBuilder();
+//        for(Parent p: parents.getAll()){
+//            allParents.append(" Parent with id: ").append(p.getId()).append(", name ").append(p.getName()).append(" ").append(p.getLastName()).append(" has childrens: " );
+//            for(Student s: p.getChildren()){
+//                allParents.append("\n").append("Student with id: ").append(s.getId()).append(" ").append(s.getLastName()).append(s.getName()).append(" ").append(s.getLastName());
+//            }
+//            allParents.append("\n");
+//        }
+//        return allParents.toString();
+//    }
+    public String viewAllParents() {
+        StringBuilder allParents = new StringBuilder();
+        // Coduri ANSI pentru culori
+        final String ANSI_RED = "\u001B[31m";
+        final String ANSI_GREEN = "\u001B[32m";
+        final String ANSI_RESET = "\u001B[0m";
+
+        for (Parent p : parents.getAll()) {
+            allParents.append(ANSI_RED).append("Parent").append(ANSI_RESET)
+                    .append(" with id: ").append(p.getId())
+                    .append(", name ").append(p.getName()).append(" ").append(p.getLastName())
+                    .append(" has childrens: ");
+            for (Student s : p.getChildren()) {
+                allParents.append("\n")
+                        .append(ANSI_GREEN).append("Student").append(ANSI_RESET)
+                        .append(" with id: ").append(s.getId())
+                        .append(" ").append(s.getLastName()).append(" ").append(s.getName());
             }
+            allParents.append("\n");
         }
         return allParents.toString();
     }
 
-    public String viewAllContests(){
+
+    /**
+     * display all contests
+     * @return a string that holds all contests
+     */
+//    public String viewAllContests(){
+//        StringBuilder allContests = new StringBuilder();
+//        for(Contest c: contests.getAll()){
+//            allContests.append("Contest with id ").append(c.getId()).append(", name ").append(c.getName()).append(", start date ").append(c.startDate).
+//                    append(", end date ").append(c.endDate).append(", price ").append(c.price).append(" and students: ");
+//            for(Student s: c.getStudents()){
+//                allContests.append("   Name ").append(s.getLastName()).append(" ").append(s.getName()).append(" and belt level: ").append(s.getBeltLevel()).append('\n');
+//            }
+//            allContests.append('\n');
+//        }
+//        return allContests.toString();
+//    }
+    public String viewAllContests() {
         StringBuilder allContests = new StringBuilder();
-        for(Contest c: contests.getAll()){
-            allContests.append("Contest with id ").append(c.getId()).append(", name ").append(c.getName()).append(", start date ").append(c.startDate).
-                    append(", end date ").append(c.endDate).append(", price ").append(c.price).append(" and students: ");
-            for(Student s: c.getStudents()){
-                allContests.append("   Name ").append(s.getLastName()).append(" ").append(s.getName()).append(" and belt level: ").append(s.getBeltLevel()).append('\n');
+
+        // Coduri ANSI pentru culori
+        final String ANSI_BLUE = "\u001B[34m";
+        final String ANSI_ORANGE = "\u001B[38;5;214m"; // Portocaliu
+        final String ANSI_YELLOW = "\u001B[33m";
+        final String ANSI_RESET = "\u001B[0m";
+
+        for (Contest c : contests.getAll()) {
+            allContests.append("Contest with id ")
+                    .append(ANSI_BLUE).append(c.getId()).append(ANSI_RESET)
+                    .append(", name ")
+                    .append(ANSI_ORANGE).append(c.getName()).append(ANSI_RESET)
+                    .append(", start date ").append(c.startDate)
+                    .append(", end date ").append(c.endDate)
+                    .append(", price ")
+                    .append(ANSI_YELLOW).append(c.price).append(ANSI_RESET)
+                    .append(" and students: ");
+
+            for (Student s : c.getStudents()) {
+                allContests.append("\n   Name ").append(s.getLastName()).append(" ").append(s.getName())
+                        .append(" and belt level: ").append(s.getBeltLevel());
             }
+
             allContests.append('\n');
         }
+
         return allContests.toString();
     }
 
+    /**
+     * display all Training Camps
+     * @return a String that holds all Training Camps
+     */
     public String viewTrainingCamps(){
         StringBuilder allTrainingCamps = new StringBuilder();
         for(TrainingCamp t: trainingCamps.getAll()){
@@ -442,6 +586,10 @@ public class TKD_Service {
         return allTrainingCamps.toString();
     }
 
+    /**
+     * display all BeltExams
+     * @return a string that holds all BeltExams
+     */
     public String viewBeltExams() {
         StringBuilder allBeltExams = new StringBuilder();
         for (BeltExam b : beltExams.getAll()) {

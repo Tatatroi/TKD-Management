@@ -7,15 +7,25 @@ import Service.TKD_Service;
 import java.io.IOException;
 import java.util.Scanner;
 
+/**
+ * The main UI class that provides a command line interface for interacting with tha TKD management system
+ */
 public class TKDUI {
     private final TKDController tkdController;
     private final Scanner scanner;
 
+    /**
+     * Constructs a new UI with tha given TKD controller
+     * @param tkdController the controller that contains the bussines logic for the TKD management system
+     */
     public TKDUI(TKDController tkdController) {
         this.tkdController = tkdController;
         this.scanner = new Scanner(System.in);
     }
 
+    /**
+     * Starts the UI application displaing a menu and handiling user input
+     */
     public void start() {
         boolean continueLoop = true;
 
@@ -43,6 +53,9 @@ public class TKDUI {
         }
     }
 
+    /**
+     * display an interactive menu
+     */
     private void printMenu() {
         System.out.println("\n==== TKD Management Console ====");
         System.out.println("1 - Students");
@@ -57,6 +70,10 @@ public class TKDUI {
         System.out.println("0 - Exit");
         System.out.print("Select an option: ");
     }
+
+    /**
+     * display all combinations that a parent can afford with a specific amount of money
+     */
     private void combinationsOfEvents() {
         System.out.println("Enter the amount of money: ");
         int amountOfMoney = Integer.parseInt(scanner.nextLine());
@@ -65,6 +82,9 @@ public class TKDUI {
 
     }
 
+    /**
+     * menu for a student
+     */
     private void startStudent(){
         boolean continueLoop = true;
 
@@ -88,6 +108,9 @@ public class TKDUI {
         }
     }
 
+    /**
+     * menu for a parent
+     */
     private void startParent(){
         boolean continueLoop = true;
         while (continueLoop){
@@ -107,25 +130,9 @@ public class TKDUI {
         }
     }
 
-    private void printParent(){
-        System.out.println("\n==== TKD Management Console ====");
-        System.out.println("1 - Add Parent");
-        System.out.println("2 - Delete Parent");
-        System.out.println("3 - View Parents");
-        System.out.println("0 - Exit");
-        System.out.print("Select an option: ");
-    }
-
-    private void printStudent(){
-        System.out.println("\n==== TKD Management Console ====");
-        System.out.println("1 - Add Student");
-        System.out.println("2 - Delete Student");
-        System.out.println("3 - View Students");
-        System.out.println("4 - Change Student Session");
-        System.out.println("5 - View Student attendances");
-        System.out.println("0 - Exit");
-        System.out.print("Select an option: ");
-    }
+    /**
+     * menu for a trainer
+     */
     private void startTrainer(){
         boolean continueLoop = true;
 
@@ -148,15 +155,9 @@ public class TKDUI {
         }
     }
 
-    private void printTrainer(){
-        System.out.println("\n==== TKD Management Console ====");
-        System.out.println("1 - Add Trainer");
-        System.out.println("2 - Delete Trainer");
-        System.out.println("3 - View Trainers");
-        System.out.println("4 - Assign Session to Trainer");
-        System.out.println("0 - Exit");
-        System.out.print("Select an option: ");
-    }
+    /**
+     * menu for a session
+     */
     private void startSession(){
         boolean continueLoop = true;
 
@@ -179,16 +180,10 @@ public class TKDUI {
             }
         }
     }
-    private void printSession(){
-        System.out.println("\n==== TKD Management Console ====");
-        System.out.println("1 - Add Session");
-        System.out.println("2 - Delete Session");
-        System.out.println("3 - Change Student Session");
-        System.out.println("4 - Assign Session to Trainer");
-        System.out.println("5 - Add attendance");
-        System.out.println("0 - Exit");
-        System.out.print("Select an option: ");
-    }
+
+    /**
+     * menu for a contest
+     */
     private void startContest(){
         boolean continueLoop = true;
 
@@ -210,45 +205,10 @@ public class TKDUI {
             }
         }
     }
-    private void printContest(){
-        System.out.println("\n==== TKD Management Console ====");
-        System.out.println("1 - Add Contest");
-        System.out.println("2 - Delete Contest");
-        System.out.println("3 - View all Contests");
-        System.out.println("4 - Add student to contest");
-        System.out.println("0 - Exit");
-        System.out.print("Select an option: ");
-    }
-    private void startTrainingCamp(){
-        boolean continueLoop = true;
 
-        while (continueLoop) {
-            printTrainingCamp();
-            String option = scanner.nextLine();
-
-            try {
-                switch (option) {
-                    case "0" -> continueLoop = false;
-                    case "1" -> addTrainingCamp();
-                    case "2" -> deleteTrainingCamp();
-                    case "3" -> viewTrainingCamp();
-                    case "4" -> addStudentToTrainingCamp();
-                    default -> System.out.println("Invalid option. Please try again.");
-                }
-            } catch (Exception e) {
-                System.out.println("An error occurred: " + e.getMessage());
-            }
-        }
-    }
-    private void printTrainingCamp(){
-        System.out.println("\n==== TKD Management Console ====");
-        System.out.println("1 - Add Training camp");
-        System.out.println("2 - Delete training camp");
-        System.out.println("3 - View all training camps");
-        System.out.println("4 - Add student to training camp");
-        System.out.println("0 - Exit");
-        System.out.print("Select an option: ");
-    }
+    /**
+     * menu for belt exam
+     */
     private void startBeltExam(){
         boolean continueLoop = true;
 
@@ -271,6 +231,114 @@ public class TKDUI {
             }
         }
     }
+
+    /**
+     * menu for a Training camp
+     */
+    private void startTrainingCamp(){
+        boolean continueLoop = true;
+
+        while (continueLoop) {
+            printTrainingCamp();
+            String option = scanner.nextLine();
+
+            try {
+                switch (option) {
+                    case "0" -> continueLoop = false;
+                    case "1" -> addTrainingCamp();
+                    case "2" -> deleteTrainingCamp();
+                    case "3" -> viewTrainingCamp();
+                    case "4" -> addStudentToTrainingCamp();
+                    default -> System.out.println("Invalid option. Please try again.");
+                }
+            } catch (Exception e) {
+                System.out.println("An error occurred: " + e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * CRUD for parents menu
+     */
+    private void printParent(){
+        System.out.println("\n==== TKD Management Console ====");
+        System.out.println("1 - Add Parent");
+        System.out.println("2 - Delete Parent");
+        System.out.println("3 - View Parents");
+        System.out.println("0 - Exit");
+        System.out.print("Select an option: ");
+    }
+
+    /**
+     * CRUD for Students menu
+     */
+    private void printStudent(){
+        System.out.println("\n==== TKD Management Console ====");
+        System.out.println("1 - Add Student");
+        System.out.println("2 - Delete Student");
+        System.out.println("3 - View Students");
+        System.out.println("4 - Change Student Session");
+        System.out.println("5 - View Student attendances");
+        System.out.println("0 - Exit");
+        System.out.print("Select an option: ");
+    }
+
+    /**
+     * CRUD for Trainers menu
+     */
+    private void printTrainer(){
+        System.out.println("\n==== TKD Management Console ====");
+        System.out.println("1 - Add Trainer");
+        System.out.println("2 - Delete Trainer");
+        System.out.println("3 - View Trainers");
+        System.out.println("4 - Assign Session to Trainer");
+        System.out.println("0 - Exit");
+        System.out.print("Select an option: ");
+    }
+
+    /**
+     * CRUD for Sessions menu
+     */
+    private void printSession(){
+        System.out.println("\n==== TKD Management Console ====");
+        System.out.println("1 - Add Session");
+        System.out.println("2 - Delete Session");
+        System.out.println("3 - Change Student Session");
+        System.out.println("4 - Assign Session to Trainer");
+        System.out.println("5 - Add attendance");
+        System.out.println("0 - Exit");
+        System.out.print("Select an option: ");
+    }
+
+    /**
+     * CRUD for Contests menu
+     */
+    private void printContest(){
+        System.out.println("\n==== TKD Management Console ====");
+        System.out.println("1 - Add Contest");
+        System.out.println("2 - Delete Contest");
+        System.out.println("3 - View all Contests");
+        System.out.println("4 - Add student to contest");
+        System.out.println("0 - Exit");
+        System.out.print("Select an option: ");
+    }
+
+    /**
+     * CRUD for TrianingCamps menu
+     */
+    private void printTrainingCamp(){
+        System.out.println("\n==== TKD Management Console ====");
+        System.out.println("1 - Add Training camp");
+        System.out.println("2 - Delete training camp");
+        System.out.println("3 - View all training camps");
+        System.out.println("4 - Add student to training camp");
+        System.out.println("0 - Exit");
+        System.out.print("Select an option: ");
+    }
+
+    /**
+     * CRUD for BeltExams menu
+     */
     private void printBeltExam(){
         System.out.println("\n==== TKD Management Console ====");
         System.out.println("1 - Add Belt Exam");
@@ -283,6 +351,11 @@ public class TKDUI {
     }
 
     // Methods for each option
+
+    /**
+     * request all information that a student need
+     * @throws IOException
+     */
     private void addStudent() throws IOException {
         System.out.print("Enter student ID: ");
         int idStudent = Integer.parseInt(scanner.nextLine());
@@ -343,6 +416,11 @@ public class TKDUI {
         System.out.println("Student added successfully.");
     }
 
+    /**
+     * request all information that a parent need
+     * @return a Parent object
+     * @throws IOException
+     */
     private Parent addParent() throws IOException {
         System.out.print("Enter parent ID: ");
         int id = Integer.parseInt(scanner.nextLine());
@@ -370,6 +448,10 @@ public class TKDUI {
         return newParent;
     }
 
+    /**
+     * request all information that a session need
+     * @throws IOException
+     */
     private void addSession() throws IOException {
         System.out.print("Enter Session ID: ");
         int id = Integer.parseInt(scanner.nextLine());
@@ -404,6 +486,10 @@ public class TKDUI {
         System.out.println("Session added successfully.");
     }
 
+    /**
+     * request all information that a trainer need
+     * @throws IOException
+     */
     private void addTrainer() throws IOException{
         System.out.print("Enter Trainer ID: ");
         int id = Integer.parseInt(scanner.nextLine());
@@ -435,7 +521,10 @@ public class TKDUI {
         tkdController.addObject(newTrainer);
         System.out.println("Trainer added successfully.");
     }
-
+    /**
+     * request all information that a contest need
+     * @throws IOException
+     */
     private void addContest() throws IOException {
         System.out.println("Enter Contest Id: ");
         int id = Integer.parseInt(scanner.nextLine());
@@ -446,7 +535,7 @@ public class TKDUI {
         System.out.println("Enter end date: ");
         String enddate = scanner.nextLine();
 
-        System.out.println("Enter start date: ");
+        System.out.println("Enter price: ");
         double price = Double.parseDouble(scanner.nextLine());
 
         System.out.println("Enter country: ");
@@ -466,6 +555,10 @@ public class TKDUI {
         System.out.println("Contest added successfully.");
     }
 
+    /**
+     * request all information that a training camp need
+     * @throws IOException
+     */
     private void addTrainingCamp() throws IOException {
         System.out.println("Enter Training camp Id: ");
         int id = Integer.parseInt(scanner.nextLine());
@@ -495,6 +588,10 @@ public class TKDUI {
         System.out.println("Training camp added successfully.");
     }
 
+    /**
+     * request all information that a BeltExam need
+     * @throws IOException
+     */
     private void addBeltExam() throws IOException {
         System.out.println("Enter Belt Exam Id: ");
         int id = Integer.parseInt(scanner.nextLine());
@@ -524,6 +621,10 @@ public class TKDUI {
         System.out.println("Belt Exam added successfully.");
     }
 
+    /**
+     * request all information that a belt exam need
+     * @throws IOException
+     */
     private void addStudentToBeltExam()throws IOException{
         System.out.println("Enter Belt Exam Id: ");
         int idBeltExam = Integer.parseInt(scanner.nextLine());
@@ -535,6 +636,10 @@ public class TKDUI {
         System.out.println("Student added successfully.");
     }
 
+    /**
+     * add a student to contest based on their ID s
+     * @throws IOException
+     */
     private void addStudentToContest()throws IOException{
         System.out.println("Enter Contest Id: ");
         int idContest = Integer.parseInt(scanner.nextLine());
@@ -546,6 +651,10 @@ public class TKDUI {
         System.out.println("Student added successfully.");
     }
 
+    /**
+     * add a student to a trianing camp based on their ID s
+     * @throws IOException
+     */
     private void addStudentToTrainingCamp()throws IOException {
         System.out.println("Enter Student Id: ");
         int idStudent = Integer.parseInt(scanner.nextLine());
@@ -557,6 +666,7 @@ public class TKDUI {
         System.out.println("Student added successfully.");
     }
 
+
 //    private void promoteBeltExam() throws IOException {
 //        System.out.println("Enter Belt Exam Id: ");
 //        int idBeltExam = Integer.parseInt(scanner.nextLine());
@@ -565,82 +675,127 @@ public class TKDUI {
 //        System.out.println("Belt Exams Results changed successfully.");
 //    }
 
+    /**
+     * deletes a student base on ID
+     */
     private void deleteStudent() {
         int id = readStudentId();
         tkdController.deleteStudent(id);
         System.out.println("Student deleted successfully.");
     }
 
-    private void viewStudents() {
-        System.out.println("=== List of Students ===");
-        tkdController.viewStudents();
-    }
-
-    private void deleteParent(){
-        int id = readParentId();
-        tkdController.deleteParent(id);
-        System.out.println("Parent deleted successfully.");
-    }
-
-    private void viewParents(){
-        System.out.println("=== List of Parents ===");
-        tkdController.viewParents();
-    }
-
-    private void deleteTrainer() {
-        int id = readTrainerId();
-        tkdController.deleteTrainer(id);
-        System.out.println("Trainer deleted successfully.");
-    }
-
-    private void viewTrainers() {
-        System.out.println("=== List of Trainers ===");
-        tkdController.viewTrainers();
-    }
-
-
-    private void deleteSession() {
-        int id = readSessionId();
-        tkdController.deleteSession(id);
-        System.out.println("Session deleted successfully.");
-    }
-    private void deleteContest() {
-        int id = readContestId();
-        tkdController.deleteContest(id);
-        System.out.println("Contest deleted successfully.");
-    }
-
-    private void viewContests(){
-        System.out.println("=== List of Contests ===");
-        tkdController.viewContests();
-    }
-    private void deleteTrainingCamp() {
-        int id = readTrainingCampId();
-        tkdController.deleteTrainingCamp(id);
-        System.out.println("Training camp deleted successfully.");
-    }
-
-    private void viewTrainingCamp(){
-        System.out.println("=== List of Training camps ===");
-        tkdController.viewTrainingCamps();
-    }
-
+    /**
+     * deletes a belt exam base on ID
+     */
     private void deleteBeltExam() {
         int id = readBeltExamId();
         tkdController.deleteBeltExam(id);
         System.out.println("Belt Exam deleted successfully.");
     }
 
+    /**
+     * deletes a training camp base on ID
+     */
+    private void deleteTrainingCamp() {
+        int id = readTrainingCampId();
+        tkdController.deleteTrainingCamp(id);
+        System.out.println("Training camp deleted successfully.");
+    }
+
+    /**
+     * deletes a parent base on ID
+     */
+    private void deleteParent(){
+        int id = readParentId();
+        tkdController.deleteParent(id);
+        System.out.println("Parent deleted successfully.");
+    }
+
+    /**
+     * deletes a trainer base on ID
+     */
+    private void deleteTrainer() {
+        int id = readTrainerId();
+        tkdController.deleteTrainer(id);
+        System.out.println("Trainer deleted successfully.");
+    }
+
+    /**
+     * deletes a session base on ID
+     */
+    private void deleteSession() {
+        int id = readSessionId();
+        tkdController.deleteSession(id);
+        System.out.println("Session deleted successfully.");
+    }
+
+    /**
+     * deletes a contest base on ID
+     */
+    private void deleteContest() {
+        int id = readContestId();
+        tkdController.deleteContest(id);
+        System.out.println("Contest deleted successfully.");
+    }
+
+    /**
+     * displays a list of trainers
+     */
+    private void viewTrainers() {
+        System.out.println("=== List of Trainers ===");
+        tkdController.viewTrainers();
+    }
+
+    /**
+     * displays a list of parents
+     */
+    private void viewParents(){
+        System.out.println("=== List of Parents ===");
+        tkdController.viewParents();
+    }
+
+    /**
+     * displays a list of contests
+     */
+    private void viewContests(){
+        System.out.println("=== List of Contests ===");
+        tkdController.viewContests();
+    }
+
+    /**
+     * displays a list of training camps
+     */
+    private void viewTrainingCamp(){
+        System.out.println("=== List of Training camps ===");
+        tkdController.viewTrainingCamps();
+    }
+
+    /**
+     * displays a list of students
+     */
+    private void viewStudents() {
+        System.out.println("=== List of Students ===");
+        tkdController.viewStudents();
+    }
+
+    /**
+     * displays a list of belt exams
+     */
     private void viewBeltExams(){
         System.out.println("=== List of Belt Exams ===");
         tkdController.viewBeltExams();
     }
 
+    /**
+     * displays a list of attendances for a student
+     */
     private void viewAttendances(){
         int studentId = readStudentId();
         System.out.println("=== List of attendances ===");
         tkdController.numberOfAttendances(studentId);
     }
+
+
 
     /**
      * Changes the session of a trainer, by reading the new session id and the trainer id from the console, and displaying a successful message.

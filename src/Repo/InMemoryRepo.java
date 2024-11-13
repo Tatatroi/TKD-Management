@@ -17,15 +17,13 @@ public class InMemoryRepo<T extends HasID> implements IRepo<T>{
 
     Map<Integer, T> data= new HashMap<>();
 
-//    private int firstFreeId = 0;
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void add(T obj) {
         data.put(obj.getId(), obj);
-//        obj.setId(firstFreeId);
-//        firstFreeId++;
     }
 
     /**
