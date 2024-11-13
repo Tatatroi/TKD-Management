@@ -1,7 +1,7 @@
 package Service;
 
 import Model.*;
-import Repo.InMemoryRepo;
+import Repository.InMemoryRepo;
 
 import java.io.IOException;
 import java.util.*;

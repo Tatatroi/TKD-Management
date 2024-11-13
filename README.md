@@ -1,6 +1,6 @@
 Unsere Anwendung hilft einen Trainer seine Lehrlinge in der Taekwon-do Saal zu verwalten.  
 
-Jedes Objekt wird sein eigenes Repo haben mit dem klassischen C-R-U-D Operationen.
+Jedes Objekt wird sein eigenes Repository haben mit dem klassischen C-R-U-D Operationen.
 
 Ein Taekwon-do Saal braucht eine interne Anwendung wobei ein Trainer sein Saal und seine Lehrlinge verwalten kann. Eine TKD Stunde ist in mehrere Lernstufen abgeteilt 
 (Anfanger, Intermadier, Fortgeschritten), maximal Anzahl von Teilnahmern, ein Trainer und ein Preis. Ein Teilnahmer/Trainer/Eltern ist eine Person die hat ein name, Vorname, email,

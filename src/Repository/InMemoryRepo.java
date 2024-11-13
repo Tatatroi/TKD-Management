@@ -1,9 +1,6 @@
-package Repo;
+package Repository;
 
-import Model.Contest;
 import Model.HasID;
-import Model.Person;
-import Model.TrainingCamp;
 
 import java.util.HashMap;
 import java.util.List;

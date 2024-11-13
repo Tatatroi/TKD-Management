@@ -1,7 +1,6 @@
-package Repo;
+package Repository;
 
 import Model.HasID;
-import Model.Person;
 
 import java.util.List;
 

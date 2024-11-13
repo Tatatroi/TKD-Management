@@ -4,9 +4,7 @@ import Ui.TKDUI;
 import Controller.TKDController;
 import Service.TKD_Service;
 import Model.*;
-import Repo.*;
-
-import static Model.DifficultyLevel.beginner;
+import Repository.*;
 
 public class Main {
 
