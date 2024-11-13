@@ -12,7 +12,7 @@ public class TrainingCamp extends Event{
     List<Student> students = new ArrayList<>();
 
     /**
-     *
+     * Constructs a new Training camp with the specified ID, start date, end date, price, country, city, address and the max number of participants..
      * @param id            The unique identifier of the event.
      * @param startDate     The start date of the event.
      * @param endDate       The end date of the event.

@@ -24,7 +24,7 @@ public class Session implements HasID{
     }
 
     /**
-     *
+     * Constructs a new Session with the specified ID, difficulty level, maximum participants, trainer, and price per session.
      * @param id                    The unique identifier of the session.
      * @param difficultyLevel       The difficulty level of the session( beginner, intermediary, advanced).
      * @param maximumParticipants   The max number of students that can be part of a session.

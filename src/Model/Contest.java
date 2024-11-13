@@ -12,7 +12,7 @@ public class Contest extends Event{
     List<Student> students = new ArrayList<>();
 
     /**
-     *
+     * Constructs a new Contest with the specified ID, start date, end date, price, country, city, name and address.
      * @param id            The unique identifier of the event.
      * @param startDate     The start date of the event.
      * @param endDate       The end date of the event.

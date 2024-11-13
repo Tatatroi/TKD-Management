@@ -232,7 +232,7 @@ public class TKDUI {
                     case "1" -> addTrainingCamp();
                     case "2" -> deleteTrainingCamp();
                     case "3" -> viewTrainingCamp();
-//                    case "4" -> addStudentToContest();
+                    case "4" -> addStudentToTrainingCamp();
                     default -> System.out.println("Invalid option. Please try again.");
                 }
             } catch (Exception e) {
@@ -262,7 +262,7 @@ public class TKDUI {
                     case "1" -> addBeltExam();
                     case "2" -> deleteBeltExam();
                     case "3" -> viewBeltExams();
-//                    case "4" -> addStudentToBe();
+                    case "4" -> addStudentToBeltExam();
                     case "5" -> addResultToBeltExam();
                     default -> System.out.println("Invalid option. Please try again.");
                 }
@@ -557,13 +557,13 @@ public class TKDUI {
         System.out.println("Student added successfully.");
     }
 
-    private void promoteBeltExam() throws IOException {
-        System.out.println("Enter Belt Exam Id: ");
-        int idBeltExam = Integer.parseInt(scanner.nextLine());
-
-        tkdController.changeBeltLevel(idBeltExam);
-        System.out.println("Belt Exams Results changed successfully.");
-    }
+//    private void promoteBeltExam() throws IOException {
+//        System.out.println("Enter Belt Exam Id: ");
+//        int idBeltExam = Integer.parseInt(scanner.nextLine());
+//
+//        tkdController.changeBeltLevel(idBeltExam);
+//        System.out.println("Belt Exams Results changed successfully.");
+//    }
 
     private void deleteStudent() {
         int id = readStudentId();
@@ -641,6 +641,10 @@ public class TKDUI {
         System.out.println("=== List of attendances ===");
         tkdController.numberOfAttendances(studentId);
     }
+
+    /**
+     * Changes the session of a trainer, by reading the new session id and the trainer id from the console, and displaying a successful message.
+     */
     private void assignSessionToTrainer() {
         int sessionId = readSessionId();
         int trainerId = readTrainerId();
@@ -648,6 +652,9 @@ public class TKDUI {
         System.out.println("Session assigned to trainer successfully.");
     }
 
+    /**
+     * Adds an attendance to a student, by reading the session id, the student id, if he attended or not, the weekday and the date from the console.
+     */
     private void addAttendance(){
         int sessionId = readSessionId();
         int studentId = readStudentId();
@@ -663,6 +670,9 @@ public class TKDUI {
         tkdController.addAttendance(studentId,sessionId, attendance, weekday, date);
     }
 
+    /**
+     * Changes the session of a student, by reading the new session id and the student id from the console, and displaying a successful message.
+     */
     private void changeStudentSession() {
         int studentId = readStudentId();
         int sessionId = readSessionId();
@@ -670,6 +680,9 @@ public class TKDUI {
         System.out.println("Student session changed successfully.");
     }
 
+    /**
+     * Adds result for a student from the belt exam, by reading the student id, belt exam id and the result from the console and displaying it.
+     */
     private void addResultToBeltExam(){
         int studentId = readStudentId();
         int beltExamId = readBeltExamId();
@@ -678,6 +691,9 @@ public class TKDUI {
         tkdController.addResultToBeltExam(studentId,beltExamId,promoted);
     }
 
+    /**
+     * Generates a bill for a parent and displays it in the console.
+     */
     private void generateBill(){
         int parentId = readParentId();
 
@@ -685,35 +701,65 @@ public class TKDUI {
         String month = scanner.nextLine();
         tkdController.generateInvoice(parentId,month);
     }
-    // Helper methods to read IDs from the user
+
+    /**
+     * Reads an id for a student from the console.
+     * @return The id of the student.
+     */
     private int readStudentId() {
         System.out.print("Enter student ID: ");
         return Integer.parseInt(scanner.nextLine());
     }
 
+    /**
+     * Reads an id for a parent from the console.
+     * @return The id of the parent.
+     */
     private int readParentId(){
         System.out.print("Enter parent ID: ");
         return Integer.parseInt(scanner.nextLine());
     }
 
+    /**
+     * Reads an id for a trainer from the console.
+     * @return The id of the trainer.
+     */
     private int readTrainerId() {
         System.out.print("Enter trainer ID: ");
         return Integer.parseInt(scanner.nextLine());
     }
 
+    /**
+     * Reads an id for a session from the console.
+     * @return The id of the session.
+     */
     private int readSessionId() {
         System.out.print("Enter session ID: ");
         return Integer.parseInt(scanner.nextLine());
     }
+
+    /**
+     * Reads an id for a contest from the console.
+     * @return The id of the contest.
+     */
     private int readContestId() {
         System.out.print("Enter contest ID: ");
         return Integer.parseInt(scanner.nextLine());
     }
+
+    /**
+     * Reads an id for a training camp from the console.
+     * @return The id of the training camp.
+     */
     private int readTrainingCampId() {
         System.out.print("Enter training camp ID: ");
         return Integer.parseInt(scanner.nextLine());
     }
 
+    /**
+     * Reads an id for a belt exam from the console.
+     * @return The id of the belt exam.
+     */
     private int readBeltExamId() {
         System.out.print("Enter belt exam ID: ");
         return Integer.parseInt(scanner.nextLine());

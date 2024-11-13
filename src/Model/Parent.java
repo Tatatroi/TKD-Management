@@ -10,7 +10,7 @@ public class Parent extends Person{
     List<Student> children = new ArrayList<>();
 
     /**
-     *
+     * Constructs a new Parent with the specified ID, name, last name, email, address, date of birth and number.
      * @param id            The unique identifier of the person.
      * @param name          The name of the person
      * @param lastName      The last name of the person.

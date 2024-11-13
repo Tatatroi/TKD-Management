@@ -10,6 +10,15 @@ import static Model.DifficultyLevel.beginner;
 
 public class Main {
 
+    /**
+     * Adds a student to a parent, session and adds the objects to the repos.
+     * @param session       The session, where the student is added.
+     * @param student       The session, where the student is added.
+     * @param parent        The parent, where the student is added.
+     * @param parentRepo    The parent repo, where the parent is added.
+     * @param studentRepo   The student repo, where the parent is added.
+     * @param sessionRepo   The session repo, where the parent is added.
+     */
     public static void parentChild(Session session, Student student, Parent parent, InMemoryRepo<Parent> parentRepo, InMemoryRepo<Student> studentRepo, InMemoryRepo<Session> sessionRepo){
         session.getSessionStudents().add(student);
         sessionRepo.update(session);
@@ -20,7 +29,11 @@ public class Main {
     }
 
 
-
+    /**
+     * The main method that initializes the application, starts the console interface and creates the in-memory repos and populates them with some intial values.
+     *
+     * @param args Command-line arguments (not used).
+     */
     public static void main(String[] args) {
 
         InMemoryRepo<Student> studentRepo = new InMemoryRepo<>();
@@ -57,6 +70,9 @@ public class Main {
 
         Parent parent1 = new Parent(1,"Muresan","Victor","muresanVictor@gmail.com","Calea Baciului nr 5",1980,"0783243165");
         Student student1 = new Student(1,"Muresan","Alex","alex@gmail.com","Calea Baciului nr 5",2010,"0754635543","white",session1);
+        student1.getSessionDateList().put(new SessionDate("monday","11.11.2024",session1),true);
+        student1.getSessionDateList().put(new SessionDate("wednesday","13.11.2024",session1),true);
+        student1.getSessionDateList().put(new SessionDate("friday","15.11.2024",session1),true);
         parentChild(session1,student1,parent1,parentRepo,studentRepo,sessionRepo);
 
         // Părinți adiționali
@@ -69,12 +85,19 @@ public class Main {
 // Prima pereche de frați
         Student student2 = new Student(2, "Pop", "Ana", "ana.pop@gmail.com", "Strada Republicii nr 12", 2012, "0751234567", "yellow", session2);
         Student student3 = new Student(3, "Pop", "Mihai", "mihai.pop@gmail.com", "Strada Republicii nr 12", 2014, "0757654321", "yellow", session2);
+        student2.getSessionDateList().put(new SessionDate("friday","15.11.2024",session2),true);
+        student2.getSessionDateList().put(new SessionDate("monday","18.11.2024",session2),true);
+        student3.getSessionDateList().put(new SessionDate("friday","15.11.2024",session2),true);
         parentChild(session2, student2, parent2, parentRepo, studentRepo, sessionRepo);
         parentChild(session2, student3, parent2, parentRepo, studentRepo, sessionRepo);
 
 // A doua pereche de frați
         Student student4 = new Student(4, "Dobre", "Florin", "florin.dobre@yahoo.com", "Strada Zorilor nr 14", 2011, "0744112233", "orange", session3);
         Student student5 = new Student(5, "Dobre", "Ioana", "ioana.dobre@yahoo.com", "Strada Zorilor nr 14", 2013, "0744556677", "orange", session3);
+        student4.getSessionDateList().put(new SessionDate("friday","15.10.2024",session2),true);
+        student4.getSessionDateList().put(new SessionDate("monday","18.10.2024",session2),true);
+        student5.getSessionDateList().put(new SessionDate("friday","15.11.2024",session2),true);
+        student5.getSessionDateList().put(new SessionDate("wednesday","20.11.2024",session2),false);
         parentChild(session3, student4, parent3, parentRepo, studentRepo, sessionRepo);
         parentChild(session3, student5, parent3, parentRepo, studentRepo, sessionRepo);
 
@@ -82,6 +105,11 @@ public class Main {
         Student student6 = new Student(6, "Matei", "Vlad", "vlad.matei@yahoo.com", "Strada Garii nr 6", 2012, "0721122334", "green", session1);
         Student student7 = new Student(7, "Ionescu", "Irina", "irina.ionescu@gmail.com", "Strada Ciresilor nr 10", 2010, "0765123789", "blue", session2);
         Student student8 = new Student(8, "Radu", "Andrei", "andrei.radu@gmail.com", "Strada Independentei nr 20", 2011, "0767894561", "green", session3);
+        student6.getSessionDateList().put(new SessionDate("friday","15.10.2024",session1),true);
+        student6.getSessionDateList().put(new SessionDate("monday","18.10.2024",session1),false);
+        student6.getSessionDateList().put(new SessionDate("monday","18.10.2024",session1),true);
+        student7.getSessionDateList().put(new SessionDate("friday","15.11.2024",session2),true);
+        student8.getSessionDateList().put(new SessionDate("wednesday","20.11.2024",session3),false);
         parentChild(session1, student6, parent4, parentRepo, studentRepo, sessionRepo);
         parentChild(session2, student7, parent5, parentRepo, studentRepo, sessionRepo);
         parentChild(session3, student8, parent6, parentRepo, studentRepo, sessionRepo);
@@ -90,12 +118,15 @@ public class Main {
         Student student9 = new Student(9, "Vasilescu", "Elena", "elena.vasilescu@gmail.com", "Strada Libertatii nr 5", 2013, "0734123890", "green", session1);
         Student student10 = new Student(10, "Marin", "Paul", "paul.marin@gmail.com", "Strada Primaverii nr 9", 2012, "0712123890", "white", session2);
         Student student11 = new Student(11, "Popa", "Diana", "diana.popa@yahoo.com", "Strada Viitorului nr 2", 2011, "0785123890", "blue", session3);
+        student9.getSessionDateList().put(new SessionDate("friday","15.10.2024",session1),true);
+        student9.getSessionDateList().put(new SessionDate("monday","18.10.2024",session1),false);
+        student10.getSessionDateList().put(new SessionDate("monday","18.10.2024",session2),true);
+        student11.getSessionDateList().put(new SessionDate("friday","15.11.2024",session3),true);
+        student11.getSessionDateList().put(new SessionDate("wednesday","20.11.2024",session3),false);
         parentChild(session1, student9, parent4, parentRepo, studentRepo, sessionRepo);
         parentChild(session2, student10, parent5, parentRepo, studentRepo, sessionRepo);
         parentChild(session3, student11, parent6, parentRepo, studentRepo, sessionRepo);
-//        session1.getSessionStudents().add(student9);
-//        session2.getSessionStudents().add(student10);
-//        session3.getSessionStudents().add(student11);
+
 
 // Actualizare sesiunii pentru studenții fără părinți
         sessionRepo.update(session1);

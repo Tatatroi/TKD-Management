@@ -13,7 +13,7 @@ public abstract class Event implements HasID{
     public String address;
 
     /**
-     *
+     * Constructs a new Event with the specified ID, start date, end date, price, country, city and address.
      * @param id            The unique identifier of the event.
      * @param startDate     The start date of the event.
      * @param endDate       The end date of the event.

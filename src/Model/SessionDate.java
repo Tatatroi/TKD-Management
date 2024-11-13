@@ -11,7 +11,7 @@ public class SessionDate {
     public Session session;
 
     /**
-     *
+     * Constructs a new Session date with the specified weekday, date and session.
      * @param weekDay   The day of the week the session took place.
      * @param date      The exact date the session took place.
      * @param session   The session itself that was on a day.

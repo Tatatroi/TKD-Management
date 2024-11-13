@@ -12,7 +12,7 @@ public class BeltExam extends Event{
     public String BeltColor;
 
     /**
-     *
+     * Constructs a new belt exam with the specified ID, start date, end date, price, country, city, address and belt color.
      * @param id            The unique identifier of the event.
      * @param startDate     The start date of the event.
      * @param endDate       The end date of the event.

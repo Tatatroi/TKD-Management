@@ -6,7 +6,7 @@ package Model;
 public class Trainer extends Person{
 
     /**
-     *
+     *  Constructs a new Trainer with the specified ID, name, last name, email, address, date of birth, number and belt level.
      * @param id            The unique identifier of the trainer.
      * @param name          The name of the trainer
      * @param lastName      The last name of the trainer.

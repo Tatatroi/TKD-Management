@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * A service class that provides the business logic for the university system.
+ * A service class that provides the business logic for the TKD-Management system.
  */
 public class TKD_Service {
     private InMemoryRepo<Student> students;

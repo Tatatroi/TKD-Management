@@ -14,7 +14,7 @@ public abstract class Person implements HasID{
     public String beltLevel;
 
     /**
-     * Constructs a new Person with the specified ID, name, last name, email, address, date of birth, number and beltlevel.
+     * Constructs a new Person with the specified ID, name, last name, email, address, date of birth, number and belt level.
      * @param id            The unique identifier of the person.
      * @param name          The name of the person
      * @param lastName      The last name of the person.
@@ -37,7 +37,7 @@ public abstract class Person implements HasID{
 
 
     /**
-     *
+     * Constructs a new Person with the specified ID, name, last name, email, address, date of birth and number.
      * @param id            The unique identifier of the person.
      * @param name          The name of the person
      * @param lastName      The last name of the person.

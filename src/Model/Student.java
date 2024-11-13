@@ -17,6 +17,23 @@ public class Student extends Person{
     public Parent parent;
 
     /**
+     * Constructs a new Student with the specified ID, name, last name, email, address, date of birth, number, belt level and session.
+     * @param id            The unique identifier of the student.
+     * @param name          The name of the student.
+     * @param lastName      The last name the student
+     * @param email         The email address of the student.
+     * @param address       The home address of the student.
+     * @param dateOfBirth   The date of birth of the student.
+     * @param number        The telephone number of the student.
+     * @param beltLevel     The belt level of the student.
+     * @param session       The session to which the student belongs.
+     */
+    public Student(Integer id, String name, String lastName, String email, String address, int dateOfBirth, String number, String beltLevel, Session session) {
+        super(id,name, lastName, email, address, dateOfBirth, number, beltLevel);
+        this.session=session;
+    }
+
+    /**
      * Gets the list of contests where the student participated.
      * @return The list of contests.
      */
@@ -96,23 +113,6 @@ public class Student extends Person{
         this.parent = parent;
     }
 
-    /**
-     *
-     * @param id            The unique identifier of the student.
-     * @param name          The name of the student.
-     * @param lastName      The last name the student
-     * @param email         The email address of the student.
-     * @param address       The home address of the student.
-     * @param dateOfBirth   The date of birth of the student.
-     * @param number        The telephone number of the student.
-     * @param beltLevel     The belt level of the student.
-     * @param session       The session to which the student belongs.
-     */
-    public Student(Integer id, String name, String lastName, String email, String address, int dateOfBirth, String number, String beltLevel, Session session) {
-        super(id,name, lastName, email, address, dateOfBirth, number, beltLevel);
-        this.session=session;
-        //setId(idFromRepo);
-    }
 
     @Override
     public String toString() {
