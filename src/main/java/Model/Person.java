@@ -6,7 +6,7 @@ package Model;
 public abstract class Person implements HasID{
     private int id;
     public String name;
-    public String LastName;
+    public String lastName;
     public String email;
     public String address;
     public int dateOfBirth;
@@ -27,7 +27,7 @@ public abstract class Person implements HasID{
     public Person(Integer id,String name, String lastName, String email, String address, int dateOfBirth, String number, String beltLevel) {
         this.id=id;
         this.name = name;
-        LastName = lastName;
+        this.lastName = lastName;
         this.email = email;
         this.address = address;
         this.dateOfBirth = dateOfBirth;
@@ -49,12 +49,14 @@ public abstract class Person implements HasID{
     public Person(Integer id,String name, String lastName, String email, String address, int dateOfBirth,String number) {
         this.id=id;
         this.name = name;
-        LastName = lastName;
+        this.lastName = lastName;
         this.email = email;
         this.address = address;
         this.dateOfBirth = dateOfBirth;
         this.number = number;
     }
+
+    public Person(){}
 
     /**
      * Sets the id of the person.
@@ -83,7 +85,7 @@ public abstract class Person implements HasID{
      * @return The lastname of the person.
      */
     public String getLastName() {
-        return LastName;
+        return lastName;
     }
 
     /**
@@ -91,7 +93,7 @@ public abstract class Person implements HasID{
      * @param lastName  The lastname of the person to set.
      */
     public void setLastName(String lastName) {
-        LastName = lastName;
+        lastName = lastName;
     }
 
     /**

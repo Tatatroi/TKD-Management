@@ -123,7 +123,7 @@ public class Student extends Person{
                 ", sessionDateList=" + sessionDateList +
                 ", parent=" + parent +
                 ", name='" + name + '\'' +
-                ", LastName='" + LastName + '\'' +
+                ", LastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", address='" + address + '\'' +
                 ", dateOfBirth=" + dateOfBirth +

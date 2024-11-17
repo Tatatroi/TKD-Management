@@ -330,4 +330,11 @@ public class TKDController {
         }
     }
 
+    public void sortedStuds(){
+        for(Student s: tkdService.sortStudentsByNumberOfAttendences()){
+            System.out.println(s);
+            System.out.println('\n');
+        }
+    }
+
 }

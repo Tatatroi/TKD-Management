@@ -606,4 +606,10 @@ public class TKD_Service {
         }
         return allBeltExams.toString();
     }
+
+    public List<Student> sortStudentsByNumberOfAttendences(){
+        List<Student> sorted = students.getAll();
+        sorted.sort((s1, s2) -> Integer.compare(numberOfAttendencesAndAbsences(s1.getId()).get("Attendences"), numberOfAttendencesAndAbsences(s2.getId()).get("Attendences")));
+        return sorted;
+    }
 }

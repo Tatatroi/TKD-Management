@@ -1,4 +1,6 @@
 package Model;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Represents a parent in the TKD management system
@@ -18,5 +20,19 @@ public class Trainer extends Person{
      */
     public Trainer(Integer id,String name, String lastName, String email, String address, int dateOfBirth, String number, String beltLevel) {
         super(id,name, lastName, email, address, dateOfBirth, number, beltLevel);
+    }
+    public Trainer(){}
+
+    @Override
+    public String toString() {
+        return "Trainer{" +
+                "name='" + name + '\'' +
+                ", LastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", address='" + address + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                ", number='" + number + '\'' +
+                ", beltLevel='" + beltLevel + '\'' +
+                '}';
     }
 }

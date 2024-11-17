@@ -5,6 +5,10 @@ import Controller.TKDController;
 import Service.TKD_Service;
 import Model.*;
 import Repository.*;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.List;
 
 public class Main {
 
@@ -54,10 +58,15 @@ public class Main {
 
         Trainer t4 = new Trainer(4, "Vasilescu", "Radu", "radu.vasilescu@outlook.com", "Strada Zorilor nr 23", 1992, "0744123456", "green");
         trainerRepo.add(t4);
-
+        InFileRepo<Trainer> trainerInFileRepo = new InFileRepo<>("trainers.json", new TypeReference<List<Trainer>>() {});
+     trainerInFileRepo.add(t4);
+//       trainerInFileRepo.remove(4);
+        List<Trainer> allTrainers = trainerInFileRepo.getAll();
+        trainerInFileRepo.get(4);
+        System.out.println("All trainers: " + allTrainers);
 
         Session session1 = new Session(1,DifficultyLevel.beginner,23,t1,50);
-        sessionRepo.add(session1);
+         sessionRepo.add(session1);
 
         Session session2 = new Session(2, DifficultyLevel.intermediary, 20, t2, 75);
         sessionRepo.add(session2);
@@ -170,7 +179,6 @@ public class Main {
         TKDUI newUi = new TKDUI(tkdController);
 
         newUi.start();
-
 
 
     }
