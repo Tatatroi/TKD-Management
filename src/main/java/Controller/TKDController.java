@@ -337,4 +337,14 @@ public class TKDController {
         }
     }
 
+    /**
+     * prints a sorted list of contests based on their start date
+     */
+    public void sortedContests(){
+        for(Contest c1: tkdService.sortContestsByDates()){
+            System.out.println(c1);
+            System.out.println('\n');
+        }
+    }
+
 }

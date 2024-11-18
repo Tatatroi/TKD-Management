@@ -198,6 +198,7 @@ public class TKDUI {
                     case "2" -> deleteContest();
                     case "3" -> viewContests();
                     case "4" -> addStudentToContest();
+                    case "5" -> sortContestsBuStartDate();
                     default -> System.out.println("Invalid option. Please try again.");
                 }
             } catch (Exception e) {
@@ -319,12 +320,13 @@ public class TKDUI {
         System.out.println("2 - Delete Contest");
         System.out.println("3 - View all Contests");
         System.out.println("4 - Add student to contest");
+        System.out.println("5 - View sorted contests by start date");
         System.out.println("0 - Exit");
         System.out.print("Select an option: ");
     }
 
     /**
-     * CRUD for TrianingCamps menu
+     * CRUD for TrainingCamps menu
      */
     private void printTrainingCamp(){
         System.out.println("\n==== TKD Management Console ====");
@@ -354,7 +356,6 @@ public class TKDUI {
 
     /**
      * request all information that a student need
-     * @throws IOException
      */
     private void addStudent() throws IOException {
         System.out.print("Enter student ID: ");
@@ -918,5 +919,12 @@ public class TKDUI {
     private int readBeltExamId() {
         System.out.print("Enter belt exam ID: ");
         return Integer.parseInt(scanner.nextLine());
+    }
+
+    /**
+     * call the sortedContest function from Controller that prints out the contests sorted by their start date
+     */
+    private void sortContestsBuStartDate(){
+        tkdController.sortedContests();
     }
 }

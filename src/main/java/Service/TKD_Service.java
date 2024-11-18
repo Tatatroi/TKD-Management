@@ -4,6 +4,10 @@ import Model.*;
 import Repository.InMemoryRepo;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -605,6 +609,25 @@ public class TKD_Service {
             allBeltExams.append('\n');
         }
         return allBeltExams.toString();
+    }
+
+
+    /**
+     *
+     * @return a sorted List of Contests based on ther starting dates
+     */
+    public List<Contest> sortContestsByDates() {
+        List<Contest> sorted = contests.getAll();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        System.out.println("Mata");
+        LocalDate date11 = LocalDate.parse(sorted.getFirst().startDate, formatter);
+        System.out.println(date11);
+        sorted.sort((c1, c2) -> {
+            LocalDate date1 = LocalDate.parse(c1.startDate, formatter);
+            LocalDate date2 = LocalDate.parse(c2.startDate, formatter);
+            return date1.compareTo(date2);
+        });
+        return sorted;
     }
 
     public List<Student> sortStudentsByNumberOfAttendences(){
