@@ -4,8 +4,6 @@ import Model.*;
 import Repository.InMemoryRepo;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -13,7 +11,7 @@ import java.util.*;
 /**
  * A service class that provides the business logic for the TKD-Management system.
  */
-public class TKD_Service {
+public class TKDService {
     private InMemoryRepo<Student> students;
 
     private InMemoryRepo<Trainer> trainers;
@@ -38,7 +36,7 @@ public class TKD_Service {
      * @param trainingCamps     The repository for training camps.
      * @param beltExams         The repository for belt exams.
      */
-    public TKD_Service(InMemoryRepo<Student> students, InMemoryRepo<Trainer> trainers, InMemoryRepo<Parent> parent, InMemoryRepo<Session> sessions, InMemoryRepo<Contest> contests, InMemoryRepo<TrainingCamp> trainingCamps, InMemoryRepo<BeltExam> beltExams) {
+    public TKDService(InMemoryRepo<Student> students, InMemoryRepo<Trainer> trainers, InMemoryRepo<Parent> parent, InMemoryRepo<Session> sessions, InMemoryRepo<Contest> contests, InMemoryRepo<TrainingCamp> trainingCamps, InMemoryRepo<BeltExam> beltExams) {
         this.students = students;
         this.trainers = trainers;
         this.parents = parent;
@@ -614,14 +612,12 @@ public class TKD_Service {
 
     /**
      *
-     * @return a sorted List of Contests based on ther starting dates
+     * @return a sorted List of Contests based on their starting dates
      */
-    public List<Contest> sortContestsByDates() {
-        List<Contest> sorted = contests.getAll();
+    public List<Contest> sortContestsByDates(){
+        List<Contest> sorted = new ArrayList<>(contests.getAll());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        System.out.println("Mata");
-        LocalDate date11 = LocalDate.parse(sorted.getFirst().startDate, formatter);
-        System.out.println(date11);
+
         sorted.sort((c1, c2) -> {
             LocalDate date1 = LocalDate.parse(c1.startDate, formatter);
             LocalDate date2 = LocalDate.parse(c2.startDate, formatter);
@@ -629,10 +625,25 @@ public class TKD_Service {
         });
         return sorted;
     }
-
+    /**
+     * Sort the students based on their number of attendances.
+     * @return a sorted List of Students based on their number of attendances.
+     */
     public List<Student> sortStudentsByNumberOfAttendences(){
-        List<Student> sorted = students.getAll();
+        List<Student> sorted = new ArrayList<>(students.getAll());
         sorted.sort((s1, s2) -> Integer.compare(numberOfAttendencesAndAbsences(s1.getId()).get("Attendences"), numberOfAttendencesAndAbsences(s2.getId()).get("Attendences")));
         return sorted;
     }
+
+    /**
+     * Filters the students based on a belt level
+     * @param   beltLevel The belt level upon which the filter will apply
+     * @return  List of all students having the belt level specified
+     */
+    public List<Student> filterStudentsByBelt(String beltLevel){
+        List<Student> filtered = new ArrayList<>(students.getAll());
+        filtered = filtered.stream().filter((s1)->s1.getBeltLevel().equals(beltLevel)).toList();
+        return filtered;
+    }
+
 }

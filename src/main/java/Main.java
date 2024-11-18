@@ -2,11 +2,10 @@
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 import Ui.TKDUI;
 import Controller.TKDController;
-import Service.TKD_Service;
+import Service.TKDService;
 import Model.*;
 import Repository.*;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -174,10 +173,10 @@ public class Main {
 
 
 
-        TKD_Service tkdService = new TKD_Service(studentRepo,trainerRepo,parentRepo,sessionRepo,contestRepo,trainingCampRepo,beltExamRepo);
+        TKDService tkdService = new TKDService(studentRepo,trainerRepo,parentRepo,sessionRepo,contestRepo,trainingCampRepo,beltExamRepo);
         TKDController tkdController = new TKDController(tkdService);
         TKDUI newUi = new TKDUI(tkdController);
-
+//        System.out.println(tkdService.filterStudentsByBelt("white"));
         newUi.start();
 
 

@@ -2,7 +2,6 @@ package Ui;
 
 import Controller.TKDController;
 import Model.*;
-import Service.TKD_Service;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -100,6 +99,8 @@ public class TKDUI {
                     case "3" -> viewStudents();
                     case "4" -> changeStudentSession();
                     case "5" -> viewAttendances();
+                    case "6" -> sortStudentsByAttend();
+                    case "7" -> filterStudentsByBeltLevel();
                     default -> System.out.println("Invalid option. Please try again.");
                 }
             } catch (Exception e) {
@@ -280,6 +281,8 @@ public class TKDUI {
         System.out.println("3 - View Students");
         System.out.println("4 - Change Student Session");
         System.out.println("5 - View Student attendances");
+        System.out.println("6 - View sorted students by attendances");
+        System.out.println("7 - View students filtered by belt level");
         System.out.println("0 - Exit");
         System.out.print("Select an option: ");
     }
@@ -926,5 +929,21 @@ public class TKDUI {
      */
     private void sortContestsBuStartDate(){
         tkdController.sortedContests();
+    }
+
+    /**
+     * call the sortedStudentsByAttend function from Controller that prints out the students sorted by their number of attendances
+     */
+    private void sortStudentsByAttend(){
+        tkdController.sortedStudentsByAttend();
+    }
+
+    /**
+     * call the filter students function from Controller that prints out the students filtered by a belt level read from the console
+     */
+    private void filterStudentsByBeltLevel(){
+        System.out.println("Enter the belt level for filtering: ");
+        String beltLevel = scanner.nextLine();
+        tkdController.filteredStudentsByBeltLevel(beltLevel);
     }
 }

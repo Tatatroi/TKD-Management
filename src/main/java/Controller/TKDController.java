@@ -1,7 +1,7 @@
 package Controller;
 
 import Model.*;
-import Service.TKD_Service;
+import Service.TKDService;
 
 import java.io.IOException;
 import java.util.List;
@@ -11,14 +11,14 @@ import java.util.Map;
  * A controller class that handles the business logic for the TKD-Management system.
  */
 public class TKDController {
-    private final TKD_Service tkdService;
+    private final TKDService tkdService;
 
     /**
      * Constructs a new UniversityController with the given UniversityService.
      *
      * @param tkdService The service that provides the business logic for the TKD-Management system.
      */
-    public TKDController(TKD_Service tkdService) {
+    public TKDController(TKDService tkdService) {
         this.tkdService = tkdService;
     }
 
@@ -343,6 +343,27 @@ public class TKDController {
     public void sortedContests(){
         for(Contest c1: tkdService.sortContestsByDates()){
             System.out.println(c1);
+            System.out.println('\n');
+        }
+    }
+
+    /**
+     * prints a sorted list of students based on their number of attendances
+     */
+    public void sortedStudentsByAttend(){
+        for(Student s1 : tkdService.sortStudentsByNumberOfAttendences()){
+            System.out.println(s1);
+            System.out.println('\n');
+        }
+    }
+
+    /**
+     * prints a filtered list containing just students with the specified belt level
+     * @param beltLevel The belt level that is used for filtering the students
+     */
+    public void filteredStudentsByBeltLevel(String beltLevel){
+        for(Student s1 : tkdService.filterStudentsByBelt(beltLevel)){
+            System.out.println(s1);
             System.out.println('\n');
         }
     }
