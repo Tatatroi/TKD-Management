@@ -27,6 +27,7 @@ public class BeltExam extends Event{
         this.BeltColor = BeltColor;
     }
 
+    public BeltExam(){}
     /**
      * Gets the list of results from the exam.
      * @return The list of results from the exam as a map of student and int.
@@ -61,11 +62,25 @@ public class BeltExam extends Event{
         BeltColor = beltColor;
     }
 
+    @Override
+    public String toString() {
+        return "BeltExam{" +
+                "listOfResults=" + listOfResults +
+                ", BeltColor='" + BeltColor + '\'' +
+                ", startDate='" + startDate + '\'' +
+                ", endDate='" + endDate + '\'' +
+                ", price=" + price +
+                ", country='" + country + '\'' +
+                ", city='" + city + '\'' +
+                ", address='" + address + '\'' +
+                '}';
+    }
+
     /**
      * prints out a belt exam
      */
-    @Override
-    public String toString() {
+
+    public String toString2() {
         // Coduri ANSI pentru culori
         final String ANSI_RED = "\u001B[31m";
         final String ANSI_BLUE = "\u001B[34m";

@@ -93,7 +93,7 @@ public abstract class Person implements HasID{
      * @param lastName  The lastname of the person to set.
      */
     public void setLastName(String lastName) {
-        lastName = lastName;
+        this.lastName = lastName;
     }
 
     /**

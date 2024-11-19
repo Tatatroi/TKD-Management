@@ -20,11 +20,12 @@ public class Main {
      * @param studentRepo   The student repo, where the parent is added.
      * @param sessionRepo   The session repo, where the parent is added.
      */
-    public static void parentChild(Session session, Student student, Parent parent, InMemoryRepo<Parent> parentRepo, InMemoryRepo<Student> studentRepo, InMemoryRepo<Session> sessionRepo){
-        session.getSessionStudents().add(student);
+    public static void parentChild(Session session, Student student, Parent parent, InFileRepo<Parent> parentRepo, InFileRepo<Student> studentRepo, InFileRepo<Session> sessionRepo){
+        //System.out.println(student);
+        session.getSessionStudents().add(student.getId());
         sessionRepo.update(session);
-        parent.getChildren().add(student);
-        student.setParent(parent);
+        parent.getChildren().add(student.getId());
+        student.setParent(parent.getId());
         parentRepo.add(parent);
         studentRepo.add(student);
     }
@@ -37,49 +38,50 @@ public class Main {
      */
     public static void main(String[] args) {
 
-        InMemoryRepo<Student> studentRepo = new InMemoryRepo<>();
-        InMemoryRepo<Parent> parentRepo = new InMemoryRepo<>();
-        InMemoryRepo<Session> sessionRepo = new InMemoryRepo<>();
-        InMemoryRepo<Contest> contestRepo = new InMemoryRepo<>();
-        InMemoryRepo<Trainer> trainerRepo = new InMemoryRepo<>();
-        InMemoryRepo<BeltExam> beltExamRepo = new InMemoryRepo<>();
-        InMemoryRepo<TrainingCamp> trainingCampRepo = new InMemoryRepo<>();
+        InFileRepo<Student> studentRepo = new InFileRepo<>("students.json", new TypeReference<List<Student>>() {});
+        InFileRepo<Parent> parentRepo = new InFileRepo<>("parents.json", new TypeReference<List<Parent>>() {});
+        InFileRepo<Session> sessionRepo = new InFileRepo<>("sessions.json", new TypeReference<List<Session>>() {});
+        InFileRepo<Contest> contestRepo = new InFileRepo<>("contests.json", new TypeReference<List<Contest>>() {});
+        InFileRepo<Trainer> trainerRepo = new InFileRepo<>("trainers.json", new TypeReference<List<Trainer>>() {});
+        InFileRepo<BeltExam> beltExamRepo = new InFileRepo<>("beltExams.json", new TypeReference<List<BeltExam>>() {});
+        InFileRepo<TrainingCamp> trainingCampRepo = new InFileRepo<>("trainingCamps.json", new TypeReference<List<TrainingCamp>>() {});
 
 
         Trainer t1 = new Trainer(1,"Mitroi","Stefan","srefanmitroi@gmail.com","Calea Floresti nr 58B",2004,"0761969675","black");
         trainerRepo.add(t1);
-
+//
         Trainer t2 = new Trainer(2, "Popescu", "Andrei", "andrei.popescu@gmail.com", "Strada Mihai Viteazu nr 15", 1990, "0755123456", "red");
         trainerRepo.add(t2);
-
+//
         Trainer t3 = new Trainer(3, "Ionescu", "Maria", "maria.ionescu@yahoo.com", "Bulevardul Eroilor nr 45", 1985, "0725987654", "blue");
         trainerRepo.add(t3);
-
+//
         Trainer t4 = new Trainer(4, "Vasilescu", "Radu", "radu.vasilescu@outlook.com", "Strada Zorilor nr 23", 1992, "0744123456", "green");
-        //trainerRepo.add(t4);
-        InFileRepo<Trainer> trainerInFileRepo = new InFileRepo<>("trainers.json", new TypeReference<List<Trainer>>() {});
+        trainerRepo.add(t4);
+//        InFileRepo<Trainer> trainerInFileRepo = new InFileRepo<>("trainers.json", new TypeReference<List<Trainer>>() {});
         //trainerInFileRepo.add(t4);
 //       trainerInFileRepo.remove(4);
-        List<Trainer> allTrainers = trainerInFileRepo.getAll();
-        trainerInFileRepo.get(4);
+        List<Trainer> allTrainers = trainerRepo.getAll();
+//        trainerInFileRepo.get(4);
         System.out.println("All trainers: " + allTrainers);
 
-        Session session1 = new Session(1,DifficultyLevel.beginner,23,t1,50);
-         sessionRepo.add(session1);
+        Session session1 = new Session(1,DifficultyLevel.beginner,23,t1.getId(),50);
+        sessionRepo.add(session1);
 
-        Session session2 = new Session(2, DifficultyLevel.intermediary, 20, t2, 75);
+        Session session2 = new Session(2, DifficultyLevel.intermediary, 20, t2.getId(), 75);
         sessionRepo.add(session2);
 
-        Session session3 = new Session(3, DifficultyLevel.advanced, 15, t3, 100);
-        sessionRepo.add(session3);
+        Session session3 = new Session(3, DifficultyLevel.advanced, 15, t3.getId(), 100);
+       sessionRepo.add(session3);
 
 
         Parent parent1 = new Parent(1,"Muresan","Victor","muresanVictor@gmail.com","Calea Baciului nr 5",1980,"0783243165");
-        Student student1 = new Student(1,"Muresan","Alex","alex@gmail.com","Calea Baciului nr 5",2010,"0754635543","white",session1);
-        student1.getSessionDateList().put(new SessionDate("monday","2024-11-11",session1),true);
-        student1.getSessionDateList().put(new SessionDate("wednesday","2024-13-11",session1),true);
-        student1.getSessionDateList().put(new SessionDate("friday","2024-15-11",session1),true);
-        parentChild(session1,student1,parent1,parentRepo,studentRepo,sessionRepo);
+        Student student1 = new Student(1,"Muresan","Alex","alex@gmail.com","Calea Baciului nr 5",2010,"0754635543","white",session1.getId());
+        student1.getSessionDateList().add(new SessionDate("monday","2024-11-11",session1.getId(),true));
+        student1.getSessionDateList().add(new SessionDate("wednesday","2024-13-11",session1.getId(),true));
+        student1.getSessionDateList().add(new SessionDate("friday","2024-15-11",session1.getId(), true));
+       parentChild(session1,student1,parent1,parentRepo,studentRepo,sessionRepo);
+       System.out.println(studentRepo.getAll());
 
         // Părinți adiționali
         Parent parent2 = new Parent(2, "Pop", "Cristina", "cristina.pop@gmail.com", "Strada Republicii nr 12", 1982, "0755555555");
@@ -89,55 +91,55 @@ public class Main {
         Parent parent6 = new Parent(6, "Radu", "Marius", "marius.radu@gmail.com", "Strada Independentei nr 20", 1988, "0767891234");
 
 // Prima pereche de frați
-        Student student2 = new Student(2, "Pop", "Ana", "ana.pop@gmail.com", "Strada Republicii nr 12", 2012, "0751234567", "yellow", session2);
-        Student student3 = new Student(3, "Pop", "Mihai", "mihai.pop@gmail.com", "Strada Republicii nr 12", 2014, "0757654321", "yellow", session2);
-        student2.getSessionDateList().put(new SessionDate("friday","15.11.2024",session2),true);
-        student2.getSessionDateList().put(new SessionDate("monday","18.11.2024",session2),true);
-        student3.getSessionDateList().put(new SessionDate("friday","15.11.2024",session2),true);
+        Student student2 = new Student(2, "Pop", "Ana", "ana.pop@gmail.com", "Strada Republicii nr 12", 2012, "0751234567", "yellow", session2.getId());
+        Student student3 = new Student(3, "Pop", "Mihai", "mihai.pop@gmail.com", "Strada Republicii nr 12", 2014, "0757654321", "yellow", session2.getId());
+        student2.getSessionDateList().add(new SessionDate("friday","15.11.2024",session2.getId(), true));
+        student2.getSessionDateList().add(new SessionDate("monday","18.11.2024",session2.getId(),true));
+        student3.getSessionDateList().add(new SessionDate("friday","15.11.2024",session2.getId(),true));
         parentChild(session2, student2, parent2, parentRepo, studentRepo, sessionRepo);
         parentChild(session2, student3, parent2, parentRepo, studentRepo, sessionRepo);
 
 // A doua pereche de frați
-        Student student4 = new Student(4, "Dobre", "Florin", "florin.dobre@yahoo.com", "Strada Zorilor nr 14", 2011, "0744112233", "orange", session3);
-        Student student5 = new Student(5, "Dobre", "Ioana", "ioana.dobre@yahoo.com", "Strada Zorilor nr 14", 2013, "0744556677", "orange", session3);
-        student4.getSessionDateList().put(new SessionDate("friday","2024-15-10",session2),true);
-        student4.getSessionDateList().put(new SessionDate("monday","2024-18-10",session2),true);
-        student5.getSessionDateList().put(new SessionDate("friday","2024-15-11",session2),true);
-        student5.getSessionDateList().put(new SessionDate("wednesday","2024-20-11",session2),false);
+        Student student4 = new Student(4, "Dobre", "Florin", "florin.dobre@yahoo.com", "Strada Zorilor nr 14", 2011, "0744112233", "orange", session3.getId());
+        Student student5 = new Student(5, "Dobre", "Ioana", "ioana.dobre@yahoo.com", "Strada Zorilor nr 14", 2013, "0744556677", "orange", session3.getId());
+        student4.getSessionDateList().add(new SessionDate("friday","2024-15-10",session2.getId(),true));
+        student4.getSessionDateList().add(new SessionDate("monday","2024-18-10",session2.getId(),true));
+        student5.getSessionDateList().add(new SessionDate("friday","2024-15-11",session2.getId(),true));
+        student5.getSessionDateList().add(new SessionDate("wednesday","2024-20-11",session2.getId(),false));
         parentChild(session3, student4, parent3, parentRepo, studentRepo, sessionRepo);
         parentChild(session3, student5, parent3, parentRepo, studentRepo, sessionRepo);
 
 // Studenți unici
-        Student student6 = new Student(6, "Matei", "Vlad", "vlad.matei@yahoo.com", "Strada Garii nr 6", 2012, "0721122334", "green", session1);
-        Student student7 = new Student(7, "Ionescu", "Irina", "irina.ionescu@gmail.com", "Strada Ciresilor nr 10", 2010, "0765123789", "blue", session2);
-        Student student8 = new Student(8, "Radu", "Andrei", "andrei.radu@gmail.com", "Strada Independentei nr 20", 2011, "0767894561", "green", session3);
-        student6.getSessionDateList().put(new SessionDate("friday","2024-15-10",session1),true);
-        student6.getSessionDateList().put(new SessionDate("monday","2024-18-10",session1),false);
-        student6.getSessionDateList().put(new SessionDate("monday","2024-18-10",session1),true);
-        student7.getSessionDateList().put(new SessionDate("friday","2024-15-11",session2),true);
-        student8.getSessionDateList().put(new SessionDate("wednesday","2024-20-11",session3),false);
+        Student student6 = new Student(6, "Matei", "Vlad", "vlad.matei@yahoo.com", "Strada Garii nr 6", 2012, "0721122334", "green", session1.getId());
+        Student student7 = new Student(7, "Ionescu", "Irina", "irina.ionescu@gmail.com", "Strada Ciresilor nr 10", 2010, "0765123789", "blue", session2.getId());
+        Student student8 = new Student(8, "Radu", "Andrei", "andrei.radu@gmail.com", "Strada Independentei nr 20", 2011, "0767894561", "green", session3.getId());
+        student6.getSessionDateList().add(new SessionDate("friday","2024-15-10",session1.getId(),true));
+        student6.getSessionDateList().add(new SessionDate("monday","2024-18-10",session1.getId(),false));
+        student6.getSessionDateList().add(new SessionDate("monday","2024-18-10",session1.getId(),true));
+        student7.getSessionDateList().add(new SessionDate("friday","2024-15-11",session2.getId(),true));
+        student8.getSessionDateList().add(new SessionDate("wednesday","2024-20-11",session3.getId(),false));
         parentChild(session1, student6, parent4, parentRepo, studentRepo, sessionRepo);
         parentChild(session2, student7, parent5, parentRepo, studentRepo, sessionRepo);
         parentChild(session3, student8, parent6, parentRepo, studentRepo, sessionRepo);
 
 // Studenți fără părinți
-        Student student9 = new Student(9, "Vasilescu", "Elena", "elena.vasilescu@gmail.com", "Strada Libertatii nr 5", 2013, "0734123890", "green", session1);
-        Student student10 = new Student(10, "Marin", "Paul", "paul.marin@gmail.com", "Strada Primaverii nr 9", 2012, "0712123890", "white", session2);
-        Student student11 = new Student(11, "Popa", "Diana", "diana.popa@yahoo.com", "Strada Viitorului nr 2", 2011, "0785123890", "blue", session3);
-        student9.getSessionDateList().put(new SessionDate("friday","2024-15-10",session1),true);
-        student9.getSessionDateList().put(new SessionDate("monday","2024-15-10",session1),false);
-        student10.getSessionDateList().put(new SessionDate("monday","2024-18-10",session2),true);
-        student11.getSessionDateList().put(new SessionDate("friday","2024-15-11",session3),true);
-        student11.getSessionDateList().put(new SessionDate("wednesday","2024-20-11",session3),false);
+        Student student9 = new Student(9, "Vasilescu", "Elena", "elena.vasilescu@gmail.com", "Strada Libertatii nr 5", 2013, "0734123890", "green", session1.getId());
+        Student student10 = new Student(10, "Marin", "Paul", "paul.marin@gmail.com", "Strada Primaverii nr 9", 2012, "0712123890", "white", session2.getId());
+        Student student11 = new Student(11, "Popa", "Diana", "diana.popa@yahoo.com", "Strada Viitorului nr 2", 2011, "0785123890", "blue", session3.getId());
+        student9.getSessionDateList().add(new SessionDate("friday","2024-15-10",session1.getId(),true));
+        student9.getSessionDateList().add(new SessionDate("monday","2024-15-10",session1.getId(),false));
+        student10.getSessionDateList().add(new SessionDate("monday","2024-18-10",session2.getId(),true));
+        student11.getSessionDateList().add(new SessionDate("friday","2024-15-11",session3.getId(),true));
+        student11.getSessionDateList().add(new SessionDate("wednesday","2024-20-11",session3.getId(),false));
         parentChild(session1, student9, parent4, parentRepo, studentRepo, sessionRepo);
         parentChild(session2, student10, parent5, parentRepo, studentRepo, sessionRepo);
         parentChild(session3, student11, parent6, parentRepo, studentRepo, sessionRepo);
-
-
-// Actualizare sesiunii pentru studenții fără părinți
-        sessionRepo.update(session1);
-        sessionRepo.update(session2);
-        sessionRepo.update(session3);
+//
+//
+//// Actualizare sesiunii pentru studenții fără părinți
+//        sessionRepo.update(session1);
+//        sessionRepo.update(session2);
+//        sessionRepo.update(session3);
 
         Contest contest1 = new Contest(101, "2024-11-28", "2024-11-30", 300, "Romania", "Cluj-Napoca", "Campionatul International", "Sala Sporturilor");
         contestRepo.add(contest1);
@@ -177,6 +179,8 @@ public class Main {
         TKDController tkdController = new TKDController(tkdService);
         TKDUI newUi = new TKDUI(tkdController);
 //        System.out.println(tkdService.filterStudentsByBelt("white"));
+        System.out.println(parentRepo.getAll());
+        System.out.println(studentRepo.get(1));
         newUi.start();
 
 

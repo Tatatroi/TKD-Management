@@ -9,7 +9,7 @@ import java.util.List;
 public class Contest extends Event{
 
     public String name;
-    List<Student> students = new ArrayList<>();
+    List<Integer> students = new ArrayList<>();
 
     /**
      * Constructs a new Contest with the specified ID, start date, end date, price, country, city, name and address.
@@ -27,6 +27,7 @@ public class Contest extends Event{
         this.name = name;
     }
 
+    public Contest(){}
     /**
      * Gets the name of the contest.
      * @return The name of the contest.
@@ -47,7 +48,7 @@ public class Contest extends Event{
      * Gets the list of students registered to the contest.
      * @return The list of students registered to the contest.
      */
-    public List<Student> getStudents() {
+    public List<Integer> getStudents() {
         return students;
     }
 
@@ -55,17 +56,31 @@ public class Contest extends Event{
      * Sets the list of students registered to the contest.
      * @param students  The list of students registered to the contest to set.
      */
-    public void setStudents(List<Student> students) {
+    public void setStudents(List<Integer> students) {
         this.students = students;
     }
 
+
+    @Override
+    public String toString() {
+        return "Contest{" +
+                "name='" + name + '\'' +
+                ", students=" + students +
+                ", startDate='" + startDate + '\'' +
+                ", endDate='" + endDate + '\'' +
+                ", price=" + price +
+                ", country='" + country + '\'' +
+                ", city='" + city + '\'' +
+                ", address='" + address + '\'' +
+                '}';
+    }
 
     /**
      * Return as a string parameters that I need: name,price
      * @return
      */
-    @Override
-    public String toString() {
+
+    public String toString2() {
         // Coduri ANSI pentru culori
         final String ANSI_YELLOW = "\u001B[33m";
         final String ANSI_CYAN = "\u001B[36m";

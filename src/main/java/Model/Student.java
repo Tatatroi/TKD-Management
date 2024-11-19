@@ -8,13 +8,13 @@ import java.util.List;
  * Represents a student in the TKD management system
  */
 public class Student extends Person{
-    public List<Contest> contestList = new ArrayList<>();
-    public List<TrainingCamp> trainingCampList = new ArrayList<>();
+    public List<Integer> contestList = new ArrayList<>();
+    public List<Integer> trainingCampList = new ArrayList<>();
 
-//    private List<Session> assignedGroups=new ArrayList<>();
-    public Session session;
-    public HashMap<SessionDate,Boolean> sessionDateList = new HashMap<>();
-    public Parent parent;
+
+    public int session;
+    public List<SessionDate> sessionDateList = new ArrayList<>();
+    public int parent;
 
     /**
      * Constructs a new Student with the specified ID, name, last name, email, address, date of birth, number, belt level and session.
@@ -28,16 +28,16 @@ public class Student extends Person{
      * @param beltLevel     The belt level of the student.
      * @param session       The session to which the student belongs.
      */
-    public Student(Integer id, String name, String lastName, String email, String address, int dateOfBirth, String number, String beltLevel, Session session) {
+    public Student(Integer id, String name, String lastName, String email, String address, int dateOfBirth, String number, String beltLevel, int session) {
         super(id,name, lastName, email, address, dateOfBirth, number, beltLevel);
         this.session=session;
     }
-
+    public Student(){}
     /**
      * Gets the list of contests where the student participated.
      * @return The list of contests.
      */
-    public List<Contest> getContestList() {
+    public List<Integer> getContestList() {
         return contestList;
     }
 
@@ -45,7 +45,7 @@ public class Student extends Person{
      * Sets the list of contests where the student participated.
      * @param contestList The list of contests to set.
      */
-    public void setContestList(List<Contest> contestList) {
+    public void setContestList(List<Integer> contestList) {
         this.contestList = contestList;
     }
 
@@ -53,7 +53,7 @@ public class Student extends Person{
      * Gets the list of trainingcamps where the student participated.
      * @return The list of trainingcamps.
      */
-    public List<TrainingCamp> getTrainingCampList() {
+    public List<Integer> getTrainingCampList() {
         return trainingCampList;
     }
 
@@ -61,7 +61,7 @@ public class Student extends Person{
      * Sets the list of trainingcamps where the student participated.
      * @param trainingCampList The list of trainingcamps to set.
      */
-    public void setTrainingCampList(List<TrainingCamp> trainingCampList) {
+    public void setTrainingCampList(List<Integer> trainingCampList) {
         this.trainingCampList = trainingCampList;
     }
 
@@ -69,7 +69,7 @@ public class Student extends Person{
      * Gets the session to which the student belongs.
      * @return The session of the student.
      */
-    public Session getSession() {
+    public int getSession() {
         return session;
     }
 
@@ -77,7 +77,7 @@ public class Student extends Person{
      * Sets the session to which the student belongs.
      * @param session The session of the student to set.
      */
-    public void setSession(Session session) {
+    public void setSession(int session) {
         this.session = session;
     }
 
@@ -85,7 +85,7 @@ public class Student extends Person{
      * Gets the map of sessiondates and bools to see where the student was absent and presesnt.
      * @return A map of sessiondates and bools.
      */
-    public HashMap<SessionDate, Boolean> getSessionDateList() {
+    public List<SessionDate> getSessionDateList() {
         return sessionDateList;
     }
 
@@ -93,7 +93,7 @@ public class Student extends Person{
      * Sets the map of sessiondates and bools to see where the student was absent and presesnt.
      * @param sessionDateList The sessionDate mao of the student to set.
      */
-    public void setSessionDateList(HashMap<SessionDate, Boolean> sessionDateList) {
+    public void setSessionDateList(List<SessionDate> sessionDateList) {
         this.sessionDateList = sessionDateList;
     }
 
@@ -101,7 +101,7 @@ public class Student extends Person{
      * Gets the parent of the student.
      * @return The parent of the student.
      */
-    public Parent getParent() {
+    public int getParent() {
         return parent;
     }
 
@@ -109,14 +109,11 @@ public class Student extends Person{
      * Sets the parent of the student.
      * @param parent The parent to set.
      */
-    public void setParent(Parent parent) {
+    public void setParent(int parent) {
         this.parent = parent;
     }
 
 
-    /**
-     * prints out a student
-     */
     @Override
     public String toString() {
         final String ANSI_BLUE = "\u001B[34m";
@@ -135,11 +132,33 @@ public class Student extends Person{
                 ANSI_GREEN + "  Belt Level: " + ANSI_RESET + beltLevel + "\n";
     }
 
-    public String toString2(){
-        final String ANSI_CYAN = "\u001B[36m";
+    /**
+     * prints out a student
+     */
+
+    public String toString2() {
+        // Coduri ANSI pentru culori
+        final String ANSI_BLUE = "\u001B[34m";
+        final String ANSI_YELLOW = "\u001B[33m";
         final String ANSI_GREEN = "\u001B[32m";
+        final String ANSI_RED = "\u001B[31m";
+        final String ANSI_CYAN = "\u001B[36m";
         final String ANSI_RESET = "\u001B[0m";
-        return ANSI_GREEN + "  Id: " + ANSI_RESET + getId() + ANSI_CYAN +"  Name: "  + name + " " + lastName + ANSI_RESET + "\n";
+
+        return ANSI_CYAN + "👤 Student Details:" + ANSI_RESET + "\n" +
+                ANSI_BLUE + "  Name: " + ANSI_RESET + name + " " + lastName + "\n" +
+                ANSI_GREEN + "  Email: " + ANSI_RESET + email + "\n" +
+                ANSI_GREEN + "  Address: " + ANSI_RESET + address + "\n" +
+                ANSI_GREEN + "  Date of Birth: " + ANSI_RESET + dateOfBirth + "\n" +
+                ANSI_GREEN + "  Phone Number: " + ANSI_RESET + number + "\n" +
+                ANSI_GREEN + "  Belt Level: " + ANSI_RESET + beltLevel + "\n";
     }
+
+//    public String toString2(){
+//        final String ANSI_CYAN = "\u001B[36m";
+//        final String ANSI_GREEN = "\u001B[32m";
+//        final String ANSI_RESET = "\u001B[0m";
+//        return ANSI_GREEN + "  Id: " + ANSI_RESET + getId() + ANSI_CYAN +"  Name: "  + name + " " + lastName + ANSI_RESET + "\n";
+//    }
 
 }

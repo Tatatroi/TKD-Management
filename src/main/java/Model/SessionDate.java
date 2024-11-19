@@ -1,6 +1,8 @@
 package Model;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents the date that a session took place in the TKD management system
@@ -8,7 +10,17 @@ import java.util.List;
 public class SessionDate {
     public String weekDay;
     public String date;
-    public Session session;
+    public int session;
+
+    public boolean attended;
+
+    public boolean isAttended() {
+        return attended;
+    }
+
+    public void setAttended(boolean attended) {
+        this.attended = attended;
+    }
 
     /**
      * Constructs a new Session date with the specified weekday, date and session.
@@ -16,12 +28,13 @@ public class SessionDate {
      * @param date      The exact date the session took place.
      * @param session   The session itself that was on a day.
      */
-    public SessionDate(String weekDay, String date, Session session) {
+    public SessionDate(String weekDay, String date, int session,boolean attended) {
         this.weekDay = weekDay;
         this.date = date;
         this.session=session;
+        this.attended=attended;
     }
-
+    public SessionDate(){}
     /**
      * Gets the weekday of the session.
      * @return The  weekday of the session.
@@ -58,7 +71,7 @@ public class SessionDate {
      * Gets the session from the date.
      * @return The session from the date.
      */
-    public Session getSession() {
+    public int getSession() {
         return session;
     }
 
@@ -66,15 +79,25 @@ public class SessionDate {
      * Sets the session from the date.
      * @param session  The session from the date to set.
      */
-    public void setSession(Session session) {
+    public void setSession(int session) {
         this.session = session;
     }
+
 
     /**
      * string for print out a SessionDate
      */
     @Override
     public String toString() {
+        return "SessionDate{" +
+                "weekDay='" + weekDay + '\'' +
+                ", date='" + date + '\'' +
+                ", session=" + session +
+                '}';
+    }
+
+
+    public String toString2() {
         // Coduri ANSI pentru culori
         final String ANSI_GREEN = "\u001B[32m";
         final String ANSI_YELLOW = "\u001B[33m";

@@ -177,6 +177,7 @@ public class TKDUI {
                     case "4" -> assignSessionToTrainer();
                     case "5" -> addAttendance();
                     case "6" -> sortSessionByNumberOfParticipants();
+                    case "7" -> getDateWithMostStudentsForSession();
                     default -> System.out.println("Invalid option. Please try again.");
                 }
             } catch (Exception e) {
@@ -318,6 +319,7 @@ public class TKDUI {
         System.out.println("4 - Assign Session to Trainer");
         System.out.println("5 - Add attendance");
         System.out.println("6 - Sort session by number of participants");
+        System.out.println("7 - Get date with the most students that attended a given session");
         System.out.println("0 - Exit");
         System.out.print("Select an option: ");
     }
@@ -415,7 +417,7 @@ public class TKDUI {
         Parent parent = addParent();
 //        tkdController.addObject(parent);
 
-        Student student = new Student(idStudent, name, lastName, email, address, dateOfBirth, telNumber, beltLevel, session);
+        Student student = new Student(idStudent, name, lastName, email, address, dateOfBirth, telNumber, beltLevel, session.getId());
 
         tkdController.addObject(student);
 
@@ -495,7 +497,7 @@ public class TKDUI {
         double pricePerSession = Double.parseDouble(scanner.nextLine());
 
         // Crearea obiectului Session
-        Session session = new Session(id, difficultyLevel, maximumParticipants, trainer, pricePerSession);
+        Session session = new Session(id, difficultyLevel, maximumParticipants, trainer.getId(), pricePerSession);
         tkdController.addObject(session);
         System.out.println("Session added successfully.");
     }
@@ -957,6 +959,9 @@ public class TKDUI {
         tkdController.filteredStudentsByBeltLevel(beltLevel);
     }
 
+    /**
+     * call the filter parents function from Controller that prints out the parents filtered by a number of children read from the console
+     */
     private void filterParentsByNumberOfChildren(){
         System.out.println("Enter the number of children for filtering: ");
         Integer numberOfChildren = scanner.nextInt();
@@ -985,7 +990,18 @@ public class TKDUI {
         tkdController.sortedCampsByDates();
     }
 
+    /**
+     * calls the sortBeltExamsByDates function from controller
+     */
     private void sortBeltExamnsByDates(){
         tkdController.sortBeltExamnsByDates();
+    }
+
+    /**
+     * Reads a session id and gives it as parameter to the getDateWithMostStudentsForSession function from controller.
+     */
+    public void getDateWithMostStudentsForSession(){
+        int sessionId = readSessionId();
+        tkdController.getDateWithMostStudentsForSession(sessionId);
     }
 }

@@ -31,7 +31,7 @@ public abstract class Event implements HasID{
         this.city = city;
         this.address = address;
     }
-
+    public Event(){}
     /**
      * Gets the start date of the event.
      * @return The start date of the event.

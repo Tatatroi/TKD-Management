@@ -7,7 +7,7 @@ import java.util.List;
  * Represents a parent in the TKD management system
  */
 public class Parent extends Person{
-    List<Student> children = new ArrayList<>();
+    List<Integer> children = new ArrayList<>();
 
     /**
      * Constructs a new Parent with the specified ID, name, last name, email, address, date of birth and number.
@@ -22,11 +22,12 @@ public class Parent extends Person{
     public Parent(Integer id,String name, String lastName, String email, String address, int dateOfBirth,String number) {
         super(id,name, lastName, email, address, dateOfBirth, number);
     }
+    public Parent(){}
     /**
      * Gets the list of children of the parent.
      * @return The list of children of the parent.
      */
-    public List<Student> getChildren() {
+    public List<Integer> getChildren() {
         return children;
     }
 
@@ -34,12 +35,25 @@ public class Parent extends Person{
      * Sets the list of children of the parent.
      * @param children  The list of children of the parent to set.
      */
-    public void setChildren(List<Student> children) {
+    public void setChildren(List<Integer> children) {
         this.children = children;
     }
 
     @Override
     public String toString() {
+        return "Parent{" +
+                "children=" + children +
+                ", name='" + name + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", address='" + address + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                ", number='" + number + '\'' +
+                ", beltLevel='" + beltLevel + '\'' +
+                '}';
+    }
+
+    public String toString2() {
         // Coduri ANSI pentru culori
         final String ANSI_CYAN = "\u001B[36m";
         final String ANSI_YELLOW = "\u001B[33m";

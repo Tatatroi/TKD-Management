@@ -1,11 +1,10 @@
 package Service;
 
 import Model.*;
+import Repository.InFileRepo;
 import Repository.InMemoryRepo;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -15,19 +14,19 @@ import java.util.stream.Collectors;
  * A service class that provides the business logic for the TKD-Management system.
  */
 public class TKD_Service {
-    private InMemoryRepo<Student> students;
+    private InFileRepo<Student> students;
 
-    private InMemoryRepo<Trainer> trainers;
+    private InFileRepo<Trainer> trainers;
 
-    private InMemoryRepo<Parent> parents;
+    private InFileRepo<Parent> parents;
 
-    private InMemoryRepo<Session> sessions;
+    private InFileRepo<Session> sessions;
 
-    private InMemoryRepo<Contest> contests;
+    private InFileRepo<Contest> contests;
 
-    private InMemoryRepo<TrainingCamp> trainingCamps;
+    private InFileRepo<TrainingCamp> trainingCamps;
 
-    private InMemoryRepo<BeltExam> beltExams;
+    private InFileRepo<BeltExam> beltExams;
 
     /**
      * Constructs a new TKD_Service with the given repositories.
@@ -39,7 +38,7 @@ public class TKD_Service {
      * @param trainingCamps     The repository for training camps.
      * @param beltExams         The repository for belt exams.
      */
-    public TKD_Service(InMemoryRepo<Student> students, InMemoryRepo<Trainer> trainers, InMemoryRepo<Parent> parent, InMemoryRepo<Session> sessions, InMemoryRepo<Contest> contests, InMemoryRepo<TrainingCamp> trainingCamps, InMemoryRepo<BeltExam> beltExams) {
+    public TKD_Service(InFileRepo<Student> students, InFileRepo<Trainer> trainers, InFileRepo<Parent> parent, InFileRepo<Session> sessions, InFileRepo<Contest> contests, InFileRepo<TrainingCamp> trainingCamps, InFileRepo<BeltExam> beltExams) {
         this.students = students;
         this.trainers = trainers;
         this.parents = parent;
@@ -57,7 +56,7 @@ public class TKD_Service {
     public void assignGroupToTrainer(int trainerId, int sessionId){
         Trainer tr = trainers.get(trainerId);
         Session ss = sessions.get(sessionId);
-        ss.trainer=tr;
+        ss.trainer=tr.getId();
         sessions.update(ss);
     }
 
@@ -69,11 +68,11 @@ public class TKD_Service {
     public void changeStudentGroup(int studentId,int sessionId){
         Student st = students.get(studentId);
         Session new_ss = sessions.get(sessionId);
-        Session old_ss = sessions.get(st.getSession().getId());
+        Session old_ss = sessions.get(st.getSession());
 
-        old_ss.getSessionStudents().remove(st);
-        new_ss.getSessionStudents().add(st);
-        st.setSession(new_ss);
+        old_ss.getSessionStudents().remove(st.getId());
+        new_ss.getSessionStudents().add(st.getId());
+        st.setSession(new_ss.id);
         students.update(st);
         sessions.update(new_ss);
         sessions.update(old_ss);
@@ -102,8 +101,8 @@ public class TKD_Service {
         Map<String,Integer> attendencesAbsences= new HashMap<>();
         attendencesAbsences.put("Attendences",0);
         attendencesAbsences.put("Absences",0);
-        for(SessionDate sd: st.getSessionDateList().keySet()){
-            if(st.getSessionDateList().get(sd)){
+        for(SessionDate sd: st.getSessionDateList()){
+            if(sd.isAttended()){
                 int count=attendencesAbsences.get("Attendences");
                 attendencesAbsences.put("Attendences",count+1);
             }
@@ -205,9 +204,7 @@ public class TKD_Service {
      */
     public void addAttendance(int studentId,int sessionId,boolean attendance,String weekday,String date){
         Student s=students.get(studentId);
-        Session ss = sessions.get(sessionId);
-        SessionDate sessionDate = new SessionDate(weekday,date,ss);
-        s.getSessionDateList().put(sessionDate,attendance);
+        SessionDate sessionDate = new SessionDate(weekday,date,sessionId,attendance);
         students.update(s);
     }
 
@@ -219,8 +216,8 @@ public class TKD_Service {
     public void addStudentToContest(int studentId,int contestId){
         Student st = students.get(studentId);
         Contest ct = contests.get(contestId);
-        ct.getStudents().add(st);
-        st.getContestList().add(ct);
+        ct.getStudents().add(st.getId());
+        st.getContestList().add(ct.getId());
         contests.update(ct);
         students.update(st);
     }
@@ -233,8 +230,8 @@ public class TKD_Service {
     public void addStudentToTraining(int studentId,int trainingCampId){
         Student st = students.get(studentId);
         TrainingCamp tc = trainingCamps.get(trainingCampId);
-        tc.getStudents().add(st);
-        st.getTrainingCampList().add(tc);
+        tc.getStudents().add(st.getId());
+        st.getTrainingCampList().add(tc.getId());
         trainingCamps.update(tc);
         students.update(st);
     }
@@ -247,14 +244,14 @@ public class TKD_Service {
     public void addStudentToParent(Student student, Parent parent){
         if(findParent(parent.getEmail())){
             Parent updateParent = parents.getAll().stream().filter(pt ->Objects.equals(pt.getEmail(),parent.getEmail())).findFirst().orElse(null);
-            updateParent.getChildren().add(student);
+            updateParent.getChildren().add(student.getId());
             parents.update(updateParent);
-            student.setParent(updateParent);
+            student.setParent(updateParent.getId());
         }
         else {
-            parent.getChildren().add(student);
+            parent.getChildren().add(student.getId());
             parents.add(parent);
-            student.setParent(parent);
+            student.setParent(parent.getId());
         }
     }
 
@@ -330,15 +327,16 @@ public class TKD_Service {
         Parent parent = parents.get(parentID);
         String invoice="Invoice for the month " + month + "\nParent name: " + parent.getLastName() + " " + parent.getName() + "\n";
         double total = 0;
-        for(Student student: parent.getChildren()){
+        for(int studentId: parent.getChildren()){
+            Student student = students.get(studentId);
             int presences=0;
             double individualTotal = 0;
-            for(SessionDate sd: student.getSessionDateList().keySet()){
-                if(student.getSessionDateList().get(sd) && sd.getDate().substring(3, 5).equals(month)){
+            for(SessionDate sd: student.getSessionDateList()){
+                if(sd.isAttended() && sd.getDate().substring(3, 5).equals(month)){
                     presences++;
                 }
             }
-            individualTotal += presences*student.getSession().getPricePerSession();
+            individualTotal += presences*(sessions.get(student.getSession())).getPricePerSession();
             total+= individualTotal;
             invoice += "Student name: " + student.getLastName() + " " + student.getName() + "\n Total for student: " + individualTotal + "\n";
         }
@@ -351,16 +349,16 @@ public class TKD_Service {
      * @param studentID the id of the student
      */
     public void removeStudent(Integer studentID){
-        Parent parent = students.get(studentID).getParent();
+        Parent parent = parents.get(students.get(studentID).getParent());
         if(parent.getChildren().size()>1){
-            parent.getChildren().remove(students.get(studentID));
+            parent.getChildren().remove(studentID);
             parents.update(parent);
         }
         else{
             parents.remove(parent.getId());
         }
-        Session session = students.get(studentID).getSession();
-        session.getSessionStudents().remove( students.get(studentID));
+        Session session = sessions.get(students.get(studentID).getSession());
+        session.getSessionStudents().remove( studentID);
         sessions.update(session);
         students.remove(studentID);
     }
@@ -424,7 +422,7 @@ public class TKD_Service {
         Session ss = sessions.get(idSession);
         Student st = students.get(student);
 
-        ss.getSessionStudents().add(st);
+        ss.getSessionStudents().add(st.getId());
         sessions.update(ss);
 
     }
@@ -472,8 +470,8 @@ public class TKD_Service {
     public String viewAllStudents(){
         StringBuilder allStudents= new StringBuilder();
         for(Session s: sessions.getAll()){
-            for(Student st: s.getSessionStudents()){
-                allStudents.append("Student with id ").append(st.getId()).append(" and name ").append(st.getLastName()).append(" ").append(st.getName()).append(" is at ").append(s.difficultyLevel).append(" level").append(" and has belt color ").append(st.getBeltLevel()).append('\n');
+            for(int stId: s.getSessionStudents()){
+                allStudents.append(students.get(stId).toString2());
             }
             allStudents.append('\n');
         }
@@ -487,8 +485,7 @@ public class TKD_Service {
     public String viewAllTrainers(){
         StringBuilder allTrainers= new StringBuilder();
         for(Trainer t: trainers.getAll()){
-           //allTrainers.append("Trainer with id ").append(t.getId()).append(" and name ").append(t.getLastName()).append(" ").append(t.getName()).append(" has belt color ").append(t.getBeltLevel()+'\n');
-            allTrainers.append(t.toString());
+            allTrainers.append(t.toString2()).append('\n');
         }
         return allTrainers.toString();
     }
@@ -520,7 +517,8 @@ public class TKD_Service {
                     .append(" with id: ").append(p.getId())
                     .append(", name ").append(p.getName()).append(" ").append(p.getLastName())
                     .append(" has childrens: ");
-            for (Student s : p.getChildren()) {
+            for (int sId : p.getChildren()) {
+                Student s = students.get(sId);
                 allParents.append("\n")
                         .append(ANSI_GREEN).append("Student").append(ANSI_RESET)
                         .append(" with id: ").append(s.getId())
@@ -558,20 +556,10 @@ public class TKD_Service {
         final String ANSI_RESET = "\u001B[0m";
 
         for (Contest c : contests.getAll()) {
-            allContests.append("Contest with id ")
-                    .append(ANSI_BLUE).append(c.getId()).append(ANSI_RESET)
-                    .append(", name ")
-                    .append(ANSI_ORANGE).append(c.getName()).append(ANSI_RESET)
-                    .append(", start date ").append(c.startDate)
-                    .append(", end date ").append(c.endDate)
-                    .append(", price ")
-                    .append(ANSI_YELLOW).append(c.price).append(ANSI_RESET)
-                    .append(" and students: ");
+            allContests.append(c.toString()).append('\n');
 
-            for (Student s : c.getStudents()) {
-                allContests.append("\n   Name ").append(s.getLastName()).append(" ").append(s.getName())
-                        .append(" and belt level: ").append(s.getBeltLevel());
-                System.out.println(s);
+            for (int sId : c.getStudents()) {
+                allContests.append(students.get(sId).toString()).append('\n');
             }
 
             allContests.append('\n');
@@ -587,11 +575,9 @@ public class TKD_Service {
     public String viewTrainingCamps(){
         StringBuilder allTrainingCamps = new StringBuilder();
         for(TrainingCamp t: trainingCamps.getAll()){
-            //allTrainingCamps.append("Training camp with id ").append(t.getId()).append(", start date ").append(t.startDate).append(", end date ").
-            //        append(t.endDate).append(", price ").append(t.price).append(", max number of students ").append(t.getNumberOfParticipants()).append(" and students: ").append('\n');
-            allTrainingCamps.append(t.toString());
-            for(Student s: t.getStudents()){
-                allTrainingCamps.append("   Name ").append(s.getLastName()).append(" ").append(s.getName()).append(" and belt level: ").append(s.getBeltLevel()).append('\n');
+            allTrainingCamps.append(t.toString2()).append('\n');
+            for(int sId: t.getStudents()){
+                allTrainingCamps.append(students.get(sId).toString2()).append('\n');
             }
             allTrainingCamps.append('\n');
         }
@@ -605,11 +591,9 @@ public class TKD_Service {
     public String viewBeltExams() {
         StringBuilder allBeltExams = new StringBuilder();
         for (BeltExam b : beltExams.getAll()) {
-            //allBeltExams.append("Belt exam with id ").append(b.getId()).append(", start date ").append(b.startDate).append(", end date ").
-            //        append(b.endDate).append(", price ").append(b.price).append(", belt color ").append(b.getBeltColor()).append(" and students: ").append('\n');
-            allBeltExams.append(b.toString());
+            allBeltExams.append(b.toString2()).append('\n');
             for (Student s : b.getListOfResults().keySet()) {
-                allBeltExams.append("   Name ").append(s.getLastName()).append(" ").append(s.getName()).append(", belt level: ").append(s.getBeltLevel()).append(" and status ").append(b.getListOfResults().get(s)).append('\n');
+                allBeltExams.append(s.toString2()).append('\n');
             }
             allBeltExams.append('\n');
         }
@@ -618,7 +602,7 @@ public class TKD_Service {
 
 
     /**
-     *
+     * Sorts the contests based on their starting date.
      * @return a sorted List of Contests based on ther starting dates
      */
     public List<Contest> sortContestsByDates(){
@@ -633,8 +617,8 @@ public class TKD_Service {
     }
 
     /**
-     *
-     * @return a sorted List of Belt Examns based on their starting dates
+     *  Sorts the belt exams based on their starting date.
+     *  @return a sorted List of Belt Exams based on their starting dates
      */
 
     public List<BeltExam> sortBeltExamnsByDates(){
@@ -649,6 +633,7 @@ public class TKD_Service {
     }
 
     /**
+     * Sorts the training camps based on their starting dates.
      * @return a sorted list of training Camps based on their starting date
      */
     public List<TrainingCamp> sortTrainingCampsByDates(){
@@ -663,6 +648,7 @@ public class TKD_Service {
     }
 
     /**
+     * Sorts the sessions based on their number of participants.
      * @return a list of Session sorted based on their number of participants
      */
     public List<Session> sortSessionByNumberOfParticipants(){
@@ -672,6 +658,7 @@ public class TKD_Service {
     }
 
     /**
+     * Sorts the students based on their name.
      * @return a list of students ordered alphabetical
      */
     public List<Student> sortStudentsAlphabetical(){
@@ -681,6 +668,7 @@ public class TKD_Service {
     }
 
     /**
+     * Sorts the students based on their number of attendances.
      * @return a list of Students ordered by number of Attendances
      */
     public List<Student> sortStudentsByNumberOfAttendences(){
@@ -711,6 +699,39 @@ public class TKD_Service {
                 .collect(Collectors.toList());  // Colectăm rezultatele într-o listă
     }
 
-
+    /**
+     * Gets for a given session the date with the highest attendance and number of participants. It searches through each student's
+     * session date list to find the most attended date for all students.
+     * @param sessionId     The unique identifier of the session.
+     * @return              A simple entry containing the most attended date and the number of students.
+     */
+    public AbstractMap.SimpleEntry<String, Integer> getDateWithMostStudentsForSession(int sessionId){
+        Session session = sessions.get(sessionId);
+        Map<String,Integer> freqWeekdays = new HashMap<>();
+        for(Student st: students.getAll()){
+            if(st.session==sessionId){
+                for(SessionDate sd: st.getSessionDateList()) {
+                    if(sd.isAttended()) {
+                        if (freqWeekdays.containsKey(sd.getDate())){
+                            freqWeekdays.put(sd.getDate(),freqWeekdays.get(sd.getDate())+1);
+                        }
+                        else{
+                            freqWeekdays.put(sd.getDate(),1);
+                        }
+                    }
+                }
+            }
+        }
+        int max = 0;
+        String date = "";
+        for(String d: freqWeekdays.keySet()){
+            if(freqWeekdays.get(d)>max){
+                max = freqWeekdays.get(d);
+                date = d;
+            }
+        }
+        return new AbstractMap.SimpleEntry<String,Integer>(date,max);
+    }
 
 }
+

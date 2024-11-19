@@ -2,6 +2,7 @@ package Controller;
 
 import Model.*;
 import Service.TKD_Service;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -319,30 +320,24 @@ public class TKDController {
             for(Integer c : combination) {
                 if(c > 100 && c < 200){ // id for Contests
                     Contest cnt = tkdService.getContestById(c);
-                    System.out.println(cnt.toString());
+                    System.out.println(cnt.toString2());
                 }
                 else if(c > 10 && c < 100){
                     TrainingCamp tc = tkdService.getTrainingCampByIs(c);
-                    System.out.println(tc.toString());
+                    System.out.println(tc.toString2());
                 }
             }
             System.out.println('\n');
         }
     }
 
-    public void sortedStuds(){
-        for(Student s: tkdService.sortStudentsByNumberOfAttendences()){
-            System.out.println(s);
-            System.out.println('\n');
-        }
-    }
 
     /**
      * prints a sorted list of contests based on their start date
      */
     public void sortedContests(){
         for(Contest c1: tkdService.sortContestsByDates()){
-            System.out.println(c1);
+            System.out.println(c1.toString2());
             System.out.println('\n');
         }
     }
@@ -352,7 +347,7 @@ public class TKDController {
      */
     public void sortedCampsByDates(){
         for(TrainingCamp tc: tkdService.sortTrainingCampsByDates()){
-            System.out.println(tc);
+            System.out.println(tc.toString2());
             System.out.println('\n');
         }
     }
@@ -362,7 +357,7 @@ public class TKDController {
      */
     public void sortBeltExamnsByDates(){
         for(BeltExam bt: tkdService.sortBeltExamnsByDates()){
-            System.out.println(bt);
+            System.out.println(bt.toString2());
             System.out.println('\n');
         }
     }
@@ -372,7 +367,7 @@ public class TKDController {
      */
     public void sortedStudentsByAttend(){
         for(Student s1 : tkdService.sortStudentsByNumberOfAttendences()){
-            System.out.println(s1);
+            System.out.println(s1.toString2());
             System.out.println('\n');
         }
     }
@@ -383,7 +378,7 @@ public class TKDController {
      */
     public void filteredStudentsByBeltLevel(String beltLevel){
         for(Student s1 : tkdService.filterStudentsByBelt(beltLevel)){
-            System.out.println(s1);
+            System.out.println(s1.toString2());
             System.out.println('\n');
         }
     }
@@ -398,7 +393,7 @@ public class TKDController {
             System.out.println("No parent with " + noOfChildren + " children");
         }
         for(Parent p1: tkdService.filterParentsNumberOfChildren(noOfChildren)){
-            System.out.println(p1);
+            System.out.println(p1.toString2());
             System.out.println('\n');
         }
     }
@@ -409,7 +404,7 @@ public class TKDController {
     public void sortStudentsAlphabetical(){
         List<Student> students = tkdService.sortStudentsAlphabetical();
         for(Student s : students){
-            System.out.println(s);
+            System.out.println(s.toString2());
         }
     }
 
@@ -419,8 +414,18 @@ public class TKDController {
     public void sortSessionByNumberOfParticipants(){
         List<Session> sessions = tkdService.sortSessionByNumberOfParticipants();
         for(Session s : sessions){
-            System.out.println(s);
+            System.out.println(s.toString2());
         }
+    }
+
+    /**
+     * Gets for a given session the date with the highest attendance and number of participants and prints the outputs.
+     * @param sessionId     The unique identifier of the session.
+     */
+    public void getDateWithMostStudentsForSession(int sessionId){
+        String date = tkdService.getDateWithMostStudentsForSession(sessionId).getKey();
+        int max = tkdService.getDateWithMostStudentsForSession(sessionId).getValue();
+        System.out.println("The date with most students at the session with id " + sessionId + " is " + date + " and had " + max + " participants.");
     }
 
 }

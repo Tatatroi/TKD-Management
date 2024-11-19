@@ -23,12 +23,25 @@ public class Trainer extends Person{
     }
     public Trainer(){}
 
+    @Override
+    public String toString() {
+        return "Trainer{" +
+                "name='" + name + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", address='" + address + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                ", number='" + number + '\'' +
+                ", beltLevel='" + beltLevel + '\'' +
+                '}';
+    }
+
     /**
      * prints out a trainer
      * @return
      */
-    @Override
-    public String toString() {
+
+    public String toString2() {
         // Coduri ANSI pentru culori
         final String ANSI_CYAN = "\u001B[36m";
         final String ANSI_BLUE = "\u001B[34m";

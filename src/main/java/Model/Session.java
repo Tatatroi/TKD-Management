@@ -10,16 +10,16 @@ public class Session implements HasID{
     public Integer id;
     public DifficultyLevel difficultyLevel;
     public int maximumParticipants;
-    public Trainer trainer;
+    public int trainer;
     public double pricePerSession;
 
-    private List<Student> sessionStudents = new ArrayList<>();
+    private List<Integer> sessionStudents = new ArrayList<>();
 
-    public List<Student> getSessionStudents() {
+    public List<Integer> getSessionStudents() {
         return sessionStudents;
     }
 
-    public void setSessionStudents(List<Student> sessionStudents) {
+    public void setSessionStudents(List<Integer> sessionStudents) {
         this.sessionStudents = sessionStudents;
     }
 
@@ -31,7 +31,7 @@ public class Session implements HasID{
      * @param trainer               The trainer who manages the session and it's students.
      * @param pricePerSession       The price of one session.
      */
-    public Session(Integer id , DifficultyLevel difficultyLevel, int maximumParticipants, Trainer trainer, double pricePerSession) {
+    public Session(Integer id , DifficultyLevel difficultyLevel, int maximumParticipants, int trainer, double pricePerSession) {
         this.id=id;
         this.difficultyLevel = difficultyLevel;
         this.maximumParticipants = maximumParticipants;
@@ -39,6 +39,7 @@ public class Session implements HasID{
         this.pricePerSession = pricePerSession;
     }
 
+    public Session(){}
     /**
      * Gets the id of the session.
      * @return The id of the session.
@@ -93,7 +94,7 @@ public class Session implements HasID{
      * Gets the trainer of the session.
      * @return The trainer of the session.
      */
-    public Trainer getTrainer() {
+    public int getTrainer() {
         return trainer;
     }
 
@@ -101,7 +102,7 @@ public class Session implements HasID{
      * Sets the trainer of the session.
      * @param trainer  The trainer of the session to set.
      */
-    public void setTrainer(Trainer trainer) {
+    public void setTrainer(int trainer) {
         this.trainer = trainer;
     }
 
@@ -121,8 +122,20 @@ public class Session implements HasID{
         this.pricePerSession = pricePerSession;
     }
 
+
     @Override
     public String toString() {
+        return "Session{" +
+                "id=" + id +
+                ", difficultyLevel=" + difficultyLevel +
+                ", maximumParticipants=" + maximumParticipants +
+                ", trainer=" + trainer +
+                ", pricePerSession=" + pricePerSession +
+                ", sessionStudents=" + sessionStudents +
+                '}';
+    }
+
+    public String toString2() {
         // Coduri ANSI pentru culori
         final String ANSI_CYAN = "\u001B[36m";
         final String ANSI_YELLOW = "\u001B[33m";
@@ -142,9 +155,9 @@ public class Session implements HasID{
                 .append(ANSI_RED).append("  Students in Session: ").append(ANSI_RESET);
 
         // Apelează toString2 pentru fiecare student din sessionStudents
-        for (Student student : sessionStudents) {
-            sb.append("\n").append(student.toString2()); // Presupunem că există o funcție toString2() în Student
-        }
+//        for (Student student : sessionStudents) {
+//            sb.append("\n").append(student.toString2()); // Presupunem că există o funcție toString2() în Student
+//        }
 
         return sb.toString();
     }

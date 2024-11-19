@@ -9,7 +9,7 @@ import java.util.List;
 public class TrainingCamp extends Event{
 
     public int numberOfParticipants;
-    List<Student> students = new ArrayList<>();
+    List<Integer> students = new ArrayList<>();
 
     /**
      * Constructs a new Training camp with the specified ID, start date, end date, price, country, city, address and the max number of participants..
@@ -27,6 +27,7 @@ public class TrainingCamp extends Event{
         this.numberOfParticipants = numberOfParticipants;
     }
 
+    public TrainingCamp(){}
     /**
      * Gets the max number of participants of the camp.
      * @return The max number of participants of the camp.
@@ -47,7 +48,7 @@ public class TrainingCamp extends Event{
      * Gets the list of students from the camp.
      * @return The list of students from the camp.
      */
-    public List<Student> getStudents() {
+    public List<Integer> getStudents() {
         return students;
     }
 
@@ -55,17 +56,31 @@ public class TrainingCamp extends Event{
      * Sets the list of students from the camp.
      * @param students  The list of students from the camp to set.
      */
-    public void setStudents(List<Student> students) {
+    public void setStudents(List<Integer> students) {
         this.students = students;
     }
 
+
+    @Override
+    public String toString() {
+        return "TrainingCamp{" +
+                "numberOfParticipants=" + numberOfParticipants +
+                ", students=" + students +
+                ", startDate='" + startDate + '\'' +
+                ", endDate='" + endDate + '\'' +
+                ", price=" + price +
+                ", country='" + country + '\'' +
+                ", city='" + city + '\'' +
+                ", address='" + address + '\'' +
+                '}';
+    }
 
     /**
      * Return as a strinf parameters that I need: address, price
      * @return
      */
-    @Override
-    public String toString() {
+
+    public String toString2() {
         final String ANSI_BLUE = "\u001B[34m";
         final String ANSI_YELLOW = "\u001B[33m";
         final String ANSI_RED = "\u001B[31m";
