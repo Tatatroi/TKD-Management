@@ -617,7 +617,7 @@ public class TKD_Service {
      * @return a sorted List of Contests based on ther starting dates
      */
     public List<Contest> sortContestsByDates() {
-        List<Contest> sorted = contests.getAll();
+        List<Contest> sorted = new ArrayList<>(contests.getAll());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         System.out.println("Mata");
         LocalDate date11 = LocalDate.parse(sorted.getFirst().startDate, formatter);

@@ -61,4 +61,22 @@ public class BeltExam extends Event{
         BeltColor = beltColor;
     }
 
+    /**
+     * prints out a belt exam
+     */
+    @Override
+    public String toString() {
+        // Coduri ANSI pentru culori
+        final String ANSI_RED = "\u001B[31m";
+        final String ANSI_BLUE = "\u001B[34m";
+        final String ANSI_GREEN = "\u001B[32m";
+        final String ANSI_RESET = "\u001B[0m";
+
+        return ANSI_BLUE + "🥋 Belt Exam Details:" + ANSI_RESET + "\n" +
+                ANSI_GREEN + "  Start Date: " + ANSI_RESET + ANSI_RED + startDate + ANSI_RESET + "\n" +
+                ANSI_GREEN + "  Country: " + ANSI_RESET + country + "\n" +
+                ANSI_GREEN + "  City: " + ANSI_RESET + city;
+    }
+
+
 }

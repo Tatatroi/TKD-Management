@@ -69,4 +69,21 @@ public class SessionDate {
     public void setSession(Session session) {
         this.session = session;
     }
+
+    /**
+     * string for print out a SessionDate
+     */
+    @Override
+    public String toString() {
+        // Coduri ANSI pentru culori
+        final String ANSI_GREEN = "\u001B[32m";
+        final String ANSI_YELLOW = "\u001B[33m";
+        final String ANSI_CYAN = "\u001B[36m";
+        final String ANSI_RESET = "\u001B[0m";
+
+        return ANSI_CYAN + "📅 Session Date Details:" + ANSI_RESET + "\n" +
+                ANSI_GREEN + "  Weekday: " + ANSI_RESET + weekDay + "\n" +
+                ANSI_YELLOW + "  Date: " + ANSI_RESET + date + "\n" +
+                ANSI_CYAN + "  Session: " + ANSI_RESET + session;
+    }
 }

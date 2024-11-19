@@ -66,9 +66,15 @@ public class Contest extends Event{
      */
     @Override
     public String toString() {
-        return "Contest{" +
-                "name='" + name + '\'' +
-                ", price=" + price +
-                '}';
+        // Coduri ANSI pentru culori
+        final String ANSI_YELLOW = "\u001B[33m";
+        final String ANSI_CYAN = "\u001B[36m";
+        final String ANSI_GREEN = "\u001B[32m";
+        final String ANSI_RESET = "\u001B[0m";
+
+        return ANSI_CYAN + "🏆 Contest Details: " + ANSI_RESET + "\n" +
+                ANSI_YELLOW + "  Name: " + ANSI_RESET + name + "\n" +
+                ANSI_GREEN + "  Price: " + ANSI_RESET + price + " lei";
     }
+
 }

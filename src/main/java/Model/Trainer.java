@@ -23,16 +23,26 @@ public class Trainer extends Person{
     }
     public Trainer(){}
 
+    /**
+     * prints out a trainer
+     * @return
+     */
     @Override
     public String toString() {
-        return "Trainer{" +
-                "name='" + name + '\'' +
-                ", LastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", address='" + address + '\'' +
-                ", dateOfBirth=" + dateOfBirth +
-                ", number='" + number + '\'' +
-                ", beltLevel='" + beltLevel + '\'' +
-                '}';
+        // Coduri ANSI pentru culori
+        final String ANSI_CYAN = "\u001B[36m";
+        final String ANSI_BLUE = "\u001B[34m";
+        final String ANSI_GREEN = "\u001B[32m";
+        final String ANSI_YELLOW = "\u001B[33m";
+        final String ANSI_RESET = "\u001B[0m";
+
+        return ANSI_CYAN + "💪 Trainer Details:" + ANSI_RESET + "\n" +
+                ANSI_BLUE + "  Name: " + ANSI_RESET + name + " " + lastName + "\n" +
+                ANSI_GREEN + "  Email: " + ANSI_RESET + email + "\n" +
+                ANSI_GREEN + "  Address: " + ANSI_RESET + address + "\n" +
+                ANSI_GREEN + "  Date of Birth: " + ANSI_RESET + dateOfBirth + "\n" +
+                ANSI_GREEN + "  Phone Number: " + ANSI_RESET + number + "\n" +
+                ANSI_YELLOW + "  Belt Level: " + ANSI_RESET + beltLevel;
     }
+
 }

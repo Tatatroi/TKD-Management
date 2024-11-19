@@ -114,21 +114,31 @@ public class Student extends Person{
     }
 
 
+    /**
+     * prints out a student
+     */
     @Override
     public String toString() {
-        return "Student{" +
-                "contestList=" + contestList +
-                ", trainingCampList=" + trainingCampList +
-                ", session=" + session +
-                ", sessionDateList=" + sessionDateList +
-                ", parent=" + parent +
-                ", name='" + name + '\'' +
-                ", LastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", address='" + address + '\'' +
-                ", dateOfBirth=" + dateOfBirth +
-                ", number='" + number + '\'' +
-                ", beltLevel='" + beltLevel + '\'' +
-                '}';
+        // Coduri ANSI pentru culori
+        final String ANSI_BLUE = "\u001B[34m";
+        final String ANSI_YELLOW = "\u001B[33m";
+        final String ANSI_GREEN = "\u001B[32m";
+        final String ANSI_RED = "\u001B[31m";
+        final String ANSI_CYAN = "\u001B[36m";
+        final String ANSI_RESET = "\u001B[0m";
+
+        return ANSI_CYAN + "👤 Student Details:" + ANSI_RESET + "\n" +
+                ANSI_BLUE + "  Name: " + ANSI_RESET + name + " " + lastName + "\n" +
+                ANSI_GREEN + "  Email: " + ANSI_RESET + email + "\n" +
+                ANSI_GREEN + "  Address: " + ANSI_RESET + address + "\n" +
+                ANSI_GREEN + "  Date of Birth: " + ANSI_RESET + dateOfBirth + "\n" +
+                ANSI_GREEN + "  Phone Number: " + ANSI_RESET + number + "\n" +
+                ANSI_GREEN + "  Belt Level: " + ANSI_RESET + beltLevel + "\n" +
+                ANSI_YELLOW + "  Contests: " + ANSI_RESET + contestList + "\n" +
+                ANSI_YELLOW + "  Training Camps: " + ANSI_RESET + trainingCampList + "\n" +
+                ANSI_YELLOW + "  Current Session: " + ANSI_RESET + session + "\n" +
+                ANSI_YELLOW + "  Session Dates: " + ANSI_RESET + sessionDateList + "\n" +
+                ANSI_RED + "  Parent: " + ANSI_RESET + parent;
     }
+
 }

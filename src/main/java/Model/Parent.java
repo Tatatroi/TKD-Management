@@ -37,4 +37,23 @@ public class Parent extends Person{
     public void setChildren(List<Student> children) {
         this.children = children;
     }
+
+    @Override
+    public String toString() {
+        // Coduri ANSI pentru culori
+        final String ANSI_CYAN = "\u001B[36m";
+        final String ANSI_YELLOW = "\u001B[33m";
+        final String ANSI_GREEN = "\u001B[32m";
+        final String ANSI_RED = "\u001B[31m";
+        final String ANSI_RESET = "\u001B[0m";
+
+        return ANSI_CYAN + "👪 Parent Details:" + ANSI_RESET + "\n" +
+                ANSI_YELLOW + "  Name: " + ANSI_RESET + name + " " + lastName + "\n" +
+                ANSI_GREEN + "  Email: " + ANSI_RESET + email + "\n" +
+                ANSI_GREEN + "  Phone: " + ANSI_RESET + number + "\n" +
+                ANSI_GREEN + "  Date of Birth: " + ANSI_RESET + dateOfBirth + "\n" +
+                ANSI_GREEN + "  Address: " + ANSI_RESET + address + "\n" +
+                ANSI_RED + "  Children: " + ANSI_RESET + children;
+    }
+
 }

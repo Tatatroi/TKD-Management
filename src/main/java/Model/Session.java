@@ -120,4 +120,23 @@ public class Session implements HasID{
     public void setPricePerSession(double pricePerSession) {
         this.pricePerSession = pricePerSession;
     }
+
+    @Override
+    public String toString() {
+        // Coduri ANSI pentru culori
+        final String ANSI_CYAN = "\u001B[36m";
+        final String ANSI_YELLOW = "\u001B[33m";
+        final String ANSI_GREEN = "\u001B[32m";
+        final String ANSI_RED = "\u001B[31m";
+        final String ANSI_RESET = "\u001B[0m";
+
+        return ANSI_CYAN + "📅 Session Details:" + ANSI_RESET + "\n" +
+                ANSI_YELLOW + "  ID: " + ANSI_RESET + id + "\n" +
+                ANSI_GREEN + "  Difficulty Level: " + ANSI_RESET + difficultyLevel + "\n" +
+                ANSI_GREEN + "  Max Participants: " + ANSI_RESET + maximumParticipants + "\n" +
+                ANSI_GREEN + "  Trainer: " + ANSI_RESET + trainer + "\n" +
+                ANSI_GREEN + "  Price per Session: " + ANSI_RESET + pricePerSession + " lei/h\n" +
+                ANSI_RED + "  Students in Session: " + ANSI_RESET + sessionStudents;
+    }
+
 }
