@@ -119,7 +119,6 @@ public class Student extends Person{
      */
     @Override
     public String toString() {
-        // Coduri ANSI pentru culori
         final String ANSI_BLUE = "\u001B[34m";
         final String ANSI_YELLOW = "\u001B[33m";
         final String ANSI_GREEN = "\u001B[32m";

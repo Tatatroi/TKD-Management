@@ -473,6 +473,7 @@ public class TKD_Service {
         for(Session s: sessions.getAll()){
             for(Student st: s.getSessionStudents()){
                 allStudents.append("Student with id ").append(st.getId()).append(" and name ").append(st.getLastName()).append(" ").append(st.getName()).append(" is at ").append(s.difficultyLevel).append(" level").append(" and has belt color ").append(st.getBeltLevel()).append('\n');
+                //System.out.println(st);
             }
             allStudents.append('\n');
         }
@@ -486,7 +487,8 @@ public class TKD_Service {
     public String viewAllTrainers(){
         StringBuilder allTrainers= new StringBuilder();
         for(Trainer t: trainers.getAll()){
-            allTrainers.append("Trainer with id ").append(t.getId()).append(" and name ").append(t.getLastName()).append(" ").append(t.getName()).append(" has belt color ").append(t.getBeltLevel()+'\n');
+           //allTrainers.append("Trainer with id ").append(t.getId()).append(" and name ").append(t.getLastName()).append(" ").append(t.getName()).append(" has belt color ").append(t.getBeltLevel()+'\n');
+            allTrainers.append(t.toString());
         }
         return allTrainers.toString();
     }
@@ -569,6 +571,7 @@ public class TKD_Service {
             for (Student s : c.getStudents()) {
                 allContests.append("\n   Name ").append(s.getLastName()).append(" ").append(s.getName())
                         .append(" and belt level: ").append(s.getBeltLevel());
+                System.out.println(s);
             }
 
             allContests.append('\n');
@@ -584,8 +587,9 @@ public class TKD_Service {
     public String viewTrainingCamps(){
         StringBuilder allTrainingCamps = new StringBuilder();
         for(TrainingCamp t: trainingCamps.getAll()){
-            allTrainingCamps.append("Training camp with id ").append(t.getId()).append(", start date ").append(t.startDate).append(", end date ").
-                    append(t.endDate).append(", price ").append(t.price).append(", max number of students ").append(t.getNumberOfParticipants()).append(" and students: ").append('\n');
+            //allTrainingCamps.append("Training camp with id ").append(t.getId()).append(", start date ").append(t.startDate).append(", end date ").
+            //        append(t.endDate).append(", price ").append(t.price).append(", max number of students ").append(t.getNumberOfParticipants()).append(" and students: ").append('\n');
+            allTrainingCamps.append(t.toString());
             for(Student s: t.getStudents()){
                 allTrainingCamps.append("   Name ").append(s.getLastName()).append(" ").append(s.getName()).append(" and belt level: ").append(s.getBeltLevel()).append('\n');
             }
@@ -601,8 +605,9 @@ public class TKD_Service {
     public String viewBeltExams() {
         StringBuilder allBeltExams = new StringBuilder();
         for (BeltExam b : beltExams.getAll()) {
-            allBeltExams.append("Belt exam with id ").append(b.getId()).append(", start date ").append(b.startDate).append(", end date ").
-                    append(b.endDate).append(", price ").append(b.price).append(", belt color ").append(b.getBeltColor()).append(" and students: ").append('\n');
+            //allBeltExams.append("Belt exam with id ").append(b.getId()).append(", start date ").append(b.startDate).append(", end date ").
+            //        append(b.endDate).append(", price ").append(b.price).append(", belt color ").append(b.getBeltColor()).append(" and students: ").append('\n');
+            allBeltExams.append(b.toString());
             for (Student s : b.getListOfResults().keySet()) {
                 allBeltExams.append("   Name ").append(s.getLastName()).append(" ").append(s.getName()).append(", belt level: ").append(s.getBeltLevel()).append(" and status ").append(b.getListOfResults().get(s)).append('\n');
             }

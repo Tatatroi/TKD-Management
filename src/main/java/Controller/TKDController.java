@@ -1,8 +1,7 @@
 package Controller;
 
 import Model.*;
-import Service.TKDService;
-
+import Service.TKD_Service;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -11,14 +10,14 @@ import java.util.Map;
  * A controller class that handles the business logic for the TKD-Management system.
  */
 public class TKDController {
-    private final TKDService tkdService;
+    private final TKD_Service tkdService;
 
     /**
      * Constructs a new UniversityController with the given UniversityService.
      *
      * @param tkdService The service that provides the business logic for the TKD-Management system.
      */
-    public TKDController(TKDService tkdService) {
+    public TKDController(TKD_Service tkdService) {
         this.tkdService = tkdService;
     }
 
