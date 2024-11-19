@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A service class that provides the business logic for the TKD-Management system.
@@ -473,7 +474,6 @@ public class TKD_Service {
         for(Session s: sessions.getAll()){
             for(Student st: s.getSessionStudents()){
                 allStudents.append("Student with id ").append(st.getId()).append(" and name ").append(st.getLastName()).append(" ").append(st.getName()).append(" is at ").append(s.difficultyLevel).append(" level").append(" and has belt color ").append(st.getBeltLevel()).append('\n');
-                //System.out.println(st);
             }
             allStudents.append('\n');
         }
@@ -624,9 +624,6 @@ public class TKD_Service {
     public List<Contest> sortContestsByDates(){
         List<Contest> sorted = new ArrayList<>(contests.getAll());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        System.out.println("Mata");
-        LocalDate date11 = LocalDate.parse(sorted.getFirst().startDate, formatter);
-        System.out.println(date11);
         sorted.sort((c1, c2) -> {
             LocalDate date1 = LocalDate.parse(c1.startDate, formatter);
             LocalDate date2 = LocalDate.parse(c2.startDate, formatter);
@@ -635,6 +632,57 @@ public class TKD_Service {
         return sorted;
     }
 
+    /**
+     *
+     * @return a sorted List of Belt Examns based on their starting dates
+     */
+
+    public List<BeltExam> sortBeltExamnsByDates(){
+        List<BeltExam> sorted = new ArrayList<>(beltExams.getAll());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        sorted.sort((c1, c2) -> {
+            LocalDate date1 = LocalDate.parse(c1.startDate, formatter);
+            LocalDate date2 = LocalDate.parse(c2.startDate, formatter);
+            return date1.compareTo(date2);
+        });
+        return sorted;
+    }
+
+    /**
+     * @return a sorted list of training Camps based on their starting date
+     */
+    public List<TrainingCamp> sortTrainingCampsByDates(){
+        List<TrainingCamp> sorted = new ArrayList<>(trainingCamps.getAll());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        sorted.sort((c1, c2) -> {
+            LocalDate date1 = LocalDate.parse(c1.startDate, formatter);
+            LocalDate date2 = LocalDate.parse(c2.startDate, formatter);
+            return date1.compareTo(date2);
+        });
+        return sorted;
+    }
+
+    /**
+     * @return a list of Session sorted based on their number of participants
+     */
+    public List<Session> sortSessionByNumberOfParticipants(){
+        List<Session> sorted = new ArrayList<>(sessions.getAll());
+        sorted.sort(Comparator.comparingInt(c -> c.getSessionStudents().size()));
+        return sorted;
+    }
+
+    /**
+     * @return a list of students ordered alphabetical
+     */
+    public List<Student> sortStudentsAlphabetical(){
+        List<Student> sorted = new ArrayList<>(students.getAll());
+        sorted.sort(Comparator.comparing(s -> s.name));
+        return sorted;
+    }
+
+    /**
+     * @return a list of Students ordered by number of Attendances
+     */
     public List<Student> sortStudentsByNumberOfAttendences(){
         List<Student> sorted = new ArrayList<>(students.getAll());
         sorted.sort((s1, s2) -> Integer.compare(numberOfAttendencesAndAbsences(s1.getId()).get("Attendences"), numberOfAttendencesAndAbsences(s2.getId()).get("Attendences")));
@@ -651,5 +699,18 @@ public class TKD_Service {
         filtered = filtered.stream().filter((s1)->s1.getBeltLevel().equals(beltLevel)).toList();
         return filtered;
     }
+
+    /**
+     * Filters parents based of their number of children
+     * @param noOfChildren number of children we want to filter
+     * @return a list of parents that have noOfChildren as number of children
+     */
+    public List<Parent> filterParentsNumberOfChildren(int noOfChildren) {
+        return parents.getAll().stream()  // Obținem stream-ul de la lista de părinți
+                .filter(p -> p.getChildren().size() == noOfChildren)  // Filtrăm părinții care au exact numărul de copii dorit
+                .collect(Collectors.toList());  // Colectăm rezultatele într-o listă
+    }
+
+
 
 }

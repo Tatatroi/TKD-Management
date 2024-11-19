@@ -130,13 +130,24 @@ public class Session implements HasID{
         final String ANSI_RED = "\u001B[31m";
         final String ANSI_RESET = "\u001B[0m";
 
-        return ANSI_CYAN + "📅 Session Details:" + ANSI_RESET + "\n" +
-                ANSI_YELLOW + "  ID: " + ANSI_RESET + id + "\n" +
-                ANSI_GREEN + "  Difficulty Level: " + ANSI_RESET + difficultyLevel + "\n" +
-                ANSI_GREEN + "  Max Participants: " + ANSI_RESET + maximumParticipants + "\n" +
-                ANSI_GREEN + "  Trainer: " + ANSI_RESET + trainer + "\n" +
-                ANSI_GREEN + "  Price per Session: " + ANSI_RESET + pricePerSession + " lei/h\n" +
-                ANSI_RED + "  Students in Session: " + ANSI_RESET + sessionStudents;
+        // Folosim un StringBuilder pentru a construi stringul rezultat
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(ANSI_CYAN).append("📅 Session Details:").append(ANSI_RESET).append("\n")
+                .append(ANSI_YELLOW).append("  ID: ").append(ANSI_RESET).append(id).append("\n")
+                .append(ANSI_GREEN).append("  Difficulty Level: ").append(ANSI_RESET).append(difficultyLevel).append("\n")
+                .append(ANSI_GREEN).append("  Max Participants: ").append(ANSI_RESET).append(maximumParticipants).append("\n")
+                .append(ANSI_GREEN).append("  Trainer: ").append(ANSI_RESET).append(trainer).append("\n")
+                .append(ANSI_GREEN).append("  Price per Session: ").append(ANSI_RESET).append(pricePerSession).append(" lei/h\n")
+                .append(ANSI_RED).append("  Students in Session: ").append(ANSI_RESET);
+
+        // Apelează toString2 pentru fiecare student din sessionStudents
+        for (Student student : sessionStudents) {
+            sb.append("\n").append(student.toString2()); // Presupunem că există o funcție toString2() în Student
+        }
+
+        return sb.toString();
     }
+
 
 }

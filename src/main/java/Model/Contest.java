@@ -74,7 +74,8 @@ public class Contest extends Event{
 
         return ANSI_CYAN + "🏆 Contest Details: " + ANSI_RESET + "\n" +
                 ANSI_YELLOW + "  Name: " + ANSI_RESET + name + "\n" +
-                ANSI_GREEN + "  Price: " + ANSI_RESET + price + " lei";
+                ANSI_GREEN + "  Price: " + ANSI_RESET + price + " lei" + "\n"+
+                "Starting date: " + startDate;
     }
 
 }

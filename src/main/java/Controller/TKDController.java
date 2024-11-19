@@ -3,6 +3,7 @@ package Controller;
 import Model.*;
 import Service.TKD_Service;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -347,6 +348,26 @@ public class TKDController {
     }
 
     /**
+     * prints a sorted list of trainingCamps based on their starting date
+     */
+    public void sortedCampsByDates(){
+        for(TrainingCamp tc: tkdService.sortTrainingCampsByDates()){
+            System.out.println(tc);
+            System.out.println('\n');
+        }
+    }
+
+    /**
+     * prints a sorted list of BeltExamns based on their starting dates
+     */
+    public void sortBeltExamnsByDates(){
+        for(BeltExam bt: tkdService.sortBeltExamnsByDates()){
+            System.out.println(bt);
+            System.out.println('\n');
+        }
+    }
+
+    /**
      * prints a sorted list of students based on their number of attendances
      */
     public void sortedStudentsByAttend(){
@@ -364,6 +385,41 @@ public class TKDController {
         for(Student s1 : tkdService.filterStudentsByBelt(beltLevel)){
             System.out.println(s1);
             System.out.println('\n');
+        }
+    }
+
+
+    /**
+     * prints a filtred list of parents that have a specific number of children
+     * @param noOfChildren number of children
+     */
+    public void filterParentsByNumberOfChildren(Integer noOfChildren){
+        if(tkdService.filterParentsNumberOfChildren(noOfChildren).size() == 0){
+            System.out.println("No parent with " + noOfChildren + " children");
+        }
+        for(Parent p1: tkdService.filterParentsNumberOfChildren(noOfChildren)){
+            System.out.println(p1);
+            System.out.println('\n');
+        }
+    }
+
+    /**
+     * prints a list of students ordered alphabetical
+     */
+    public void sortStudentsAlphabetical(){
+        List<Student> students = tkdService.sortStudentsAlphabetical();
+        for(Student s : students){
+            System.out.println(s);
+        }
+    }
+
+    /**
+     * prints a list of sessions ordered by number of participants
+     */
+    public void sortSessionByNumberOfParticipants(){
+        List<Session> sessions = tkdService.sortSessionByNumberOfParticipants();
+        for(Session s : sessions){
+            System.out.println(s);
         }
     }
 

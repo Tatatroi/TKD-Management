@@ -52,8 +52,7 @@ public class Parent extends Person{
                 ANSI_GREEN + "  Email: " + ANSI_RESET + email + "\n" +
                 ANSI_GREEN + "  Phone: " + ANSI_RESET + number + "\n" +
                 ANSI_GREEN + "  Date of Birth: " + ANSI_RESET + dateOfBirth + "\n" +
-                ANSI_GREEN + "  Address: " + ANSI_RESET + address + "\n" +
-                ANSI_RED + "  Children: " + ANSI_RESET + children;
+                ANSI_GREEN + "  Address: " + ANSI_RESET + address + "\n";
     }
 
 }

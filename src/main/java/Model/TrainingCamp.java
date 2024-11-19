@@ -72,6 +72,7 @@ public class TrainingCamp extends Event{
         final String ANSI_RESET = "\u001B[0m";
 
         return ANSI_BLUE + "🏕️ Training Camp Details:" + ANSI_RESET + "\n" +
+                ANSI_YELLOW + "  Starting date: " + ANSI_RESET + getStartDate() + "\n" +
                 ANSI_YELLOW + "  Address: " + ANSI_RESET + address + "\n" +
                 ANSI_YELLOW + "  Price: " + ANSI_RED + price + " lei" + ANSI_RESET;
     }

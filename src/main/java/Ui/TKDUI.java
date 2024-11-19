@@ -101,6 +101,7 @@ public class TKDUI {
                     case "5" -> viewAttendances();
                     case "6" -> sortStudentsByAttend();
                     case "7" -> filterStudentsByBeltLevel();
+                    case "8" -> sortStudentsAlphabetical();
                     default -> System.out.println("Invalid option. Please try again.");
                 }
             } catch (Exception e) {
@@ -123,6 +124,7 @@ public class TKDUI {
                     case "1" -> addParent();
                     case "2" -> deleteParent();
                     case "3" -> viewParents();
+                    case "4" -> filterParentsByNumberOfChildren();
                     default -> System.out.println("Invalid option. Please try again.");
                 }
             } catch (Exception e) {
@@ -174,6 +176,7 @@ public class TKDUI {
                     case "3" -> changeStudentSession();
                     case "4" -> assignSessionToTrainer();
                     case "5" -> addAttendance();
+                    case "6" -> sortSessionByNumberOfParticipants();
                     default -> System.out.println("Invalid option. Please try again.");
                 }
             } catch (Exception e) {
@@ -226,6 +229,7 @@ public class TKDUI {
                     case "3" -> viewBeltExams();
                     case "4" -> addStudentToBeltExam();
                     case "5" -> addResultToBeltExam();
+                    case "6" -> sortBeltExamnsByDates();
                     default -> System.out.println("Invalid option. Please try again.");
                 }
             } catch (Exception e) {
@@ -251,6 +255,7 @@ public class TKDUI {
                     case "2" -> deleteTrainingCamp();
                     case "3" -> viewTrainingCamp();
                     case "4" -> addStudentToTrainingCamp();
+                    case "5" -> sortedCampsByDates();
                     default -> System.out.println("Invalid option. Please try again.");
                 }
             } catch (Exception e) {
@@ -267,6 +272,7 @@ public class TKDUI {
         System.out.println("1 - Add Parent");
         System.out.println("2 - Delete Parent");
         System.out.println("3 - View Parents");
+        System.out.println("4 - Filter Parents by number of children");
         System.out.println("0 - Exit");
         System.out.print("Select an option: ");
     }
@@ -283,6 +289,7 @@ public class TKDUI {
         System.out.println("5 - View Student attendances");
         System.out.println("6 - View sorted students by attendances");
         System.out.println("7 - View students filtered by belt level");
+        System.out.println("8 - Sort students ordered alphabetical");
         System.out.println("0 - Exit");
         System.out.print("Select an option: ");
     }
@@ -310,6 +317,7 @@ public class TKDUI {
         System.out.println("3 - Change Student Session");
         System.out.println("4 - Assign Session to Trainer");
         System.out.println("5 - Add attendance");
+        System.out.println("6 - Sort session by number of participants");
         System.out.println("0 - Exit");
         System.out.print("Select an option: ");
     }
@@ -337,6 +345,7 @@ public class TKDUI {
         System.out.println("2 - Delete training camp");
         System.out.println("3 - View all training camps");
         System.out.println("4 - Add student to training camp");
+        System.out.println("5 - Sorted Camps by starting dates");
         System.out.println("0 - Exit");
         System.out.print("Select an option: ");
     }
@@ -351,6 +360,7 @@ public class TKDUI {
         System.out.println("3 - View all Belt Exams");
         System.out.println("4 - Add student to Belt Exam");
         System.out.println("5 - Add result to Belt Exam");
+        System.out.println("6 - Sort Belt Examines by starting dates");
         System.out.println("0 - Exit");
         System.out.print("Select an option: ");
     }
@@ -945,5 +955,37 @@ public class TKDUI {
         System.out.println("Enter the belt level for filtering: ");
         String beltLevel = scanner.nextLine();
         tkdController.filteredStudentsByBeltLevel(beltLevel);
+    }
+
+    private void filterParentsByNumberOfChildren(){
+        System.out.println("Enter the number of children for filtering: ");
+        Integer numberOfChildren = scanner.nextInt();
+
+        tkdController.filterParentsByNumberOfChildren(numberOfChildren);
+    }
+
+    /**
+     * calls the sortStudentsAlphabetical function in the controller
+     */
+    private void sortStudentsAlphabetical(){
+        tkdController.sortStudentsAlphabetical();
+    }
+
+    /**
+     * calls the sortSessionByNumberOfParticipants function in the controller
+     */
+    private void sortSessionByNumberOfParticipants(){
+        tkdController.sortSessionByNumberOfParticipants();
+    }
+
+    /**
+     * calls the sortedCampsByDates function from controller
+     */
+    private void sortedCampsByDates(){
+        tkdController.sortedCampsByDates();
+    }
+
+    private void sortBeltExamnsByDates(){
+        tkdController.sortBeltExamnsByDates();
     }
 }
