@@ -616,7 +616,7 @@ public class TKD_Service {
      *
      * @return a sorted List of Contests based on ther starting dates
      */
-    public List<Contest> sortContestsByDates() {
+    public List<Contest> sortContestsByDates(){
         List<Contest> sorted = new ArrayList<>(contests.getAll());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         System.out.println("Mata");
@@ -631,8 +631,20 @@ public class TKD_Service {
     }
 
     public List<Student> sortStudentsByNumberOfAttendences(){
-        List<Student> sorted = students.getAll();
+        List<Student> sorted = new ArrayList<>(students.getAll());
         sorted.sort((s1, s2) -> Integer.compare(numberOfAttendencesAndAbsences(s1.getId()).get("Attendences"), numberOfAttendencesAndAbsences(s2.getId()).get("Attendences")));
         return sorted;
     }
+
+    /**
+     * Filters the students based on a belt level
+     * @param   beltLevel The belt level upon which the filter will apply
+     * @return  List of all students having the belt level specified
+     */
+    public List<Student> filterStudentsByBelt(String beltLevel){
+        List<Student> filtered = new ArrayList<>(students.getAll());
+        filtered = filtered.stream().filter((s1)->s1.getBeltLevel().equals(beltLevel)).toList();
+        return filtered;
+    }
+
 }
