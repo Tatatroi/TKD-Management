@@ -5,7 +5,7 @@ import Controller.TKDController;
 import Service.TKD_Service;
 import Model.*;
 import Repository.*;
-import com.fasterxml.jackson.core.type.TypeReference;
+
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class Main {
      * @param studentRepo   The student repo, where the parent is added.
      * @param sessionRepo   The session repo, where the parent is added.
      */
-    public static void parentChild(Session session, Student student, Parent parent, InFileRepo<Parent> parentRepo, InFileRepo<Student> studentRepo, InFileRepo<Session> sessionRepo){
+    public static void parentChild(Session session, Student student, Parent parent, InMemoryRepo<Parent> parentRepo, InMemoryRepo<Student> studentRepo, InMemoryRepo<Session> sessionRepo){
         //System.out.println(student);
         session.getSessionStudents().add(student.getId());
         sessionRepo.update(session);
@@ -38,13 +38,13 @@ public class Main {
      */
     public static void main(String[] args) {
 
-        InFileRepo<Student> studentRepo = new InFileRepo<>("students.json", new TypeReference<List<Student>>() {});
-        InFileRepo<Parent> parentRepo = new InFileRepo<>("parents.json", new TypeReference<List<Parent>>() {});
-        InFileRepo<Session> sessionRepo = new InFileRepo<>("sessions.json", new TypeReference<List<Session>>() {});
-        InFileRepo<Contest> contestRepo = new InFileRepo<>("contests.json", new TypeReference<List<Contest>>() {});
-        InFileRepo<Trainer> trainerRepo = new InFileRepo<>("trainers.json", new TypeReference<List<Trainer>>() {});
-        InFileRepo<BeltExam> beltExamRepo = new InFileRepo<>("beltExams.json", new TypeReference<List<BeltExam>>() {});
-        InFileRepo<TrainingCamp> trainingCampRepo = new InFileRepo<>("trainingCamps.json", new TypeReference<List<TrainingCamp>>() {});
+        InMemoryRepo<Student> studentRepo = new InMemoryRepo<>();
+        InMemoryRepo<Parent> parentRepo = new InMemoryRepo<>();
+        InMemoryRepo<Session> sessionRepo = new InMemoryRepo<>();
+        InMemoryRepo<Contest> contestRepo = new InMemoryRepo<>();
+        InMemoryRepo<Trainer> trainerRepo = new InMemoryRepo<>();
+        InMemoryRepo<BeltExam> beltExamRepo = new InMemoryRepo<>();
+        InMemoryRepo<TrainingCamp> trainingCampRepo = new InMemoryRepo<>();
 
 
 //        Trainer t1 = new Trainer(1,"Mitroi","Stefan","srefanmitroi@gmail.com","Calea Floresti nr 58B",2004,"0761969675","black");
@@ -58,11 +58,11 @@ public class Main {
 ////
 //        Trainer t4 = new Trainer(4, "Vasilescu", "Radu", "radu.vasilescu@outlook.com", "Strada Zorilor nr 23", 1992, "0744123456", "green");
 //        trainerRepo.add(t4);
-////        InFileRepo<Trainer> trainerInFileRepo = new InFileRepo<>("trainers.json", new TypeReference<List<Trainer>>() {});
-//        //trainerInFileRepo.add(t4);
-////       trainerInFileRepo.remove(4);
+////        InMemoryRepo<Trainer> trainerInMemoryRepo = new InMemoryRepo<>("trainers.json", new TypeReference<List<Trainer>>() {});
+//        //trainerInMemoryRepo.add(t4);
+////       trainerInMemoryRepo.remove(4);
 //        List<Trainer> allTrainers = trainerRepo.getAll();
-////        trainerInFileRepo.get(4);
+////        trainerInMemoryRepo.get(4);
 //        System.out.println("All trainers: " + allTrainers);
 //
 //        Session session1 = new Session(1,DifficultyLevel.beginner,23,t1.getId(),50);

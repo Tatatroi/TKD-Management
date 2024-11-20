@@ -162,11 +162,11 @@ public class Student extends Person{
                 ANSI_GREEN + "  Belt Level: " + ANSI_RESET + beltLevel + "\n";
     }
 
-//    public String toString2(){
-//        final String ANSI_CYAN = "\u001B[36m";
-//        final String ANSI_GREEN = "\u001B[32m";
-//        final String ANSI_RESET = "\u001B[0m";
-//        return ANSI_GREEN + "  Id: " + ANSI_RESET + getId() + ANSI_CYAN +"  Name: "  + name + " " + lastName + ANSI_RESET + "\n";
-//    }
+    public String toString3(){
+        final String ANSI_CYAN = "\u001B[36m";
+        final String ANSI_GREEN = "\u001B[32m";
+        final String ANSI_RESET = "\u001B[0m";
+        return ANSI_GREEN + "  Id: " + ANSI_RESET + getId() + ANSI_CYAN +"  Name: "  + name + " " + lastName + ANSI_RESET + "\n";
+    }
 
 }

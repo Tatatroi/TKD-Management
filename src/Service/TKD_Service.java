@@ -1,7 +1,8 @@
 package Service;
 
 import Model.*;
-import Repository.InFileRepo;
+import Repository.InMemoryRepo;
+import Repository.InMemoryRepo;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -13,19 +14,19 @@ import java.util.stream.Collectors;
  * A service class that provides the business logic for the TKD-Management system.
  */
 public class TKD_Service {
-    private InFileRepo<Student> students;
+    private InMemoryRepo<Student> students;
 
-    private InFileRepo<Trainer> trainers;
+    private InMemoryRepo<Trainer> trainers;
 
-    private InFileRepo<Parent> parents;
+    private InMemoryRepo<Parent> parents;
 
-    private InFileRepo<Session> sessions;
+    private InMemoryRepo<Session> sessions;
 
-    private InFileRepo<Contest> contests;
+    private InMemoryRepo<Contest> contests;
 
-    private InFileRepo<TrainingCamp> trainingCamps;
+    private InMemoryRepo<TrainingCamp> trainingCamps;
 
-    private InFileRepo<BeltExam> beltExams;
+    private InMemoryRepo<BeltExam> beltExams;
 
     /**
      * Constructs a new TKD_Service with the given repositories.
@@ -37,7 +38,7 @@ public class TKD_Service {
      * @param trainingCamps     The repository for training camps.
      * @param beltExams         The repository for belt exams.
      */
-    public TKD_Service(InFileRepo<Student> students, InFileRepo<Trainer> trainers, InFileRepo<Parent> parent, InFileRepo<Session> sessions, InFileRepo<Contest> contests, InFileRepo<TrainingCamp> trainingCamps, InFileRepo<BeltExam> beltExams) {
+    public TKD_Service(InMemoryRepo<Student> students, InMemoryRepo<Trainer> trainers, InMemoryRepo<Parent> parent, InMemoryRepo<Session> sessions, InMemoryRepo<Contest> contests, InMemoryRepo<TrainingCamp> trainingCamps, InMemoryRepo<BeltExam> beltExams) {
         this.students = students;
         this.trainers = trainers;
         this.parents = parent;
@@ -555,10 +556,10 @@ public class TKD_Service {
         final String ANSI_RESET = "\u001B[0m";
 
         for (Contest c : contests.getAll()) {
-            allContests.append(c.toString2()).append('\n');
+            allContests.append(c.toString()).append('\n');
 
             for (int sId : c.getStudents()) {
-                allContests.append(students.get(sId).toString()).append('\n');
+                allContests.append(students.get(sId).toString3()).append('\n');
             }
 
             allContests.append('\n');
@@ -699,29 +700,29 @@ public class TKD_Service {
     }
 
     /**
-     * Gets for a given session the date with the biggest profit made and the amount made. It searches through each student's
+     * Gets for a given session the date with the highest attendance and number of participants. It searches through each student's
      * session date list to find the most attended date for all students.
      * @param sessionId     The unique identifier of the session.
-     * @return              A simple entry containing the most profitable date and the amount.
+     * @return              A simple entry containing the most attended date and the number of students.
      */
-    public AbstractMap.SimpleEntry<String, Double> getMostProfitableDateForSession(int sessionId){
+    public AbstractMap.SimpleEntry<String, Integer> getDateWithMostStudentsForSession(int sessionId){
         Session session = sessions.get(sessionId);
-        Map<String,Double> freqWeekdays = new HashMap<>();
+        Map<String,Integer> freqWeekdays = new HashMap<>();
         for(Student st: students.getAll()){
-            if(st.session == session.getId()){
+            if(st.session == sessionId){
                 for(SessionDate sd: st.getSessionDateList()) {
                     if(sd.isAttended()) {
                         if (freqWeekdays.containsKey(sd.getDate())){
-                            freqWeekdays.put(sd.getDate(),freqWeekdays.get(sd.getDate())+session.getPricePerSession());
+                            freqWeekdays.put(sd.getDate(),freqWeekdays.get(sd.getDate())+1);
                         }
                         else{
-                            freqWeekdays.put(sd.getDate(),session.getPricePerSession());
+                            freqWeekdays.put(sd.getDate(),1);
                         }
                     }
                 }
             }
         }
-        double max = 0;
+        int max = 0;
         String date = "";
         for(String d: freqWeekdays.keySet()){
             if(freqWeekdays.get(d)>max){
@@ -729,7 +730,7 @@ public class TKD_Service {
                 date = d;
             }
         }
-        return new AbstractMap.SimpleEntry<String,Double>(date,max);
+        return new AbstractMap.SimpleEntry<String,Integer>(date,max);
     }
 
 }
