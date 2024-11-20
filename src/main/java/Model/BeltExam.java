@@ -8,7 +8,7 @@ import java.util.Map;
  */
 public class BeltExam extends Event{
 
-    public Map< Student,Integer> listOfResults = new HashMap<>();// 1: passed, 0: failed, -1: absent
+    public Map< Integer,Integer> listOfResults = new HashMap<>();// 1: passed, 0: failed, -1: absent
     public String BeltColor;
 
     /**
@@ -30,19 +30,19 @@ public class BeltExam extends Event{
     public BeltExam(){}
     /**
      * Gets the list of results from the exam.
-     * @return The list of results from the exam as a map of student and int.
+     * @return The list of results from the exam as a map of student id and int.
      * The int can be -1( did not participate/exam hasn't taken place yet), 0( failed ) and 1( passed ).
      */
-    public Map<Student, Integer> getListOfResults() {
+    public Map<Integer, Integer> getListOfResults() {
         return listOfResults;
     }
 
     /**
      * Sets the list of results from the exam.
-     * @param listOfResults  The list of results from the exam to set as a map of student and int.
+     * @param listOfResults  The list of results from the exam to set as a map of student id and int.
      * The int can be -1( did not participate/exam hasn't taken place yet), 0( failed ) and 1( passed ).
      */
-    public void setListOfResults(Map<Student, Integer> listOfResults) {
+    public void setListOfResults(Map<Integer, Integer> listOfResults) {
         this.listOfResults = listOfResults;
     }
 

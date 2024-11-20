@@ -83,10 +83,10 @@ public class TKD_Service {
      * @param beltExamID  The unique identifier of a belt exam.
      */
     public void changeBeltlevel(Integer beltExamID){
-        for(Student st: beltExams.get(beltExamID).getListOfResults().keySet()){
-            if(beltExams.get(beltExamID).getListOfResults().get(st)==1){
-                st.setBeltLevel(beltExams.get(beltExamID).getBeltColor());
-                students.update(st);
+        for(int stId: beltExams.get(beltExamID).getListOfResults().keySet()){
+            if(beltExams.get(beltExamID).getListOfResults().get(stId)==1){
+                students.get(stId).setBeltLevel(beltExams.get(beltExamID).getBeltColor());
+                students.update(students.get(stId));
             }
         }
     }
@@ -171,7 +171,7 @@ public class TKD_Service {
     public void addStudentToBeltExam(int idStudent, int idBeltExam){
         Student s = students.get(idStudent);
         BeltExam belt = beltExams.get(idBeltExam);
-        belt.getListOfResults().put(s,-1);
+        belt.getListOfResults().put(s.getId(),-1);
         beltExams.update(belt);
     }
 
@@ -185,11 +185,11 @@ public class TKD_Service {
         Student s = students.get(idStudent);
         BeltExam belt = beltExams.get(idBeltExam);
         if(promoted){
-            belt.getListOfResults().put(s,1); // promoted
+            belt.getListOfResults().put(s.getId(),1); // promoted
             changeBeltlevel(idBeltExam);
         }
         else{
-            belt.getListOfResults().put(s,0); // failed
+            belt.getListOfResults().put(s.getId(),0); // failed
         }
         beltExams.update(belt);
     }
@@ -592,8 +592,8 @@ public class TKD_Service {
         StringBuilder allBeltExams = new StringBuilder();
         for (BeltExam b : beltExams.getAll()) {
             allBeltExams.append(b.toString2()).append('\n');
-            for (Student s : b.getListOfResults().keySet()) {
-                allBeltExams.append(s.toString2()).append('\n');
+            for (int sId : b.getListOfResults().keySet()) {
+                allBeltExams.append(students.get(sId).toString2()).append('\n');
             }
             allBeltExams.append('\n');
         }
