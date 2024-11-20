@@ -45,22 +45,25 @@ public class Contest extends Event{
     }
 
     /**
-     * Gets the list of students registered to the contest.
-     * @return The list of students registered to the contest.
+     * Gets the list of student ids registered to the contest.
+     * @return The list of student ids registered to the contest.
      */
     public List<Integer> getStudents() {
         return students;
     }
 
     /**
-     * Sets the list of students registered to the contest.
-     * @param students  The list of students registered to the contest to set.
+     * Sets the list of student ids registered to the contest.
+     * @param students  The list of student ids registered to the contest to set.
      */
     public void setStudents(List<Integer> students) {
         this.students = students;
     }
 
-
+    /**
+     * default string for print out a Contest.
+     * @return String representation of object.
+     */
     @Override
     public String toString() {
         return "Contest{" +
@@ -75,11 +78,12 @@ public class Contest extends Event{
                 '}';
     }
 
-    /**
-     * Return as a string parameters that I need: name,price
-     * @return
-     */
 
+
+    /**
+     * custom string for print out a Contest.
+     * @return String representation of object.
+     */
     public String toString2() {
         // Coduri ANSI pentru culori
         final String ANSI_YELLOW = "\u001B[33m";

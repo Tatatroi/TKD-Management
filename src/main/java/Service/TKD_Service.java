@@ -2,7 +2,6 @@ package Service;
 
 import Model.*;
 import Repository.InFileRepo;
-import Repository.InMemoryRepo;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -556,7 +555,7 @@ public class TKD_Service {
         final String ANSI_RESET = "\u001B[0m";
 
         for (Contest c : contests.getAll()) {
-            allContests.append(c.toString()).append('\n');
+            allContests.append(c.toString2()).append('\n');
 
             for (int sId : c.getStudents()) {
                 allContests.append(students.get(sId).toString()).append('\n');
@@ -700,29 +699,29 @@ public class TKD_Service {
     }
 
     /**
-     * Gets for a given session the date with the highest attendance and number of participants. It searches through each student's
+     * Gets for a given session the date with the biggest profit made and the amount made. It searches through each student's
      * session date list to find the most attended date for all students.
      * @param sessionId     The unique identifier of the session.
-     * @return              A simple entry containing the most attended date and the number of students.
+     * @return              A simple entry containing the most profitable date and the amount.
      */
-    public AbstractMap.SimpleEntry<String, Integer> getDateWithMostStudentsForSession(int sessionId){
+    public AbstractMap.SimpleEntry<String, Double> getMostProfitableDateForSession(int sessionId){
         Session session = sessions.get(sessionId);
-        Map<String,Integer> freqWeekdays = new HashMap<>();
+        Map<String,Double> freqWeekdays = new HashMap<>();
         for(Student st: students.getAll()){
-            if(st.session==sessionId){
+            if(st.session == session.getId()){
                 for(SessionDate sd: st.getSessionDateList()) {
                     if(sd.isAttended()) {
                         if (freqWeekdays.containsKey(sd.getDate())){
-                            freqWeekdays.put(sd.getDate(),freqWeekdays.get(sd.getDate())+1);
+                            freqWeekdays.put(sd.getDate(),freqWeekdays.get(sd.getDate())+session.getPricePerSession());
                         }
                         else{
-                            freqWeekdays.put(sd.getDate(),1);
+                            freqWeekdays.put(sd.getDate(),session.getPricePerSession());
                         }
                     }
                 }
             }
         }
-        int max = 0;
+        double max = 0;
         String date = "";
         for(String d: freqWeekdays.keySet()){
             if(freqWeekdays.get(d)>max){
@@ -730,7 +729,7 @@ public class TKD_Service {
                 date = d;
             }
         }
-        return new AbstractMap.SimpleEntry<String,Integer>(date,max);
+        return new AbstractMap.SimpleEntry<String,Double>(date,max);
     }
 
 }

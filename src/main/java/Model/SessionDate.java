@@ -14,25 +14,19 @@ public class SessionDate {
 
     public boolean attended;
 
-    public boolean isAttended() {
-        return attended;
-    }
-
-    public void setAttended(boolean attended) {
-        this.attended = attended;
-    }
 
     /**
      * Constructs a new Session date with the specified weekday, date and session.
      * @param weekDay   The day of the week the session took place.
      * @param date      The exact date the session took place.
      * @param session   The session itself that was on a day.
+     * @param attended  The attendance as boolean.
      */
     public SessionDate(String weekDay, String date, int session,boolean attended) {
         this.weekDay = weekDay;
         this.date = date;
-        this.session=session;
-        this.attended=attended;
+        this.session = session;
+        this.attended = attended;
     }
     public SessionDate(){}
     /**
@@ -83,9 +77,25 @@ public class SessionDate {
         this.session = session;
     }
 
+    /**
+     * Gets the attended bool from the session date.
+     * @return The attended bool from the session date.
+     */
+    public boolean isAttended() {
+        return attended;
+    }
 
     /**
-     * string for print out a SessionDate
+     * Sets the attended bool to the session date.
+     * @param attended The attended boll to set in session date.
+     */
+    public void setAttended(boolean attended) {
+        this.attended = attended;
+    }
+
+    /**
+     * default string for print out a Session date.
+     * @return String representation of object.
      */
     @Override
     public String toString() {
@@ -96,7 +106,10 @@ public class SessionDate {
                 '}';
     }
 
-
+    /**
+     * custom string for print out a Session date.
+     * @return String representation of object.
+     */
     public String toString2() {
         // Coduri ANSI pentru culori
         final String ANSI_GREEN = "\u001B[32m";

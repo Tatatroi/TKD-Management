@@ -4,7 +4,6 @@ import Model.*;
 import Service.TKD_Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -419,13 +418,13 @@ public class TKDController {
     }
 
     /**
-     * Gets for a given session the date with the highest attendance and number of participants and prints the outputs.
+     * Gets for a given session the date with the biggest profit made and the amount made and prints the outputs.
      * @param sessionId     The unique identifier of the session.
      */
     public void getDateWithMostStudentsForSession(int sessionId){
-        String date = tkdService.getDateWithMostStudentsForSession(sessionId).getKey();
-        int max = tkdService.getDateWithMostStudentsForSession(sessionId).getValue();
-        System.out.println("The date with most students at the session with id " + sessionId + " is " + date + " and had " + max + " participants.");
+        String date = tkdService.getMostProfitableDateForSession(sessionId).getKey();
+        double max = tkdService.getMostProfitableDateForSession(sessionId).getValue();
+        System.out.println("The date with most students at the session with id " + sessionId + " is " + date + " and made " + max + " RON.");
     }
 
 }
