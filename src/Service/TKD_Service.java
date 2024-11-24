@@ -52,8 +52,15 @@ public class TKD_Service {
      * Change the trainer of a session.
      * @param trainerId     The unique identifier of a trainer.
      * @param sessionId     The unique identifier of a session.
+     * @throws IOException  If no trainer or session was found.
      */
-    public void assignGroupToTrainer(int trainerId, int sessionId){
+    public void assignGroupToTrainer(int trainerId, int sessionId) throws IOException {
+        if(trainers.getAll().stream().noneMatch(tr -> tr.getId() == trainerId)){
+            throw new IOException("Invalid trainer ID");
+        }
+        if(sessions.getAll().stream().noneMatch(ss->ss.getId()== sessionId)){
+            throw new IOException("Invalid session ID");
+        }
         Trainer tr = trainers.get(trainerId);
         Session ss = sessions.get(sessionId);
         ss.trainer=tr.getId();
@@ -64,8 +71,15 @@ public class TKD_Service {
      * Change the session of a student and remove him from the previous one.
      * @param studentId     The unique identifier of a student.
      * @param sessionId     The unique identifier of a session.
+     * @throws IOException  If no student or session was found.
      */
-    public void changeStudentGroup(int studentId,int sessionId){
+    public void changeStudentGroup(int studentId,int sessionId) throws IOException {
+        if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
+            throw new IOException("Invalid student ID");
+        }
+        if(sessions.getAll().stream().noneMatch(ss->ss.getId()== sessionId)){
+            throw new IOException("Invalid session ID");
+        }
         Student st = students.get(studentId);
         Session new_ss = sessions.get(sessionId);
         Session old_ss = sessions.get(st.getSession());
@@ -95,8 +109,12 @@ public class TKD_Service {
      * Counts the number of attendances and absences of a student.
      * @param studentId The unique identifier of a student.
      * @return Map containing the number of attendances and absences of a student.
+     * @throws IOException  If no student was found.
      */
-    public Map<String,Integer> numberOfAttendencesAndAbsences(int studentId){
+    public Map<String,Integer> numberOfAttendencesAndAbsences(int studentId) throws IOException {
+        if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
+            throw new IOException("Invalid student ID");
+        }
         Student st=students.get(studentId);
         Map<String,Integer> attendencesAbsences= new HashMap<>();
         attendencesAbsences.put("Attendences",0);
@@ -167,8 +185,15 @@ public class TKD_Service {
      * Adds a student to a belt exam.
      * @param idStudent     The unique identifier of a student.
      * @param idBeltExam    The unique identifier of a belt exam.
+     * @throws IOException  If no student or belt exam was found.
      */
-    public void addStudentToBeltExam(int idStudent, int idBeltExam){
+    public void addStudentToBeltExam(int idStudent, int idBeltExam) throws IOException {
+        if(students.getAll().stream().noneMatch(st -> st.getId() == idStudent)){
+            throw new IOException("Invalid student ID");
+        }
+        if(beltExams.getAll().stream().noneMatch(bt -> bt.getId() == idBeltExam)){
+            throw new IOException("Invalid belt exam ID");
+        }
         Student s = students.get(idStudent);
         BeltExam belt = beltExams.get(idBeltExam);
         belt.getListOfResults().put(s.getId(),-1);
@@ -180,8 +205,15 @@ public class TKD_Service {
      * @param idStudent     The unique identifier of a student.
      * @param idBeltExam    The unique identifier of a belt exam.
      * @param promoted      The result of the exam, passed(true) or failed(false).
+     * @throws IOException  If no student or belt exam was found.
      */
-    public void addResultBeltExam(int idStudent, int idBeltExam, boolean promoted){
+    public void addResultBeltExam(int idStudent, int idBeltExam, boolean promoted) throws IOException {
+        if(students.getAll().stream().noneMatch(st -> st.getId() == idStudent)){
+            throw new IOException("Invalid student ID");
+        }
+        if(beltExams.getAll().stream().noneMatch(bt -> bt.getId() == idBeltExam)){
+            throw new IOException("Invalid belt exam ID");
+        }
         Student s = students.get(idStudent);
         BeltExam belt = beltExams.get(idBeltExam);
         if(promoted){
@@ -201,10 +233,18 @@ public class TKD_Service {
      * @param attendance    The attendance of a student which can be true(was present) or false(wasn't present).
      * @param weekday       The day of the week of the session.
      * @param date          The exact date the session took place.
+     * @throws IOException  If no student or session was found.
      */
-    public void addAttendance(int studentId,int sessionId,boolean attendance,String weekday,String date){
+    public void addAttendance(int studentId,int sessionId,boolean attendance,String weekday,String date) throws IOException {
+        if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
+            throw new IOException("Invalid student ID");
+        }
+        if(sessions.getAll().stream().noneMatch(ss -> ss.getId() == sessionId)){
+            throw new IOException("Invalid session ID");
+        }
         Student s=students.get(studentId);
         SessionDate sessionDate = new SessionDate(weekday,date,sessionId,attendance);
+        s.getSessionDateList().add(sessionDate);
         students.update(s);
     }
 
@@ -212,8 +252,15 @@ public class TKD_Service {
      * Adds a student to a contest.
      * @param studentId     The unique identifier of a student.
      * @param contestId     The unique identifier of a contest.
+     * @throws IOException  If no student or contest was found.
      */
-    public void addStudentToContest(int studentId,int contestId){
+    public void addStudentToContest(int studentId,int contestId) throws IOException {
+        if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
+            throw new IOException("Invalid student ID");
+        }
+        if(contests.getAll().stream().noneMatch(ct -> ct.getId() == contestId)){
+            throw new IOException("Invalid contest ID");
+        }
         Student st = students.get(studentId);
         Contest ct = contests.get(contestId);
         ct.getStudents().add(st.getId());
@@ -226,8 +273,15 @@ public class TKD_Service {
      * Adds a student to a training camp.
      * @param studentId         The unique identifier of a student.
      * @param trainingCampId    The unique identifier of a training camp.
+     * @throws IOException      If no student or training camp was found.
      */
-    public void addStudentToTraining(int studentId,int trainingCampId){
+    public void addStudentToTraining(int studentId,int trainingCampId) throws IOException {
+        if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
+            throw new IOException("Invalid student ID");
+        }
+        if(trainingCamps.getAll().stream().noneMatch(tc -> tc.getId() == trainingCampId)){
+            throw new IOException("Invalid training camp ID");
+        }
         Student st = students.get(studentId);
         TrainingCamp tc = trainingCamps.get(trainingCampId);
         tc.getStudents().add(st.getId());
@@ -256,7 +310,7 @@ public class TKD_Service {
     }
 
     /**
-     * Searches in the parents repo for a parent by email and return true, if he exixts.
+     * Searches in the parents repo for a parent by email and return true, if he exists.
      * @param email the unique email of a Parent
      * @return true/false if parent found
      */
@@ -266,38 +320,38 @@ public class TKD_Service {
 
     /**
      * this function adds an object in their repo based on their type
-     * @param o represent the given object
-     * @throws IOException
+     * @param                o represent the given object
+     * @throws IOException   If object id already exists.
      */
     public void addObject(Object o) throws IOException {
         if(o instanceof Student){
             if(students.getAll().stream().anyMatch(st->st.getId()==((Student) o).getId())){
-                throw new RuntimeException();
+                throw new IOException("Student ID already exists");
             }
             students.add((Student) o);
 
         }
         else if(o instanceof Trainer){
             if(trainers.getAll().stream().anyMatch(tr->tr.getId()==((Trainer) o).getId())){
-                throw new RuntimeException();
+                throw new IOException("Trainer ID already exists");
             }
             trainers.add((Trainer) o);
         }
         else if(o instanceof Parent){
             if(parents.getAll().stream().anyMatch(pt->pt.getId()==((Parent) o).getId())){
-                throw new RuntimeException();
+                throw new IOException("Parent ID already exists");
             }
             parents.add((Parent) o);
         }
         else if(o instanceof Session){
             if(sessions.getAll().stream().anyMatch(ss->ss.getId()==((Session) o).getId())){
-                throw new RuntimeException();
+                throw new IOException("Session ID already exists");
             }
             sessions.add((Session) o);
         }
         else if(o instanceof BeltExam){
             if(beltExams.getAll().stream().anyMatch(bx->bx.getId()==((BeltExam) o).getId())){
-                throw new RuntimeException();
+                throw new IOException("Belt exam ID already exists");
             }
             beltExams.add((BeltExam) o);
         }
@@ -309,7 +363,7 @@ public class TKD_Service {
         }
         else if(o instanceof TrainingCamp){
             if(trainingCamps.getAll().stream().anyMatch(tc->tc.getId()==((TrainingCamp) o).getId())){
-                throw new RuntimeException();
+                throw new IOException("Training camp ID already exists");
             }
             trainingCamps.add((TrainingCamp) o);
         }
@@ -673,7 +727,13 @@ public class TKD_Service {
      */
     public List<Student> sortStudentsByNumberOfAttendences(){
         List<Student> sorted = new ArrayList<>(students.getAll());
-        sorted.sort((s1, s2) -> Integer.compare(numberOfAttendencesAndAbsences(s1.getId()).get("Attendences"), numberOfAttendencesAndAbsences(s2.getId()).get("Attendences")));
+        sorted.sort((s1, s2) -> {
+            try {
+                return Integer.compare(numberOfAttendencesAndAbsences(s1.getId()).get("Attendences"), numberOfAttendencesAndAbsences(s2.getId()).get("Attendences"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
         return sorted;
     }
 
@@ -705,24 +765,24 @@ public class TKD_Service {
      * @param sessionId     The unique identifier of the session.
      * @return              A simple entry containing the most attended date and the number of students.
      */
-    public AbstractMap.SimpleEntry<String, Integer> getDateWithMostStudentsForSession(int sessionId){
+    public AbstractMap.SimpleEntry<String, Double> getMostProfitableDateForSession(int sessionId){
         Session session = sessions.get(sessionId);
-        Map<String,Integer> freqWeekdays = new HashMap<>();
+        Map<String,Double> freqWeekdays = new HashMap<>();
         for(Student st: students.getAll()){
             if(st.session == sessionId){
                 for(SessionDate sd: st.getSessionDateList()) {
                     if(sd.isAttended()) {
                         if (freqWeekdays.containsKey(sd.getDate())){
-                            freqWeekdays.put(sd.getDate(),freqWeekdays.get(sd.getDate())+1);
+                            freqWeekdays.replace(sd.getDate(),freqWeekdays.get(sd.getDate())+sessions.get(sessionId).getPricePerSession());
                         }
                         else{
-                            freqWeekdays.put(sd.getDate(),1);
+                            freqWeekdays.put(sd.getDate(),sessions.get(sessionId).getPricePerSession());
                         }
                     }
                 }
             }
         }
-        int max = 0;
+        double max = 0;
         String date = "";
         for(String d: freqWeekdays.keySet()){
             if(freqWeekdays.get(d)>max){
@@ -730,7 +790,7 @@ public class TKD_Service {
                 date = d;
             }
         }
-        return new AbstractMap.SimpleEntry<String,Integer>(date,max);
+        return new AbstractMap.SimpleEntry<String,Double>(date,max);
     }
 
 }

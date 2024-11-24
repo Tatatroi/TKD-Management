@@ -370,9 +370,9 @@ public class TKDUI {
     // Methods for each option
 
     /**
-     * request all information that a student need
+     * request all information that a student need.  If it catches an exception it calls the function again.
      */
-    private void addStudent() throws IOException {
+    private void addStudent(){
         System.out.print("Enter student ID: ");
         int idStudent = Integer.parseInt(scanner.nextLine());
 
@@ -403,7 +403,13 @@ public class TKDUI {
 
         System.out.print("Do you want to add a parent to the student? (yes/no) -> if no a person to contact will be necesary: ");
         String parentDecision = scanner.nextLine().trim().toLowerCase();
-
+        Student student = new Student(idStudent, name, lastName, email, address, dateOfBirth, telNumber, beltLevel, session.getId());
+        try {
+            tkdController.addObject(student);
+        } catch (IOException e) {
+            System.out.println("Error: "+ e.getMessage());
+            addStudent();
+        }
 //        Parent parent = null;
 //        if (parentDecision.equals("yes")) {
 //            parent = addParent();
@@ -417,9 +423,9 @@ public class TKDUI {
         Parent parent = addParent();
 //        tkdController.addObject(parent);
 
-        Student student = new Student(idStudent, name, lastName, email, address, dateOfBirth, telNumber, beltLevel, session.getId());
 
-        tkdController.addObject(student);
+
+
 
         //call addStudentToParent
         tkdController.addStudentToParent(student, parent);
@@ -435,9 +441,8 @@ public class TKDUI {
     /**
      * request all information that a parent need
      * @return a Parent object
-     * @throws IOException
      */
-    private Parent addParent() throws IOException {
+    private Parent addParent(){
         System.out.print("Enter parent ID: ");
         int id = Integer.parseInt(scanner.nextLine());
 
@@ -465,10 +470,9 @@ public class TKDUI {
     }
 
     /**
-     * request all information that a session need
-     * @throws IOException
+     * request all information that a session needs.  If it catches an exception it calls the function again.
      */
-    private void addSession() throws IOException {
+    private void addSession() {
         System.out.print("Enter Session ID: ");
         int id = Integer.parseInt(scanner.nextLine());
 
@@ -478,7 +482,7 @@ public class TKDUI {
             difficultyLevel = DifficultyLevel.valueOf(scanner.nextLine());
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid difficulty level. Please enter beginner, intermediary, advanced.");
-            return;
+            difficultyLevel = DifficultyLevel.valueOf(scanner.nextLine());
         }
 
         System.out.print("Enter Maximum Number of Participants: ");
@@ -498,15 +502,19 @@ public class TKDUI {
 
         // Crearea obiectului Session
         Session session = new Session(id, difficultyLevel, maximumParticipants, trainer.getId(), pricePerSession);
-        tkdController.addObject(session);
+        try {
+            tkdController.addObject(session);
+        } catch (IOException e) {
+            System.out.println("Error: "+ e.getMessage());
+            addSession();
+        }
         System.out.println("Session added successfully.");
     }
 
     /**
-     * request all information that a trainer need
-     * @throws IOException
+     * request all information that a trainer need.  If it catches an exception it calls the function again.
      */
-    private void addTrainer() throws IOException{
+    private void addTrainer(){
         System.out.print("Enter Trainer ID: ");
         int id = Integer.parseInt(scanner.nextLine());
 
@@ -533,15 +541,18 @@ public class TKDUI {
 
         Trainer newTrainer = new Trainer(id, name, lastName, email, address, dateOfBirth, number, beltLevel);
 
-        System.out.println("mata");
-        tkdController.addObject(newTrainer);
+        try {
+            tkdController.addObject(newTrainer);
+        } catch (IOException e) {
+            System.out.println("Error: "+ e.getMessage());
+            addTrainer();
+        }
         System.out.println("Trainer added successfully.");
     }
     /**
-     * request all information that a contest need
-     * @throws IOException
+     * request all information that a contest need. If it catches an exception it calls the function again.
      */
-    private void addContest() throws IOException {
+    private void addContest(){
         System.out.println("Enter Contest Id: ");
         int id = Integer.parseInt(scanner.nextLine());
 
@@ -567,15 +578,19 @@ public class TKDUI {
 
         String name = scanner.nextLine();
         Contest contest = new Contest(id,startdate,enddate,price, country, city, name,address);
-        tkdController.addObject(contest);
+        try {
+            tkdController.addObject(contest);
+        } catch (IOException e) {
+            System.out.println("Error: "+ e.getMessage());
+            addContest();
+        }
         System.out.println("Contest added successfully.");
     }
 
     /**
-     * request all information that a training camp need
-     * @throws IOException
+     * request all information that a training camp need. If it catches an exception it calls the function again.
      */
-    private void addTrainingCamp() throws IOException {
+    private void addTrainingCamp(){
         System.out.println("Enter Training camp Id: ");
         int id = Integer.parseInt(scanner.nextLine());
 
@@ -600,15 +615,19 @@ public class TKDUI {
         System.out.println("Enter max number of students: ");
         int numberOfParticipants = Integer.parseInt(scanner.nextLine());
         TrainingCamp trainingCamp = new TrainingCamp(id,startdate,enddate,price, country, city, address, numberOfParticipants);
-        tkdController.addObject(trainingCamp);
+        try {
+            tkdController.addObject(trainingCamp);
+        } catch (IOException e) {
+            System.out.println("Error: "+ e.getMessage());
+            addTrainingCamp();
+        }
         System.out.println("Training camp added successfully.");
     }
 
     /**
-     * request all information that a BeltExam need
-     * @throws IOException
+     * request all information that a BeltExam need. If it catches an exception it calls the function again.
      */
-    private void addBeltExam() throws IOException {
+    private void addBeltExam(){
         System.out.println("Enter Belt Exam Id: ");
         int id = Integer.parseInt(scanner.nextLine());
 
@@ -633,52 +652,70 @@ public class TKDUI {
         System.out.println("Enter belt color: ");
         String beltColor = scanner.nextLine();
         BeltExam beltExam = new BeltExam(id,startdate,enddate,price, country, city, address, beltColor);
-        tkdController.addObject(beltExam);
+        try {
+            tkdController.addObject(beltExam);
+        } catch (IOException e) {
+            System.out.println("Error: "+ e.getMessage());
+            addBeltExam();
+        }
         System.out.println("Belt Exam added successfully.");
     }
 
     /**
-     * request all information that a belt exam need
-     * @throws IOException
+     * request all information that a belt exam need. If it catches an exception it calls the function again.
+     *
      */
-    private void addStudentToBeltExam()throws IOException{
+    private void addStudentToBeltExam(){
         System.out.println("Enter Belt Exam Id: ");
         int idBeltExam = Integer.parseInt(scanner.nextLine());
 
         System.out.println("Enter Student Id: ");
         int studentId = Integer.parseInt(scanner.nextLine());
 
-        tkdController.addStudentToBeltExam(idBeltExam,studentId);
+        try {
+            tkdController.addStudentToBeltExam(idBeltExam,studentId);
+        } catch (IOException e) {
+            System.out.println("Error: "+ e.getMessage());
+            addStudentToBeltExam();
+        }
         System.out.println("Student added successfully.");
     }
 
     /**
-     * add a student to contest based on their ID s
-     * @throws IOException
+     * add a student to contest based on their ID s. If it catches an exception it calls the function again.
      */
-    private void addStudentToContest()throws IOException{
+    private void addStudentToContest(){
         System.out.println("Enter Contest Id: ");
         int idContest = Integer.parseInt(scanner.nextLine());
 
         System.out.println("Enter Student Id: ");
         int studentId = Integer.parseInt(scanner.nextLine());
 
-        tkdController.addStudentToContest(studentId,idContest);
+        try {
+            tkdController.addStudentToContest(studentId,idContest);
+        } catch (IOException e) {
+            System.out.println("Error: "+ e.getMessage());
+            addStudentToContest();
+        }
         System.out.println("Student added successfully.");
     }
 
     /**
-     * add a student to a trianing camp based on their ID s
-     * @throws IOException
+     * add a student to a trianing camp based on their ID s. If it catches an exception it calls the function again.
      */
-    private void addStudentToTrainingCamp()throws IOException {
+    private void addStudentToTrainingCamp(){
         System.out.println("Enter Student Id: ");
         int idStudent = Integer.parseInt(scanner.nextLine());
 
         System.out.println("Enter Training Camp Id: ");
         int idTrainingCamp = Integer.parseInt(scanner.nextLine());
 
-        tkdController.addStudentToTrainingCamp(idStudent,idTrainingCamp);
+        try {
+            tkdController.addStudentToTrainingCamp(idStudent,idTrainingCamp);
+        } catch (IOException e) {
+            System.out.println("Error: "+ e.getMessage());
+            addStudentToTrainingCamp();
+        }
         System.out.println("Student added successfully.");
     }
 
@@ -803,28 +840,41 @@ public class TKDUI {
     }
 
     /**
-     * displays a list of attendances for a student
+     * displays a list of attendances for a student. If it catches an exception it calls the function again.
      */
     private void viewAttendances(){
-        int studentId = readStudentId();
-        System.out.println("=== List of attendances ===");
-        tkdController.numberOfAttendances(studentId);
+        try {
+            int studentId = readStudentId();
+            System.out.println("=== List of attendances ===");
+            tkdController.numberOfAttendances(studentId);
+        }
+        catch (IOException e){
+            System.out.println("Error: "+ e.getMessage());
+            viewAttendances();
+        }
     }
 
 
 
     /**
      * Changes the session of a trainer, by reading the new session id and the trainer id from the console, and displaying a successful message.
+     * If it catches an exception it calls the function again.
      */
-    private void assignSessionToTrainer() {
-        int sessionId = readSessionId();
-        int trainerId = readTrainerId();
-        tkdController.assignSessionToTrainer(sessionId, trainerId);
-        System.out.println("Session assigned to trainer successfully.");
+    private void assignSessionToTrainer() throws IOException {
+        try {
+            int sessionId = readSessionId();
+            int trainerId = readTrainerId();
+            tkdController.assignSessionToTrainer(sessionId, trainerId);
+            System.out.println("Session assigned to trainer successfully.");
+        }
+        catch (IOException e){
+            System.out.println("Error: "+ e.getMessage());
+            assignSessionToTrainer();
+        }
     }
-
     /**
      * Adds an attendance to a student, by reading the session id, the student id, if he attended or not, the weekday and the date from the console.
+     * If it catches an exception it calls the function again.
      */
     private void addAttendance(){
         int sessionId = readSessionId();
@@ -838,28 +888,47 @@ public class TKDUI {
 
         System.out.print("Enter date: ");
         String date = scanner.nextLine();
-        tkdController.addAttendance(studentId,sessionId, attendance, weekday, date);
+        try {
+            tkdController.addAttendance(studentId,sessionId, attendance, weekday, date);
+        } catch (IOException e) {
+            System.out.println("Error: "+ e.getMessage());
+            addAttendance();
+        }
     }
 
     /**
      * Changes the session of a student, by reading the new session id and the student id from the console, and displaying a successful message.
+     * If it catches an exception it calls the function again.
      */
     private void changeStudentSession() {
-        int studentId = readStudentId();
-        int sessionId = readSessionId();
-        tkdController.changeStudentSession(studentId, sessionId);
-        System.out.println("Student session changed successfully.");
+        try {
+            int studentId = readStudentId();
+            int sessionId = readSessionId();
+            tkdController.changeStudentSession(studentId, sessionId);
+            System.out.println("Student session changed successfully.");
+        }
+        catch (IOException e){
+            System.out.println("Error: "+ e.getMessage());
+            changeStudentSession();
+        }
     }
 
     /**
      * Adds result for a student from the belt exam, by reading the student id, belt exam id and the result from the console and displaying it.
+     * If it catches an exception it calls the function again.
      */
     private void addResultToBeltExam(){
-        int studentId = readStudentId();
-        int beltExamId = readBeltExamId();
-        System.out.println("Result(true/false): ");
-        boolean promoted = Boolean.parseBoolean(scanner.nextLine());
-        tkdController.addResultToBeltExam(studentId,beltExamId,promoted);
+        try {
+            int studentId = readStudentId();
+            int beltExamId = readBeltExamId();
+            System.out.println("Result(true/false): ");
+            boolean promoted = Boolean.parseBoolean(scanner.nextLine());
+            tkdController.addResultToBeltExam(studentId, beltExamId, promoted);
+        }
+        catch (IOException e){
+            System.out.println("Error: "+ e.getMessage());
+            addResultToBeltExam();
+        }
     }
 
     /**

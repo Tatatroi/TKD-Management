@@ -21,17 +21,18 @@
 // */
 //public class InFileRepo <T extends  HasID> implements IRepo<T>{
 //    private final String filePath;
-//    //private final  ObjectMapper objectMapper;
-//    //private final TypeReference<List<T>> typeReference;
+//    private final  ObjectMapper objectMapper;
+//    private final TypeReference<List<T>> typeReference;
 //
 //    private Map<Integer,T> data;
 //
 //    /**
-//     * Constructs a new inFileRepo with the specified file path, type reference and creates a new object mapper,which helps to write and read objects from json files.
+//     * Constructs a new inFileRepo with the specified file path, type reference and creates a new object mapper,which helps to write and
+//     * read objects from json files. It initializes a new map and reads from file, thus populating the map with data from creation.
 //     * @param filePath          The name of the json file, where data will be stored.
 //     * @param typeReference     The type of the data to be stored.
 //     */
-//   // public InFileRepo(String filePath,TypeReference<List<T>> typeReference) {
+//    public InFileRepo(String filePath,TypeReference<List<T>> typeReference) {
 //        this.filePath = filePath;
 //        this.objectMapper = new ObjectMapper();
 //        this.typeReference = typeReference;
@@ -61,7 +62,6 @@
 //    /**
 //     * Tries to write to the file, the list of objects of type T that is specified and throws an exception if it can't.
 //     * @param objects       The list of objects of type T that will be written to the file, overwriting the previous contents of the file.
-//     * @throws IOException  If it can't write to the file.
 //     */
 //    private void writeToFile(List<T> objects) {
 //        try {

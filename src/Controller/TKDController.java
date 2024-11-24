@@ -119,8 +119,9 @@ public class TKDController {
      * Changes the session of the trainer
      * @param idTrainer The unique identifier of the trainer.
      * @param idSession The unique identifier of the session.
+     * @throws IOException  If no trainer or session was found.
      */
-    public void assignSessionToTrainer(Integer idSession, Integer idTrainer){
+    public void assignSessionToTrainer(Integer idSession, Integer idTrainer) throws IOException {
         tkdService.assignGroupToTrainer(idTrainer, idSession);
         System.out.println("Trainer with ID " + idTrainer + " assigned to session with ID " + idSession);
     }
@@ -129,8 +130,9 @@ public class TKDController {
      * Changes the session of the student.
      * @param idStudent The unique identifier of the student.
      * @param idSession The unique identifier of the session.
+     * @throws IOException  If no student or session was found.
      */
-    public void changeStudentSession(Integer idStudent, Integer idSession){
+    public void changeStudentSession(Integer idStudent, Integer idSession) throws IOException {
         tkdService.changeStudentGroup(idStudent, idSession);
         System.out.println("Student with ID " + idStudent + " changed to session with ID " + idSession);
     }
@@ -143,8 +145,9 @@ public class TKDController {
     /**
      * Counts the number of attendances and absences of a student.
      * @param idStudent The unique identifier of the student.
+     * @throws IOException  If no student was found.
      */
-    public void numberOfAttendances(Integer idStudent){
+    public void numberOfAttendances(Integer idStudent) throws IOException {
         Map<String,Integer> attendencesAndAbsences = tkdService.numberOfAttendencesAndAbsences(idStudent);
         System.out.println("Student with id " + idStudent + " has " + attendencesAndAbsences.get("Attendences") + " attendances "+
                 attendencesAndAbsences.get("Absences") + " absences");
@@ -154,8 +157,9 @@ public class TKDController {
      * Adds a student to a belt exam.
      * @param idBeltExam    The unique identifier of the belt exam.
      * @param idStudent     The unique identifier of the student.
+     * @throws IOException  If no student or belt exam was found.
      */
-    public void addStudentToBeltExam(Integer idBeltExam, Integer idStudent){
+    public void addStudentToBeltExam(Integer idBeltExam, Integer idStudent) throws IOException {
         tkdService.addStudentToBeltExam(idStudent, idBeltExam);
         System.out.println("Student with id " + idStudent + " added to Belt Exam with ID " + idBeltExam);
     }
@@ -165,8 +169,9 @@ public class TKDController {
      * @param idBeltExam    The unique identifier of the belt exam.
      * @param idStudent     The unique identifier of the student.
      * @param result        The result which is true(passed) or false(failed).
+     * @throws IOException  If no student or belt exam was found.
      */
-    public void addResultToBeltExam(Integer idBeltExam, Integer idStudent, Boolean result){
+    public void addResultToBeltExam(Integer idBeltExam, Integer idStudent, Boolean result) throws IOException {
         tkdService.addResultBeltExam(idStudent, idBeltExam, result);
         if(result) {
             System.out.println("Student with id " + idStudent + " has promoted Belt Exam with ID " + idBeltExam);
@@ -182,8 +187,9 @@ public class TKDController {
      * @param attendance    The attendance which can be true(present) or false(absent).
      * @param weekDay       The day of the week of the attendance.
      * @param date          The date of the session.
+     * @throws IOException  If no student or session was found.
      */
-    public void addAttendance(Integer idStudent,Integer idSession, Boolean attendance, String weekDay, String date){
+    public void addAttendance(Integer idStudent,Integer idSession, Boolean attendance, String weekDay, String date) throws IOException {
         tkdService.addAttendance(idStudent, idSession, attendance, weekDay, date);
         if(attendance) {
             System.out.println("Student with id " + idStudent + " has attended the session with ID " + idSession + " on " + weekDay +" from "+date);
@@ -197,8 +203,9 @@ public class TKDController {
      * Adds a student to a contest.
      * @param idStudent     The unique identifier of the student.
      * @param idContest    The unique identifier of the contest.
+     * @throws IOException  If no student or contest was found.
      */
-    public void addStudentToContest(Integer idStudent, Integer idContest){
+    public void addStudentToContest(Integer idStudent, Integer idContest) throws IOException {
         tkdService.addStudentToContest(idStudent, idContest);
         System.out.println("Student with id " + idStudent + " has been added to contest with id " + idContest);
     }
@@ -207,8 +214,9 @@ public class TKDController {
      * Adds a student to a training camp.
      * @param idStudent         The unique identifier of the student.
      * @param idTrainingCamp    The unique identifier of the training camp.
+     * @throws IOException      If no student or training camp was found.
      */
-    public void addStudentToTrainingCamp(Integer idStudent, Integer idTrainingCamp){
+    public void addStudentToTrainingCamp(Integer idStudent, Integer idTrainingCamp) throws IOException {
         tkdService.addStudentToTraining(idStudent, idTrainingCamp);
         System.out.println("Student with id " + idStudent + " has been added to training camp with id " + idTrainingCamp);
     }
