@@ -373,52 +373,66 @@ public class TKDUI {
     /**
      * request all information that a student need.  If it catches an exception it calls the function again.
      */
-    private void addStudent() throws ValidationException {
+    private void addStudent() throws ValidationException, IOException {
         System.out.print("Enter student ID: ");
         int idStudent = Integer.parseInt(scanner.nextLine());
-        if(idStudent==0 || idStudent<0){
-            throw new ValidationException("Id cannot be null or negative");
+        if(idStudent == 0 || idStudent < 0){
+            throw new ValidationException("student ID cannot be null or negative");
         }
 
-        System.out.print("Enter student first name: ");
+        System.out.print("Enter  student first name: ");
         String name = scanner.nextLine();
+        if(name.isEmpty()){
+            throw new ValidationException("student first name cannot be null or negative");}
 
-        System.out.print("Enter student last name: ");
+
+        System.out.print("Enter  student last name: ");
         String lastName = scanner.nextLine();
+        if(lastName.isEmpty()){
+            throw new ValidationException("student last name cannot be null or negative");}
 
-        System.out.print("Enter student email: ");
+        System.out.print("Enter  student email: ");
         String email = scanner.nextLine();
+        if(email.isEmpty()){
+            throw new ValidationException("student email cannot be null or negative");}
 
-        System.out.print("Enter student address: ");
+
+        System.out.print("Enter  student address: ");
         String address = scanner.nextLine();
+        if(address.isEmpty()){
+            throw new ValidationException("student address cannot be null or negative");}
+
 
         System.out.print("Enter student year of birth: ");
         int dateOfBirth = Integer.parseInt(scanner.nextLine());
+        if(dateOfBirth == 0 || dateOfBirth < 0){
+            throw new ValidationException("student year of birth cannot be null or negative");
+        }
 
-        System.out.print("Enter student telephone number: ");
+        System.out.print("Enter  student telephone number: ");
         String telNumber = scanner.nextLine();
+        if(telNumber.isEmpty()){
+            throw new ValidationException("student telephone number cannot be null or negative");}
 
-        System.out.print("Enter student belt level: ");
+
+        System.out.print("Enter  student belt level: ");
         String beltLevel = scanner.nextLine();
+        if(beltLevel.isEmpty()){
+            throw new ValidationException("student belt level cannot be null or negative");}
+
 
         System.out.print("Enter session ID: ");
         int sessionId = Integer.parseInt(scanner.nextLine());
-        Session session = null;
-        try {
-            session = tkdController.getSessionById(sessionId);
-        } catch (IOException e) {
-            System.out.println("Error: " + e.getMessage());
-            addStudent();
+        if(sessionId == 0 || sessionId < 0){
+            throw new ValidationException("session ID cannot be null or negative");
         }
+
+        Session session = null;
+        session = tkdController.getSessionById(sessionId);
         System.out.print("Do you want to add a parent to the student? (yes/no) -> if no a person to contact will be necesary: ");
         String parentDecision = scanner.nextLine().trim().toLowerCase();
         Student student = new Student(idStudent, name, lastName, email, address, dateOfBirth, telNumber, beltLevel, session.getId());
-        try {
-            tkdController.addObject(student);
-        } catch (IOException e) {
-            System.out.println("Error: " + e.getMessage());
-            addStudent();
-        }
+        tkdController.addObject(student);
 //        Parent parent = null;
 //        if (parentDecision.equals("yes")) {
 //            parent = addParent();
@@ -448,27 +462,43 @@ public class TKDUI {
      * request all information that a parent need
      * @return a Parent object
      */
-    private Parent addParent(){
+    private Parent addParent() throws ValidationException {
         System.out.print("Enter parent ID: ");
         int id = Integer.parseInt(scanner.nextLine());
+        if(id == 0 || id < 0){
+            throw new ValidationException("parent ID cannot be null or negative");
+        }
 
-        System.out.print("Enter parent first name: ");
+        System.out.print("Enter  parent first name: ");
         String name = scanner.nextLine();
+        if(name.isEmpty()){
+            throw new ValidationException("parent first name cannot be null or negative");}
 
-        System.out.print("Enter parent last name: ");
+        System.out.print("Enter  parent last name: ");
         String lastName = scanner.nextLine();
+        if(lastName.isEmpty()){
+            throw new ValidationException("parent last name cannot be null or negative");}
 
-        System.out.print("Enter parent email: ");
+        System.out.print("Enter  parent email: ");
         String email = scanner.nextLine();
+        if(email.isEmpty()){
+            throw new ValidationException("parent email cannot be null or negative");}
 
-        System.out.print("Enter parent address: ");
+        System.out.print("Enter  parent address: ");
         String address = scanner.nextLine();
+        if(address.isEmpty()){
+            throw new ValidationException("parent address cannot be null or negative");}
 
         System.out.print("Enter parent year of birth: ");
         int dateOfBirth = Integer.parseInt(scanner.nextLine());
+        if(dateOfBirth == 0 || dateOfBirth < 0){
+            throw new ValidationException("parent year of birth cannot be null or negative");
+        }
 
-        System.out.print("Enter parent number: ");
+        System.out.print("Enter  parent number: ");
         String number = scanner.nextLine();
+        if(number.isEmpty()){
+            throw new ValidationException("parent number cannot be null or negative");}
 
         Parent newParent = new Parent(id, name, lastName, email, address, dateOfBirth,number);
 //        tkdController.addObject(newParent);
@@ -478,9 +508,12 @@ public class TKDUI {
     /**
      * request all information that a session needs.  If it catches an exception it calls the function again.
      */
-    private void addSession() {
+    private void addSession() throws ValidationException {
         System.out.print("Enter Session ID: ");
         int id = Integer.parseInt(scanner.nextLine());
+        if(id == 0 || id < 0){
+            throw new ValidationException("Session ID cannot be null or negative");
+        }
 
         System.out.print("Enter Difficulty Level (beginner, intermediary, advanced): ");
         DifficultyLevel difficultyLevel;
@@ -493,9 +526,15 @@ public class TKDUI {
 
         System.out.print("Enter Maximum Number of Participants: ");
         int maximumParticipants = Integer.parseInt(scanner.nextLine());
+        if(maximumParticipants == 0 || maximumParticipants < 0){
+            throw new ValidationException("Maximum Number of Participants cannot be null or negative");
+        }
 
         System.out.print("Enter Trainer ID for this Session: ");
         int trainerId = Integer.parseInt(scanner.nextLine());
+        if(trainerId == 0 || trainerId < 0){
+            throw new ValidationException("Trainer ID for this Session cannot be null or negative");
+        }
 
         Trainer trainer = null;
         try {
@@ -526,30 +565,48 @@ public class TKDUI {
     /**
      * request all information that a trainer need.  If it catches an exception it calls the function again.
      */
-    private void addTrainer(){
+    private void addTrainer() throws ValidationException {
         System.out.print("Enter Trainer ID: ");
         int id = Integer.parseInt(scanner.nextLine());
+        if(id == 0 || id < 0){
+            throw new ValidationException("Trainer ID cannot be null or negative");
+        }
 
-        System.out.print("Enter Trainer First Name: ");
+        System.out.print("Enter  Trainer First Name: ");
         String name = scanner.nextLine();
+        if(name.isEmpty()){
+            throw new ValidationException("Trainer First Name cannot be null or negative");}
 
-        System.out.print("Enter Trainer Last Name: ");
+        System.out.print("Enter  Trainer Last Name: ");
         String lastName = scanner.nextLine();
+        if(lastName.isEmpty()){
+            throw new ValidationException("Trainer Last Name cannot be null or negative");}
 
-        System.out.print("Enter Trainer Email: ");
+        System.out.print("Enter  Trainer Email: ");
         String email = scanner.nextLine();
+        if(email.isEmpty()){
+            throw new ValidationException("Trainer Email cannot be null or negative");}
 
-        System.out.print("Enter Trainer Address: ");
+        System.out.print("Enter  Trainer Address: ");
         String address = scanner.nextLine();
+        if(address.isEmpty()){
+            throw new ValidationException("Trainer Address cannot be null or negative");}
 
         System.out.print("Enter Trainer Year of Birth: ");
         int dateOfBirth = Integer.parseInt(scanner.nextLine());
+        if(dateOfBirth == 0 || dateOfBirth < 0){
+            throw new ValidationException("Trainer Year of Birth cannot be null or negative");
+        }
 
-        System.out.print("Enter Trainer Telephone Number: ");
+        System.out.print("Enter  Trainer Telephone Number: ");
         String number = scanner.nextLine();
+        if(number.isEmpty()){
+            throw new ValidationException("Trainer Telephone Number cannot be null or negative");}
 
-        System.out.print("Enter Trainer Belt Level: ");
+        System.out.print("Enter  Trainer Belt Level: ");
         String beltLevel = scanner.nextLine();
+        if(beltLevel.isEmpty()){
+            throw new ValidationException("Trainer Belt Level cannot be null or negative");}
 
         Trainer newTrainer = new Trainer(id, name, lastName, email, address, dateOfBirth, number, beltLevel);
 
@@ -564,31 +621,43 @@ public class TKDUI {
     /**
      * request all information that a contest need. If it catches an exception it calls the function again.
      */
-    private void addContest(){
+    private void addContest() throws ValidationException {
         System.out.println("Enter Contest Id: ");
         int id = Integer.parseInt(scanner.nextLine());
 
-        System.out.println("Enter start date: ");
+        System.out.print("Enter   start date: ");
         String startdate = scanner.nextLine();
+        if(startdate.isEmpty()){
+            throw new ValidationException(" start date cannot be null or negative");}
 
-        System.out.println("Enter end date: ");
+        System.out.print("Enter   end date: ");
         String enddate = scanner.nextLine();
+        if(enddate.isEmpty()){
+            throw new ValidationException(" end date cannot be null or negative");}
 
         System.out.println("Enter price: ");
         double price = Double.parseDouble(scanner.nextLine());
 
-        System.out.println("Enter country: ");
+        System.out.print("Enter   country: ");
         String country = scanner.nextLine();
+        if(country.isEmpty()){
+            throw new ValidationException(" country cannot be null or negative");}
 
-        System.out.println("Enter city: ");
-
+        System.out.print("Enter   city: ");
         String city = scanner.nextLine();
-        System.out.println("Enter address: ");
-
+        if(city.isEmpty()){
+            throw new ValidationException(" city cannot be null or negative");}
+        System.out.print("Enter   address: ");
         String address = scanner.nextLine();
-        System.out.println("Enter name: ");
 
+        if(address.isEmpty()){
+            throw new ValidationException("address cannot be null or negative");}
+
+        System.out.print("Enter   name: ");
         String name = scanner.nextLine();
+        if(name.isEmpty()){
+            throw new ValidationException(" name cannot be null or negative");}
+
         Contest contest = new Contest(id,startdate,enddate,price, country, city, name,address);
         try {
             tkdController.addObject(contest);
@@ -602,27 +671,41 @@ public class TKDUI {
     /**
      * request all information that a training camp need. If it catches an exception it calls the function again.
      */
-    private void addTrainingCamp(){
+    private void addTrainingCamp() throws ValidationException {
         System.out.println("Enter Training camp Id: ");
         int id = Integer.parseInt(scanner.nextLine());
 
-        System.out.println("Enter start date: ");
+        System.out.print("Enter   start date: ");
         String startdate = scanner.nextLine();
+        if(startdate.isEmpty()){
+            throw new ValidationException(" start date cannot be null or negative");}
 
-        System.out.println("Enter end date: ");
+
+        System.out.print("Enter   end date: ");
         String enddate = scanner.nextLine();
+
+        if(enddate.isEmpty()){
+            throw new ValidationException("end date cannot be null or negative");}
 
         System.out.println("Enter price date: ");
         double price = Double.parseDouble(scanner.nextLine());
 
-        System.out.println("Enter country: ");
+        System.out.print("Enter   country: ");
         String country = scanner.nextLine();
+        if(country.isEmpty()){
+            throw new ValidationException(" country cannot be null or negative");}
 
-        System.out.println("Enter city: ");
+
+        System.out.print("Enter   city: ");
         String city = scanner.nextLine();
+        if(city.isEmpty()){
+            throw new ValidationException(" city cannot be null or negative");}
 
-        System.out.println("Enter address: ");
+
+        System.out.print("Enter   address: ");
         String address = scanner.nextLine();
+        if(address.isEmpty()){
+            throw new ValidationException(" address cannot be null or negative");}
 
         System.out.println("Enter max number of students: ");
         int numberOfParticipants = Integer.parseInt(scanner.nextLine());
@@ -639,30 +722,46 @@ public class TKDUI {
     /**
      * request all information that a BeltExam need. If it catches an exception it calls the function again.
      */
-    private void addBeltExam(){
+    private void addBeltExam() throws ValidationException {
         System.out.println("Enter Belt Exam Id: ");
         int id = Integer.parseInt(scanner.nextLine());
 
-        System.out.println("Enter start date: ");
+        System.out.print("Enter   start date: ");
         String startdate = scanner.nextLine();
+        if(startdate.isEmpty()){
+            throw new ValidationException(" start date cannot be null or negative");}
 
-        System.out.println("Enter end date: ");
+        System.out.print("Enter   end date: ");
         String enddate = scanner.nextLine();
+        if(enddate.isEmpty()){
+            throw new ValidationException(" end date cannot be null or negative");}
+
 
         System.out.println("Enter price date: ");
         double price = Double.parseDouble(scanner.nextLine());
 
-        System.out.println("Enter country: ");
+        System.out.print("Enter   country: ");
         String country = scanner.nextLine();
+        if(country.isEmpty()){
+            throw new ValidationException(" country cannot be null or negative");}
 
-        System.out.println("Enter city: ");
+        System.out.print("Enter   city: ");
         String city = scanner.nextLine();
+        if(city.isEmpty()){
+            throw new ValidationException(" city cannot be null or negative");}
 
-        System.out.println("Enter address: ");
+
+        System.out.print("Enter   address: ");
         String address = scanner.nextLine();
+        if(address.isEmpty()){
+            throw new ValidationException(" address cannot be null or negative");}
 
-        System.out.println("Enter belt color: ");
+
+        System.out.print("Enter   belt color: ");
         String beltColor = scanner.nextLine();
+        if(beltColor.isEmpty()){
+            throw new ValidationException(" belt color cannot be null or negative");}
+
         BeltExam beltExam = new BeltExam(id,startdate,enddate,price, country, city, address, beltColor);
         try {
             tkdController.addObject(beltExam);
@@ -930,18 +1029,22 @@ public class TKDUI {
      * Adds an attendance to a student, by reading the session id, the student id, if he attended or not, the weekday and the date from the console.
      * If it catches an exception it calls the function again.
      */
-    private void addAttendance(){
+    private void addAttendance() throws ValidationException {
         int sessionId = readSessionId();
         int studentId = readStudentId();
 
         System.out.print("Enter attendance(true or false): ");
         boolean attendance = Boolean.parseBoolean(scanner.nextLine());
 
-        System.out.print("Enter week day: ");
+        System.out.print("Enter  week day: ");
         String weekday = scanner.nextLine();
+        if(weekday.isEmpty()){
+            throw new ValidationException("week day cannot be null or negative");}
 
-        System.out.print("Enter date: ");
+        System.out.print("Enter  date: ");
         String date = scanner.nextLine();
+        if(date.isEmpty()){
+            throw new ValidationException("date cannot be null or negative");}
         try {
             tkdController.addAttendance(studentId,sessionId, attendance, weekday, date);
         } catch (IOException e) {
@@ -988,11 +1091,14 @@ public class TKDUI {
     /**
      * Generates a bill for a parent and displays it in the console. If it catches an exception it calls the function again.
      */
-    private void generateBill() {
+    private void generateBill() throws ValidationException {
         int parentId = readParentId();
 
-        System.out.println("Enter the month for the invoice: ");
+        System.out.print("Enter   the month for the invoice: ");
         String month = scanner.nextLine();
+        if(month.isEmpty()){
+            throw new ValidationException(" the month for the invoice cannot be null or negative");}
+
         try {
             tkdController.generateInvoice(parentId, month);
         }
@@ -1082,9 +1188,12 @@ public class TKDUI {
     /**
      * call the filter students function from Controller that prints out the students filtered by a belt level read from the console
      */
-    private void filterStudentsByBeltLevel(){
-        System.out.println("Enter the belt level for filtering: ");
+    private void filterStudentsByBeltLevel() throws ValidationException {
+        System.out.print("Enter   the belt level for filtering: ");
         String beltLevel = scanner.nextLine();
+        if(beltLevel.isEmpty()){
+            throw new ValidationException(" the belt level for filtering cannot be null or negative");}
+
         tkdController.filteredStudentsByBeltLevel(beltLevel);
     }
 

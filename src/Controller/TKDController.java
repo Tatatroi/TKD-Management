@@ -442,9 +442,9 @@ public class TKDController {
      * @throws IOException      If no session was found.
      */
     public void getDateWithMostStudentsForSession(int sessionId) throws IOException {
-        String date = tkdService.getMostProfitableDateForSession(sessionId).getKey();
-        double max = tkdService.getMostProfitableDateForSession(sessionId).getValue();
-        System.out.println("The date with most students at the session with id " + sessionId + " is " + date + " and made " + max + " RON.");
+        //String date = tkdService.getMostProfitableDateForSession(sessionId).getKey();
+        //double max = tkdService.getMostProfitableDateForSession(sessionId).getValue();
+        //System.out.println("The date with most students at the session with id " + sessionId + " is " + date + " and made " + max + " RON.");
     }
 
 }
