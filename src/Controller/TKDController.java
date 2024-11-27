@@ -54,71 +54,78 @@ public class TKDController {
 
     /**
      * Deletes a student from the repo.
-     * @param idStudent The unique identifier of the student.
+     * @param idStudent         The unique identifier of the student.
+     * @throws IOException      If no student was found.
      */
-    public void deleteStudent(Integer idStudent){
+    public void deleteStudent(Integer idStudent) throws IOException {
         tkdService.removeStudent(idStudent);
         System.out.println("Student with ID " + idStudent + " deleted");
     }
 
     /**
      * Deletes a trainer from the repo.
-     * @param idTrainer The unique identifier of the trainer.
+     * @param idTrainer         The unique identifier of the trainer.
+     * @throws IOException      If no parent was found.
      */
-    public void deleteTrainer(Integer idTrainer){
+    public void deleteTrainer(Integer idTrainer) throws IOException {
         tkdService.removeTrainer(idTrainer);
         System.out.println("Trainer with ID " + idTrainer + " deleted");
     }
 
     /**
      * Deletes a parent from the repo.
-     * @param idParent The unique identifier of the parent.
+     * @param idParent          The unique identifier of the parent.
+     * @throws IOException      If no parent was found.
      */
-    public void deleteParent(Integer idParent){
+    public void deleteParent(Integer idParent) throws IOException {
         tkdService.removeParent(idParent);
         System.out.println("Parent with ID " + idParent + " deleted");
     }
 
     /**
      * Deletes a session from the repo.
-     * @param idSession The unique identifier of the session.
+     * @param idSession         The unique identifier of the session.
+     * @throws IOException      If no session was found.
      */
-    public void deleteSession(Integer idSession){
+    public void deleteSession(Integer idSession) throws IOException {
         tkdService.removeSession(idSession);
         System.out.println("Session with ID " + idSession + " deleted");
     }
 
     /**
      * Deletes a belt exam from the repo.
-     * @param idBeltExam The unique identifier of the belt exam.
+     * @param idBeltExam        The unique identifier of the belt exam.
+     * @throws IOException      If no belt exam was found.
      */
-    public void deleteBeltExam(Integer idBeltExam){
+    public void deleteBeltExam(Integer idBeltExam) throws IOException {
         tkdService.removeBeltExam(idBeltExam);
         System.out.println("Belt Exam with ID " + idBeltExam + " deleted");
     }
 
     /**
      * Deletes a contest from the repo.
-     * @param idContest The unique identifier of the contest.
+     * @param idContest         The unique identifier of the contest.
+     * @throws IOException      If no contest was found.
      */
-    public void deleteContest(Integer idContest){
+    public void deleteContest(Integer idContest) throws IOException {
         tkdService.removeContest(idContest);
         System.out.println("Contest with ID " + idContest + " deleted");
     }
 
     /**
      * Deletes a training camp from the repo.
-     * @param idTrainingCamp The unique identifier of the training camp.
+     * @param idTrainingCamp    The unique identifier of the training camp.
+     * @throws IOException      If no training camp was found.
      */
-    public void deleteTrainingCamp(Integer idTrainingCamp){
+    public void deleteTrainingCamp(Integer idTrainingCamp) throws IOException {
         tkdService.removeTrainingCamp(idTrainingCamp);
         System.out.println("Training camp with ID " + idTrainingCamp + " deleted");
     }
 
     /**
      * Changes the session of the trainer
-     * @param idTrainer The unique identifier of the trainer.
-     * @param idSession The unique identifier of the session.
+     * @param idTrainer     The unique identifier of the trainer.
+     * @param idSession     The unique identifier of the session.
      * @throws IOException  If no trainer or session was found.
      */
     public void assignSessionToTrainer(Integer idSession, Integer idTrainer) throws IOException {
@@ -144,7 +151,7 @@ public class TKDController {
 
     /**
      * Counts the number of attendances and absences of a student.
-     * @param idStudent The unique identifier of the student.
+     * @param idStudent     The unique identifier of the student.
      * @throws IOException  If no student was found.
      */
     public void numberOfAttendances(Integer idStudent) throws IOException {
@@ -202,7 +209,7 @@ public class TKDController {
     /**
      * Adds a student to a contest.
      * @param idStudent     The unique identifier of the student.
-     * @param idContest    The unique identifier of the contest.
+     * @param idContest     The unique identifier of the contest.
      * @throws IOException  If no student or contest was found.
      */
     public void addStudentToContest(Integer idStudent, Integer idContest) throws IOException {
@@ -280,10 +287,11 @@ public class TKDController {
 
     /**
      * Generates an invoice for a month for a parent for all its children.
-     * @param parentID  The unique identifier of a parent.
-     * @param month     The month for the invoice.
+     * @param parentID          The unique identifier of a parent.
+     * @param month             The month for the invoice.
+     * @throws IOException      If no parent was found.
      */
-    public void generateInvoice(Integer parentID,String month){
+    public void generateInvoice(Integer parentID,String month) throws IOException {
         System.out.println(tkdService.generateInvoice(parentID,month));
     }
 
@@ -299,19 +307,21 @@ public class TKDController {
 
     /**
      * Gets a trainer by id.
-     * @param idTrainer The unique identifier of a trainer.
-     * @return  The trainer.
+     * @param idTrainer         The unique identifier of a trainer.
+     * @return                  The trainer.
+     * @throws IOException      If no trainer was found.
      */
-    public Trainer getTrainerById(Integer idTrainer){
+    public Trainer getTrainerById(Integer idTrainer) throws IOException {
         return tkdService.getTrainerById(idTrainer);
     }
 
     /**
      * Gets a trainer by id.
-     * @param idSession The unique identifier of a session.
-     * @return  The session.
+     * @param idSession         The unique identifier of a session.
+     * @return                  The session.
+     * @throws IOException      If no session was found.
      */
-    public Session getSessionById(Integer idSession){
+    public Session getSessionById(Integer idSession) throws IOException {
         return tkdService.getSessionById(idSession);
     }
 
@@ -393,9 +403,10 @@ public class TKDController {
 
     /**
      * prints a filtred list of parents that have a specific number of children
-     * @param noOfChildren number of children
+     * @param noOfChildren      number of children
+     * @throws IOException      If noOfChildren is negative.
      */
-    public void filterParentsByNumberOfChildren(Integer noOfChildren){
+    public void filterParentsByNumberOfChildren(Integer noOfChildren) throws IOException {
         if(tkdService.filterParentsNumberOfChildren(noOfChildren).size() == 0){
             System.out.println("No parent with " + noOfChildren + " children");
         }
@@ -427,9 +438,10 @@ public class TKDController {
 
     /**
      * Gets for a given session the date with the biggest profit made and the amount made and prints the outputs.
-     * @param sessionId     The unique identifier of the session.
+     * @param sessionId         The unique identifier of the session.
+     * @throws IOException      If no session was found.
      */
-    public void getDateWithMostStudentsForSession(int sessionId){
+    public void getDateWithMostStudentsForSession(int sessionId) throws IOException {
         String date = tkdService.getMostProfitableDateForSession(sessionId).getKey();
         double max = tkdService.getMostProfitableDateForSession(sessionId).getValue();
         System.out.println("The date with most students at the session with id " + sessionId + " is " + date + " and made " + max + " RON.");

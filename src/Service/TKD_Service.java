@@ -107,9 +107,9 @@ public class TKD_Service {
 
     /**
      * Counts the number of attendances and absences of a student.
-     * @param studentId The unique identifier of a student.
-     * @return Map containing the number of attendances and absences of a student.
-     * @throws IOException  If no student was found.
+     * @param studentId         The unique identifier of a student.
+     * @return                  Map containing the number of attendances and absences of a student.
+     * @throws IOException      If no student was found.
      */
     public Map<String,Integer> numberOfAttendencesAndAbsences(int studentId) throws IOException {
         if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
@@ -134,11 +134,11 @@ public class TKD_Service {
 
     /**
      * this is a backtrcking function that find evry possible combination between Contests and TrainingCamps
-     * @param eventPairs a list with information that holds all Contest/TrainingCamp and their prices
-     * @param remainingAmount the amount of money after one Contest/TrainingCamp has been chosen
-     * @param start starting point where the function start to search
-     * @param currentCombination the combination on every search
-     * @param results <- this is a parameter where all combinations will be found
+     * @param eventPairs            a list with information that holds all Contest/TrainingCamp and their prices
+     * @param remainingAmount       the amount of money after one Contest/TrainingCamp has been chosen
+     * @param start                 starting point where the function start to search
+     * @param currentCombination    the combination on every search
+     * @param results               this is a parameter where all combinations will be found
      */
     private void findCombinations(List<Map.Entry<Integer, Double>> eventPairs, double remainingAmount,int start, List<Integer> currentCombination, List<List<Integer>> results) {
         if (remainingAmount == 0) {
@@ -159,8 +159,8 @@ public class TKD_Service {
 
     /**
      * it takes the amount of money given by controller and returns a list with every combination
-     * @param amountOfMoney the range that it's forbidden to be exceeded
-     * @return a list of lists with all possible combinations
+     * @param amountOfMoney     the range that it's forbidden to be exceeded
+     * @return                  a list of lists with all possible combinations
      */
     public List<List<Integer>> eventsThatdontExceedAmountOfMoney(double amountOfMoney){
         List<Map.Entry<Integer,Double>> eventPairs = new ArrayList<>();
@@ -311,8 +311,8 @@ public class TKD_Service {
 
     /**
      * Searches in the parents repo for a parent by email and return true, if he exists.
-     * @param email the unique email of a Parent
-     * @return true/false if parent found
+     * @param email     the unique email of a Parent
+     * @return          true/false if parent found
      */
     public boolean findParent(String email){
         return parents.getAll().stream() .anyMatch(pt -> Objects.equals(pt.getEmail(), email));
@@ -372,12 +372,16 @@ public class TKD_Service {
 
     /**
      * make an Invoice for every parent based on the month
-     * @param parentID the ID of the parent
-     * @param month the month they want an invoice
-     * @return a string that holds information an invoice need to have (for every child they have)
+     * @param parentID          the ID of the parent
+     * @param month             the month they want an invoice
+     * @return                  a string that holds information an invoice need to have (for every child they have)
+     * @throws IOException      If no parent was found.
      */
 
-    public String generateInvoice(Integer parentID,String month){
+    public String generateInvoice(Integer parentID,String month) throws IOException {
+        if(parents.getAll().stream().noneMatch(pt -> pt.getId() == parentID)){
+            throw new IOException("Invalid parent ID");
+        }
         Parent parent = parents.get(parentID);
         String invoice="Invoice for the month " + month + "\nParent name: " + parent.getLastName() + " " + parent.getName() + "\n";
         double total = 0;
@@ -400,9 +404,13 @@ public class TKD_Service {
 
     /**
      * it deletes a student based on their ID
-     * @param studentID the id of the student
+     * @param studentID         the id of the student
+     * @throws IOException      If no student was found.
      */
-    public void removeStudent(Integer studentID){
+    public void removeStudent(Integer studentID) throws IOException {
+        if(students.getAll().stream().noneMatch(st -> st.getId() == studentID)){
+            throw new IOException("Invalid student ID");
+        }
         Parent parent = parents.get(students.get(studentID).getParent());
         if(parent.getChildren().size()>1){
             parent.getChildren().remove(studentID);
@@ -419,49 +427,73 @@ public class TKD_Service {
 
     /**
      * it deletes a trainer based on their ID
-     * @param trainerID the id of the trainer
+     * @param trainerID         the id of the trainer
+     * @throws IOException      If no trainer was found.
      */
-    public void removeTrainer(Integer trainerID){
+    public void removeTrainer(Integer trainerID) throws IOException {
+        if(trainers.getAll().stream().noneMatch(t -> t.getId() == trainerID)){
+            throw new IOException("Invalid trainer ID");
+        }
         trainers.remove(trainerID);
     }
 
     /**
      * it deletes a parent based on their ID
-     * @param parentID the id of the Parent
+     * @param parentID          the id of the Parent
+     * @throws IOException      If no parent was found.
      */
-    public void removeParent(Integer parentID){
+    public void removeParent(Integer parentID) throws IOException {
+        if(parents.getAll().stream().noneMatch(pt -> pt.getId() == parentID)){
+            throw new IOException("Invalid parent ID");
+        }
         parents.remove(parentID);
     }
 
     /**
      * it deletes a session based on their ID
-     * @param sessionID the id of the session
+     * @param sessionID         the id of the session
+     * @throws IOException      If no session was found.
      */
-    public void removeSession(Integer sessionID){
+    public void removeSession(Integer sessionID) throws IOException {
+        if(sessions.getAll().stream().noneMatch(ss -> ss.getId() == sessionID)){
+            throw new IOException("Invalid session ID");
+        }
         sessions.remove(sessionID);
     }
 
     /**
      * it deletes a BeltExam based on their ID
-     * @param beltExamID the id of the BeltExam
+     * @param beltExamID        the id of the BeltExam
+     * @throws IOException      If no belt exam was found.
      */
-    public void removeBeltExam(Integer beltExamID){
+    public void removeBeltExam(Integer beltExamID) throws IOException {
+        if(beltExams.getAll().stream().noneMatch(bt -> bt.getId() == beltExamID)){
+            throw new IOException("Invalid belt exam ID");
+        }
         beltExams.remove(beltExamID);
     }
 
     /**
      * it deletes a Contest based on their ID
-     * @param contestID the id of the contest
+     * @param contestID         the id of the contest
+     * @throws IOException      If no contest was found.
      */
-    public void removeContest(Integer contestID){
+    public void removeContest(Integer contestID) throws IOException {
+        if(contests.getAll().stream().noneMatch(ct -> ct.getId() == contestID)){
+            throw new IOException("Invalid contest ID");
+        }
         contests.remove(contestID);
     }
 
     /**
      * it deletes a training camp based on their ID
-     * @param trainingCampID the id of the trainingCamp
+     * @param trainingCampID    the id of the trainingCamp
+     * @throws IOException      If no training camp was found.
      */
-    public void removeTrainingCamp(Integer trainingCampID){
+    public void removeTrainingCamp(Integer trainingCampID) throws IOException {
+        if(trainingCamps.getAll().stream().noneMatch(tc -> tc.getId() == trainingCampID)){
+            throw new IOException("Invalid training camp ID");
+        }
         trainingCamps.remove(trainingCampID);
     }
 
@@ -469,12 +501,12 @@ public class TKD_Service {
     /**
      * assign a student to a session
      * @param idSession the id of the session
-     * @param student the id of the Student
+     * @param studentID the id of the Student
      */
-    public void addStudentToSession(Integer idSession, Integer student){
+    public void addStudentToSession(Integer idSession, Integer studentID){
 
         Session ss = sessions.get(idSession);
-        Student st = students.get(student);
+        Student st = students.get(studentID);
 
         ss.getSessionStudents().add(st.getId());
         sessions.update(ss);
@@ -483,26 +515,30 @@ public class TKD_Service {
 
     /**
      * get a Trainer based on their id
-     * @param trainerId the trainer id
-     * @return object of type Trainer
+     * @param trainerId         the trainer id
+     * @return                  object of type Trainer
+     * @throws IOException      If no trainer was found.
      */
-    public Trainer getTrainerById(int trainerId){
+    public Trainer getTrainerById(int trainerId) throws IOException {
+        if(trainers.getAll().stream().noneMatch(st -> st.getId() == trainerId)){
+            throw new IOException("Invalid trainer ID");
+        }
         return trainers.get(trainerId);
     }
 
     /**
      * get a Contest based on their id
-     * @param idContes the contest id
-     * @return an object of type Contest
+     * @param       contestID the contest id
+     * @return      an object of type Contest
      */
-    public Contest getContestById(int idContes){
-        return contests.get(idContes);
+    public Contest getContestById(int contestID){
+        return contests.get(contestID);
     }
 
     /**
      * get a Training Camp based on their id
-     * @param idTrainingCamp the Training Camp id
-     * @return an object of type Training Camp
+     * @param idTrainingCamp    the Training Camp id
+     * @return                  an object of type Training Camp
      */
     public TrainingCamp getTrainingCampByIs(int idTrainingCamp){
         return trainingCamps.get(idTrainingCamp);
@@ -510,10 +546,14 @@ public class TKD_Service {
 
     /**
      * get a session based on their id
-     * @param sessionId the session id
-     * @return an object of type Session
+     * @param sessionId         the session id
+     * @return                  an object of type Session
+     * @throws IOException      If no session was found.
      */
-    public Session getSessionById(int sessionId){
+    public Session getSessionById(int sessionId) throws IOException {
+        if(sessions.getAll().stream().noneMatch(st -> st.getId() == sessionId)){
+            throw new IOException("Invalid session ID");
+        }
         return sessions.get(sessionId);
     }
 
@@ -750,10 +790,14 @@ public class TKD_Service {
 
     /**
      * Filters parents based of their number of children
-     * @param noOfChildren number of children we want to filter
-     * @return a list of parents that have noOfChildren as number of children
+     * @param noOfChildren      number of children we want to filter
+     * @return                  a list of parents that have noOfChildren as number of children
+     * @throws IOException      If noOfChildren is negative.
      */
-    public List<Parent> filterParentsNumberOfChildren(int noOfChildren) {
+    public List<Parent> filterParentsNumberOfChildren(int noOfChildren) throws IOException {
+        if(noOfChildren<0){
+            throw new IOException("Children number can't be negative");
+        }
         return parents.getAll().stream()  // Obținem stream-ul de la lista de părinți
                 .filter(p -> p.getChildren().size() == noOfChildren)  // Filtrăm părinții care au exact numărul de copii dorit
                 .collect(Collectors.toList());  // Colectăm rezultatele într-o listă
@@ -762,10 +806,14 @@ public class TKD_Service {
     /**
      * Gets for a given session the date with the highest attendance and number of participants. It searches through each student's
      * session date list to find the most attended date for all students.
-     * @param sessionId     The unique identifier of the session.
-     * @return              A simple entry containing the most attended date and the number of students.
+     * @param sessionId         The unique identifier of the session.
+     * @return                  A simple entry containing the most attended date and the number of students.
+     * @throws IOException      If no session was found.
      */
-    public AbstractMap.SimpleEntry<String, Double> getMostProfitableDateForSession(int sessionId){
+    public AbstractMap.SimpleEntry<String, Double> getMostProfitableDateForSession(int sessionId) throws IOException {
+        if(sessions.getAll().stream().noneMatch(ss -> ss.getId() == sessionId)){
+            throw new IOException("Invalid session ID");
+        }
         Session session = sessions.get(sessionId);
         Map<String,Double> freqWeekdays = new HashMap<>();
         for(Student st: students.getAll()){

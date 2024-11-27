@@ -1,6 +1,7 @@
 package Ui;
 
 import Controller.TKDController;
+import Exceptions.ValidationException;
 import Model.*;
 
 import java.io.IOException;
@@ -372,9 +373,12 @@ public class TKDUI {
     /**
      * request all information that a student need.  If it catches an exception it calls the function again.
      */
-    private void addStudent(){
+    private void addStudent() throws ValidationException {
         System.out.print("Enter student ID: ");
         int idStudent = Integer.parseInt(scanner.nextLine());
+        if(idStudent==0 || idStudent<0){
+            throw new ValidationException("Id cannot be null or negative");
+        }
 
         System.out.print("Enter student first name: ");
         String name = scanner.nextLine();
@@ -399,15 +403,20 @@ public class TKDUI {
 
         System.out.print("Enter session ID: ");
         int sessionId = Integer.parseInt(scanner.nextLine());
-        Session session = tkdController.getSessionById(sessionId);
-
+        Session session = null;
+        try {
+            session = tkdController.getSessionById(sessionId);
+        } catch (IOException e) {
+            System.out.println("Error: " + e.getMessage());
+            addStudent();
+        }
         System.out.print("Do you want to add a parent to the student? (yes/no) -> if no a person to contact will be necesary: ");
         String parentDecision = scanner.nextLine().trim().toLowerCase();
         Student student = new Student(idStudent, name, lastName, email, address, dateOfBirth, telNumber, beltLevel, session.getId());
         try {
             tkdController.addObject(student);
         } catch (IOException e) {
-            System.out.println("Error: "+ e.getMessage());
+            System.out.println("Error: " + e.getMessage());
             addStudent();
         }
 //        Parent parent = null;
@@ -424,14 +433,11 @@ public class TKDUI {
 //        tkdController.addObject(parent);
 
 
-
-
-
         //call addStudentToParent
         tkdController.addStudentToParent(student, parent);
 
         // call addStudentToSession function
-        tkdController.addStudentToSession(sessionId,idStudent);
+        tkdController.addStudentToSession(sessionId, idStudent);
 
         //tkdController.addStudent(student);
 
@@ -491,11 +497,17 @@ public class TKDUI {
         System.out.print("Enter Trainer ID for this Session: ");
         int trainerId = Integer.parseInt(scanner.nextLine());
 
-        Trainer trainer = tkdController.getTrainerById(trainerId);
-        if (trainer == null) {
-            System.out.println("Trainer not found. Please check the trainer ID.");
-            return;
+        Trainer trainer = null;
+        try {
+            trainer = tkdController.getTrainerById(trainerId);
+        } catch (IOException e) {
+            System.out.println("Error: " + e.getMessage());
+            addSession();
         }
+//        if (trainer == null) {
+//            System.out.println("Trainer not found. Please check the trainer ID.");
+//            return;
+//        }
 
         System.out.print("Enter Price Per Session: ");
         double pricePerSession = Double.parseDouble(scanner.nextLine());
@@ -505,7 +517,7 @@ public class TKDUI {
         try {
             tkdController.addObject(session);
         } catch (IOException e) {
-            System.out.println("Error: "+ e.getMessage());
+            System.out.println("Error: " + e.getMessage());
             addSession();
         }
         System.out.println("Session added successfully.");
@@ -729,65 +741,107 @@ public class TKDUI {
 //    }
 
     /**
-     * deletes a student base on ID
+     * deletes a student base on ID. If it catches an exception it calls the function again.
      */
     private void deleteStudent() {
         int id = readStudentId();
-        tkdController.deleteStudent(id);
+        try {
+            tkdController.deleteStudent(id);
+        }
+        catch (IOException e){
+            System.out.println("Error: "+ e.getMessage());
+            deleteStudent();
+        }
         System.out.println("Student deleted successfully.");
     }
 
     /**
-     * deletes a belt exam base on ID
+     * deletes a belt exam base on ID. If it catches an exception it calls the function again.
      */
     private void deleteBeltExam() {
         int id = readBeltExamId();
-        tkdController.deleteBeltExam(id);
+        try{
+            tkdController.deleteBeltExam(id);
+        }
+        catch (IOException e){
+            System.out.println("Error: "+ e.getMessage());
+            deleteBeltExam();
+        }
         System.out.println("Belt Exam deleted successfully.");
     }
 
     /**
-     * deletes a training camp base on ID
+     * deletes a training camp base on ID. If it catches an exception it calls the function again.
      */
     private void deleteTrainingCamp() {
         int id = readTrainingCampId();
-        tkdController.deleteTrainingCamp(id);
+        try {
+            tkdController.deleteTrainingCamp(id);
+        }
+        catch (IOException e){
+            System.out.println("Error: "+ e.getMessage());
+            deleteTrainingCamp();
+        }
         System.out.println("Training camp deleted successfully.");
     }
 
     /**
-     * deletes a parent base on ID
+     * deletes a parent base on ID. If it catches an exception it calls the function again.
      */
     private void deleteParent(){
         int id = readParentId();
-        tkdController.deleteParent(id);
+        try {
+            tkdController.deleteParent(id);
+        }
+        catch (IOException e){
+            System.out.println("Error: "+ e.getMessage());
+            deleteParent();
+        }
         System.out.println("Parent deleted successfully.");
     }
 
     /**
-     * deletes a trainer base on ID
+     * deletes a trainer base on ID. If it catches an exception it calls the function again.
      */
     private void deleteTrainer() {
         int id = readTrainerId();
-        tkdController.deleteTrainer(id);
+        try {
+            tkdController.deleteTrainer(id);
+        }
+        catch (IOException e){
+            System.out.println("Error: "+ e.getMessage());
+            deleteTrainer();
+        }
         System.out.println("Trainer deleted successfully.");
     }
 
     /**
-     * deletes a session base on ID
+     * deletes a session base on ID. If it catches an exception it calls the function again.
      */
     private void deleteSession() {
         int id = readSessionId();
-        tkdController.deleteSession(id);
+        try {
+            tkdController.deleteSession(id);
+        }
+        catch (IOException e){
+            System.out.println("Error: "+ e.getMessage());
+            deleteSession();
+        }
         System.out.println("Session deleted successfully.");
     }
 
     /**
-     * deletes a contest base on ID
+     * deletes a contest base on ID. If it catches an exception it calls the function again.
      */
     private void deleteContest() {
         int id = readContestId();
-        tkdController.deleteContest(id);
+        try {
+            tkdController.deleteContest(id);
+        }
+        catch (IOException e){
+            System.out.println("Error: "+ e.getMessage());
+            deleteContest();
+        }
         System.out.println("Contest deleted successfully.");
     }
 
@@ -932,14 +986,20 @@ public class TKDUI {
     }
 
     /**
-     * Generates a bill for a parent and displays it in the console.
+     * Generates a bill for a parent and displays it in the console. If it catches an exception it calls the function again.
      */
-    private void generateBill(){
+    private void generateBill() {
         int parentId = readParentId();
 
         System.out.println("Enter the month for the invoice: ");
         String month = scanner.nextLine();
-        tkdController.generateInvoice(parentId,month);
+        try {
+            tkdController.generateInvoice(parentId, month);
+        }
+        catch (IOException e){
+            System.out.println("Error: "+ e.getMessage());
+            generateBill();
+        }
     }
 
     /**
@@ -1029,13 +1089,20 @@ public class TKDUI {
     }
 
     /**
-     * call the filter parents function from Controller that prints out the parents filtered by a number of children read from the console
+     * call the filter parents function from Controller that prints out the parents filtered by a number of children read from the console.
+     * If it catches an exception it calls the function again.
      */
     private void filterParentsByNumberOfChildren(){
         System.out.println("Enter the number of children for filtering: ");
         Integer numberOfChildren = scanner.nextInt();
 
-        tkdController.filterParentsByNumberOfChildren(numberOfChildren);
+        try{
+            tkdController.filterParentsByNumberOfChildren(numberOfChildren);
+        }
+        catch (IOException e){
+            System.out.println("Error: "+ e.getMessage());
+            filterParentsByNumberOfChildren();
+        }
     }
 
     /**
@@ -1068,9 +1135,16 @@ public class TKDUI {
 
     /**
      * Reads a session id and gives it as parameter to the getDateWithMostStudentsForSession function from controller.
+     * If it catches an exception it calls the function again.
      */
     public void getDateWithMostStudentsForSession(){
         int sessionId = readSessionId();
-        tkdController.getDateWithMostStudentsForSession(sessionId);
+        try {
+            tkdController.getDateWithMostStudentsForSession(sessionId);
+        }
+        catch (IOException e){
+            System.out.println("Error: "+ e.getMessage());
+            getDateWithMostStudentsForSession();
+        }
     }
 }

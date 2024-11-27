@@ -9,8 +9,6 @@
         <module name="TKD Management" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="TKD-Management" target="21" />
-    </bytecodeTargetLevel>
+    <bytecodeTargetLevel target="20" />
   </component>
 </project>
