@@ -7,6 +7,8 @@ import org.example.Model.*;
 import org.example.Repository.*;
 
 
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.List;
 
 public class Main {
@@ -172,9 +174,14 @@ public class Main {
         beltExamRepo.add(beltExam3);
 
 
-
-
-
+        
+//        try {
+//            DriverManager.getConnection("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+        DatabaseRepo<Student> students2 = new DatabaseStudent("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
+        students2.add(student1);
         TKD_Service tkdService = new TKD_Service(studentRepo,trainerRepo,parentRepo,sessionRepo,contestRepo,trainingCampRepo,beltExamRepo);
         TKDController tkdController = new TKDController(tkdService);
         TKDUI newUi = new TKDUI(tkdController);
