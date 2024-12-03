@@ -4,7 +4,9 @@ import org.example.Model.Student;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
@@ -15,7 +17,7 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
     @Override
     public void add(Student student) {
         String sql = "INSERT INTO Students (id, name,lastName,email,address,dateOfBirth,number, beltLevel, session) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)";
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, student.getId());
             stmt.setString(2, student.getName());
             stmt.setString(3, student.getLastName());
@@ -33,21 +35,78 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
 
     @Override
     public void remove(Integer RemoveId) {
-        super.remove(RemoveId);
+        String sql = "DELETE FROM Student WHERE ID=?";
+
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setInt(1,RemoveId);
+            statement.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void update(Student obj) {
-        super.update(obj);
+        String sql = "UPDATE Student SET name=?, lastName=?,email=?,address=?,dateOfBirth=?,number=?, beltLevel=?, session=? WHERE ID=?";
+
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1,obj.getName());
+            statement.setString(2,obj.getLastName());
+            statement.setString(3,obj.getEmail());
+            statement.setString(4,obj.getAddress());
+            statement.setInt(5,obj.getDateOfBirth());
+            statement.setString(6,obj.getNumber());
+            statement.setString(7,obj.getBeltLevel());
+            statement.setInt(8,obj.getSession());
+            statement.setInt(9,obj.getId());
+
+            statement.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override
     public Student get(Integer getId) {
-        return super.get(getId);
+        String sql = "SELECT * FROM Student WHERE ID=?";
+
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setInt(1,getId);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if(resultSet.next()){
+                return extractFromResultSet(resultSet);
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public List<Student> getAll() {
-        return super.getAll();
+        String sql = "SELECT * FROM Student";
+
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            ResultSet resultSet = statement.executeQuery();
+
+            List<Student> students = new ArrayList<>();
+
+            while(resultSet.next()){
+                students.add(extractFromResultSet(resultSet));
+            }
+
+            return students;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static Student extractFromResultSet(ResultSet resultSet) throws SQLException {
+        return new Student(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getString("lastName"),resultSet.getString("email"),
+                resultSet.getString("address"),resultSet.getInt("dateOfBirth"),resultSet.getString("number"),resultSet.getString("beltLevel"),
+                resultSet.getInt("session"));
     }
 }
