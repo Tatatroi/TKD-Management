@@ -38,7 +38,7 @@ public class Main {
      *
      * @param args Command-line arguments (not used).
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
 
         InMemoryRepo<Student> studentRepo = new InMemoryRepo<>();
         InMemoryRepo<Parent> parentRepo = new InMemoryRepo<>();
@@ -180,8 +180,9 @@ public class Main {
 //        } catch (SQLException e) {
 //            throw new RuntimeException(e);
 //        }
-        DatabaseRepo<Student> students2 = new DatabaseStudent("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
-        students2.add(student1);
+        DatabaseRepo<Student> students2 = new DatabaseStudent("jdbc:sqlserver://localhost:1433;database=TKD Management;integratedSecurity=true;trustServerCertificate=true;");
+//        students2.add(student1);
+        System.out.println(students2.getAll());
         TKD_Service tkdService = new TKD_Service(studentRepo,trainerRepo,parentRepo,sessionRepo,contestRepo,trainingCampRepo,beltExamRepo);
         TKDController tkdController = new TKDController(tkdService);
         TKDUI newUi = new TKDUI(tkdController);

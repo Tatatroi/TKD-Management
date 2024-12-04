@@ -16,7 +16,7 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
 
     @Override
     public void add(Student student) {
-        String sql = "INSERT INTO Students (id, name,lastName,email,address,dateOfBirth,number, beltLevel, session) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)";
+        String sql = "INSERT INTO Student (id, name,lastName,email,address,dateOfBirth,number, beltLevel, session) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, student.getId());
             stmt.setString(2, student.getName());
@@ -34,7 +34,7 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
     }
 
     @Override
-    public void remove(Integer RemoveId) {
+    public void remove(Integer RemoveId) throws SQLException {
         String sql = "DELETE FROM Student WHERE ID=?";
 
         try(PreparedStatement statement = connection.prepareStatement(sql)){
@@ -68,7 +68,7 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
     }
 
     @Override
-    public Student get(Integer getId) {
+    public Student get(Integer getId) throws SQLException {
         String sql = "SELECT * FROM Student WHERE ID=?";
 
         try(PreparedStatement statement = connection.prepareStatement(sql)){
@@ -87,7 +87,7 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
     }
 
     @Override
-    public List<Student> getAll() {
+    public List<Student> getAll() throws SQLException {
         String sql = "SELECT * FROM Student";
 
         try(PreparedStatement statement = connection.prepareStatement(sql)){

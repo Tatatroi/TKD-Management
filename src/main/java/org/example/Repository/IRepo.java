@@ -2,6 +2,7 @@ package org.example.Repository;
 
 import org.example.Model.HasID;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -13,30 +14,30 @@ public interface IRepo <T extends HasID>{
      * Adds a new object in the repository.
      * @param obj The object to add.
      */
-    void add(T obj);
+    void add(T obj) throws SQLException;
 
     /**
      * Deletes an object from the repository by its ID.
      * @param RemoveId The unique identifier of the object to delete.
      */
-    void remove(Integer RemoveId);
+    void remove(Integer RemoveId) throws SQLException;
 
     /**
      * Updates an existing object in the repository.
      * @param obj The object to update.
      */
-    void update(T obj);
+    void update(T obj) throws SQLException;
 
     /**
      * Retrieves an object from the repository by its ID.
      * @param getId The unique identifier of the object to retrieve.
      * @return The object with the specified ID, or null if not found.
      */
-    T get(Integer getId);
+    T get(Integer getId) throws SQLException;
 
     /**
      * Retrieves all objects from the repository.
      * @return A list of all objects in the repository.
      */
-    List<T> getAll();
+    List<T> getAll() throws SQLException;
 }
