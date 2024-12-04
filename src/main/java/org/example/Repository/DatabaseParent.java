@@ -1,9 +1,5 @@
 package org.example.Repository;
-
 import org.example.Model.Parent;
-import org.example.Model.Trainer;
-
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -57,6 +53,28 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
         }catch (Exception e) {
             e.printStackTrace();
         }
+
+        String deleteChildrenFromParent = "DELETE From ParentsStudents WHERE idParent = ?";
+        try(PreparedStatement stmt2 = connection.prepareStatement(deleteChildrenFromParent)){
+            stmt2.setInt(1, obj.getId());
+            stmt2.executeUpdate();
+        }catch(SQLException e) {
+            e.printStackTrace();
+        }
+
+
+        String insertChildrenParents = "INSERT INTO ParentsStudents(idParent, idStudent) VALUES(?,?)";
+        for(int idStudent: obj.getChildren()){
+            try(PreparedStatement stmt = connection.prepareStatement(insertChildrenParents)){
+                stmt.setInt(1, obj.getId());
+                stmt.setInt(2, idStudent);
+                stmt.executeUpdate();
+            }catch(SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+
     }
 
     @Override
@@ -66,15 +84,8 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
             stmt.setInt(1, getId);
             try(ResultSet rs = stmt.executeQuery()){
                 if(rs.next()){
-                    return new Parent(
-                            rs.getInt("id"),
-                            rs.getString("name"),
-                            rs.getString("lastName"),
-                            rs.getString("email"),
-                            rs.getString("address"),
-                            rs.getInt("dateOfBirth"),
-                            rs.getString("number")
-                    );
+                    List<Integer> children = getParentChildren(getId);
+                    return extractContest(rs,children);
                 }
             }catch (SQLException e){
                 e.printStackTrace();
@@ -86,6 +97,8 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
         }
         return null;
     }
+
+
 
     @Override
     public List<Parent> getAll() throws SQLException {
@@ -94,15 +107,8 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
         try( PreparedStatement stmt = connection.prepareStatement(sql)){
             try(ResultSet rs = stmt.executeQuery()){
                 while(rs.next()){
-                    parents.add(new Parent(
-                            rs.getInt("id"),
-                            rs.getString("name"),
-                            rs.getString("lastName"),
-                            rs.getString("email"),
-                            rs.getString("address"),
-                            rs.getInt("dateOfBirth"),
-                            rs.getString("number")
-                    ));
+                    List<Integer> children = getParentChildren(rs.getInt("id"));
+                    parents.add(extractContest(rs,children));
                 }
             }catch (SQLException e){
                 e.printStackTrace();
@@ -114,4 +120,31 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
         }
         return null;
     }
+
+    public List<Integer> getParentChildren(int ParentId) throws SQLException {
+        String sql = "SELECT * FROM ParentsStudents WHERE idParent = ?";
+        List<Integer> children = new ArrayList<>();
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, ParentId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    children.add(rs.getInt("idParent"));
+                }
+            }
+        }
+        return children;
+    }
+
+    public static Parent extractContest(ResultSet rs, List<Integer> students) throws SQLException {
+        Parent parent = new Parent(rs.getInt("id"),
+                rs.getString("name"),
+                rs.getString("lastName"),
+                rs.getString("email"),
+                rs.getString("address"),
+                rs.getInt("dateOfBirth"),
+                rs.getString("number"));
+        parent.setChildren(students);
+        return parent;
+    }
+
 }
