@@ -8,7 +8,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
     public DatabaseBeltExam(String dbUrl) {
@@ -35,6 +37,14 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
 
     @Override
     public void remove(Integer RemoveId) {
+        String removeFromResultsBeltExams = "DELETE FROM ResultsBeltExams WHERE idBeltExam=?";
+
+        try(PreparedStatement statement = connection.prepareStatement(removeFromResultsBeltExams)){
+            statement.setInt(1,RemoveId);
+            statement.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         String sql = "DELETE FROM BeltExams WHERE ID=?";
 
         try(PreparedStatement statement = connection.prepareStatement(sql)){
@@ -43,6 +53,7 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
     }
 
     @Override
@@ -61,11 +72,31 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        String deleteStudentsBeltExams = "DELETE From ResultsBeltExams WHERE idStud=?";
+
+        try(PreparedStatement statement = connection.prepareStatement(deleteStudentsBeltExams)){
+            statement.setInt(1,beltExam.getId());
+            statement.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        String addStudentsTrainingCamps = "INSERT INTO ResultsBeltExams (idBeltExam,idStud,result) VALUES (?,?,?)";
+
+        for(int studentId: beltExam.getListOfResults().keySet()) {
+            try (PreparedStatement statement = connection.prepareStatement(addStudentsTrainingCamps)) {
+                statement.setInt(1, beltExam.getId());
+                statement.setInt(2, studentId);
+                statement.setInt(3, beltExam.getListOfResults().get(studentId));
+                statement.execute();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     @Override
     public BeltExam get(Integer getId) {
-        String sql = "SELECT * FROM BeltExams WHERE ID=?";
+        String sql = "SELECT * FROM BeltExams WHERE id=?";
 
         try(PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setInt(1,getId);
@@ -73,7 +104,8 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
             ResultSet resultSet = statement.executeQuery();
 
             if(resultSet.next()){
-                return extractFromResultSet(resultSet);
+                Map<Integer,Integer> results = getResultListFromBeltExam(getId);
+                return extractFromResultSet(resultSet,results);
             } else {
                 return null;
             }
@@ -92,7 +124,8 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
             List<BeltExam> beltExams = new ArrayList<>();
 
             while(resultSet.next()){
-                beltExams.add(extractFromResultSet(resultSet));
+                Map<Integer,Integer> results = getResultListFromBeltExam(resultSet.getInt("idBeltExam"));
+                beltExams.add(extractFromResultSet(resultSet,results));
             }
 
             return beltExams;
@@ -100,8 +133,26 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
             throw new RuntimeException(e);
         }
     }
-    public static BeltExam extractFromResultSet(ResultSet resultSet) throws SQLException {
-        return new BeltExam(resultSet.getInt("id"),resultSet.getDate("startDate").toString(), resultSet.getDate("endDate").toString(),resultSet.getDouble("price"),
+    public static BeltExam extractFromResultSet(ResultSet resultSet,Map<Integer,Integer> results) throws SQLException {
+        BeltExam beltExam = new BeltExam(resultSet.getInt("id"),resultSet.getDate("startDate").toString(), resultSet.getDate("endDate").toString(),resultSet.getDouble("price"),
                 resultSet.getString("country"),resultSet.getString("city"),resultSet.getString("address"),resultSet.getString("beltColor"));
+        beltExam.setListOfResults(results);
+        return beltExam;
+    }
+    public Map<Integer,Integer> getResultListFromBeltExam(int trainingCampId) {
+        String sql = "SELECT * FROM ResultsBeltExams WHERE idBeltExam=?";
+        Map<Integer,Integer> results= new HashMap<>();
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setInt(1,trainingCampId);
+            ResultSet resultSet = statement.executeQuery();
+
+            while(resultSet.next()){
+                results.put(resultSet.getInt("idStud"),resultSet.getInt("result"));
+            }
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return results;
     }
 }

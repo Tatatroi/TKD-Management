@@ -80,10 +80,10 @@ public class Main {
         Parent parent1 = new Parent(1,"Muresan","Victor","muresanVictor@gmail.com","Calea Baciului nr 5",1980,"0783243165");
         Student student1 = new Student(1,"Muresan","Alex","alex@gmail.com","Calea Baciului nr 5",2010,"0754635543","white",session1.getId());
         student1.getSessionDateList().add(new SessionDate("monday","2024-11-11",session1.getId(),true));
-        student1.getSessionDateList().add(new SessionDate("wednesday","2024-13-11",session1.getId(),true));
-        student1.getSessionDateList().add(new SessionDate("friday","2024-15-11",session1.getId(), true));
+        student1.getSessionDateList().add(new SessionDate("wednesday","2024-11-13",session1.getId(),true));
+        student1.getSessionDateList().add(new SessionDate("friday","2024-11-15",session1.getId(), true));
        parentChild(session1,student1,parent1,parentRepo,studentRepo,sessionRepo);
-       System.out.println(studentRepo.getAll());
+//       System.out.println(studentRepo.getAll());
 
         // Părinți adiționali
         Parent parent2 = new Parent(2, "Pop", "Cristina", "cristina.pop@gmail.com", "Strada Republicii nr 12", 1982, "0755555555");
@@ -180,8 +180,9 @@ public class Main {
 //        } catch (SQLException e) {
 //            throw new RuntimeException(e);
 //        }
-        DatabaseRepo<Student> students2 = new DatabaseStudent("jdbc:sqlserver://localhost:1433;database=TKD Management;integratedSecurity=true;trustServerCertificate=true;");
-//        students2.add(student1);
+        DatabaseRepo<Student> students2 = new DatabaseStudent("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
+        students2.add(student1);
+        students2.update(student1);
         System.out.println(students2.getAll());
         TKD_Service tkdService = new TKD_Service(studentRepo,trainerRepo,parentRepo,sessionRepo,contestRepo,trainingCampRepo,beltExamRepo);
         TKDController tkdController = new TKDController(tkdService);

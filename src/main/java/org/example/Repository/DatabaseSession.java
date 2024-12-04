@@ -32,9 +32,17 @@ public class DatabaseSession extends DatabaseRepo<Session> {
 
     @Override
     public void remove(Integer RemoveId) {
-        String sql = "DELETE FROM Sessions WHERE ID=?";
+        String removeFromSession = "DELETE FROM Sessions WHERE ID=?";
 
-        try(PreparedStatement statement = connection.prepareStatement(sql)){
+        try(PreparedStatement statement = connection.prepareStatement(removeFromSession)){
+            statement.setInt(1,RemoveId);
+            statement.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        String removeFromSessionStudents = "DELETE FROM SessionStudents WHERE sessionId=?";
+
+        try(PreparedStatement statement = connection.prepareStatement(removeFromSessionStudents)){
             statement.setInt(1,RemoveId);
             statement.execute();
         } catch (SQLException e) {
