@@ -43,6 +43,14 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
     @Override
     public void remove(Integer RemoveId) {
 
+        String removeChildrenFromParents = "DELETE FROM ParentsStudents WHERE idStudent = ?";
+        try(PreparedStatement stmt0 = connection.prepareStatement(removeChildrenFromParents)){
+            stmt0.setInt(1, RemoveId);
+            stmt0.executeUpdate();
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+
         String removeFromSessionStudents = "DELETE FROM SessionStudents WHERE studentId=?";
 
         try(PreparedStatement statement = connection.prepareStatement(removeFromSessionStudents)){
@@ -150,7 +158,8 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
                 List<SessionDate> sessionDateList = getSessionDateStudent(getId);
                 List<Integer> trainingCampIdList = getTrainingCampsStudent(getId);
                 List<Integer> contestList = getContestsStudent(getId);
-                return extractFromResultSet(resultSet, sessionDateList,trainingCampIdList,contestList);
+                int parentId = getIdParentfromStudent(resultSet.getInt("id"));
+                return extractFromResultSet(resultSet, sessionDateList,trainingCampIdList,contestList,parentId);
             } else {
                 return null;
             }
@@ -172,7 +181,8 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
                 List<SessionDate> sessionDateList = getSessionDateStudent(resultSet.getInt("id"));
                 List<Integer> trainingCampList = getTrainingCampsStudent(resultSet.getInt("id"));
                 List<Integer> contestList = getContestsStudent(resultSet.getInt("id"));
-                students.add(extractFromResultSet(resultSet,sessionDateList,trainingCampList,contestList));
+                int parentId = getIdParentfromStudent(resultSet.getInt("id"));
+                students.add(extractFromResultSet(resultSet,sessionDateList,trainingCampList,contestList,parentId));
             }
 
             return students;
@@ -180,13 +190,14 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
             throw new RuntimeException(e);
         }
     }
-    public static Student extractFromResultSet(ResultSet resultSet,List<SessionDate> sessionDateList, List<Integer> trainingCamps,List<Integer> contests) throws SQLException {
+    public static Student extractFromResultSet(ResultSet resultSet,List<SessionDate> sessionDateList, List<Integer> trainingCamps,List<Integer> contests, int parentId) throws SQLException {
         Student student = new Student(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getString("lastName"),resultSet.getString("email"),
                 resultSet.getString("address"),resultSet.getInt("dateOfBirth"),resultSet.getString("number"),resultSet.getString("beltLevel"),
                 resultSet.getInt("session"));
         student.setSessionDateList(sessionDateList);
         student.setTrainingCampList(trainingCamps);
         student.setContestList(contests);
+        student.setParent(parentId);
         return student;
     }
     public static SessionDate extractFromSessionDate(ResultSet resultSet) throws SQLException {
@@ -232,6 +243,21 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
             }
         }
         return contestList;
+    }
+
+    public int getIdParentfromStudent(int studentId) throws SQLException {
+        String sql = "SELECT * FROM ParentsStudents WHERE idStudent = ?";
+        try(PreparedStatement stmt = connection.prepareStatement(sql)){
+            stmt.setInt(1,studentId);
+            ResultSet resultSet = stmt.executeQuery();
+            if(resultSet.next()){
+                return resultSet.getInt("idParent");
+            }
+            else return 0;
+
+        }catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

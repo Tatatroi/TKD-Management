@@ -180,7 +180,7 @@ public class Main {
 //        } catch (SQLException e) {
 //            throw new RuntimeException(e);
 //        }
-        DatabaseRepo<Student> students2 = new DatabaseStudent("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
+        DatabaseRepo<Student> students2 = new DatabaseStudent("jdbc:sqlserver://localhost:1433;database=TKD Management;integratedSecurity=true;trustServerCertificate=true;");
         students2.add(student1);
         students2.update(student1);
         System.out.println(students2.getAll());

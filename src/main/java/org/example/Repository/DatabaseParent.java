@@ -13,14 +13,15 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
 
     @Override
     public void add(Parent obj) throws SQLException {
-        String sql = "INSERT INTO PARENT (name,lastName, email, address, dateOfBirth, number) VALUES (?,?,?,?,?,?)";
+        String sql = "INSERT INTO PARENT (id,name,lastName, email, address, dateOfBirth, number) VALUES (?,?,?,?,?,?,?)";
         try( PreparedStatement stmt= connection.prepareStatement(sql)) {
-            stmt.setString(1, obj.getName());
-            stmt.setString(2, obj.getLastName());
-            stmt.setString(3, obj.getEmail());
-            stmt.setString(4, obj.getAddress());
-            stmt.setInt(5, obj.getDateOfBirth());
-            stmt.setString(6, obj.getNumber());
+            stmt.setInt(1, obj.getId());
+            stmt.setString(2, obj.getName());
+            stmt.setString(3, obj.getLastName());
+            stmt.setString(4, obj.getEmail());
+            stmt.setString(5, obj.getAddress());
+            stmt.setInt(6, obj.getDateOfBirth());
+            stmt.setString(7, obj.getNumber());
             stmt.executeUpdate();
         }catch(Exception e) {
             e.printStackTrace();
