@@ -4,6 +4,7 @@ import org.example.Model.*;
 import org.example.Service.TKD_Service;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -330,7 +331,12 @@ public class TKDController {
      * @param amountOfMoney The maximum value of a combination.
      */
     public void eventsThatdontExceedAmountOfMoney(double amountOfMoney){
-        List<List<Integer>> results = tkdService.eventsThatdontExceedAmountOfMoney(amountOfMoney);
+        List<List<Integer>> results = null;
+        try {
+            results = tkdService.eventsThatdontExceedAmountOfMoney(amountOfMoney);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         System.out.println("Events combinations that don t exceed the sum : " + amountOfMoney);
         for (List<Integer> combination : results) {
             System.out.println("ID-urile evenimentelor: ");

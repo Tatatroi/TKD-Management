@@ -16,16 +16,17 @@ public class DatabaseTrainer extends DatabaseRepo<org.example.Model.Trainer>{
     }
 
     @Override
-    public void add(Trainer obj) throws SQLException {
-        String sql =  "INSERT INTO dbo.Trainer (name,lastName, email, address, dateOfBirth, number, beltLevel) Values (?,?,?,?,?,?,?,?)";
+    public void add(Trainer obj){
+        String sql =  "INSERT INTO dbo.Trainer (id,name,lastName, email, address, dateOfBirth, number, beltLevel) Values (?,?,?,?,?,?,?,?)";
         try(PreparedStatement stmt = connection.prepareStatement(sql)){
-            stmt.setString(1, obj.getName());
-            stmt.setString(2, obj.getLastName());
-            stmt.setString(3, obj.getEmail());
-            stmt.setString(4, obj.getAddress());
-            stmt.setInt(5,obj.getDateOfBirth());
-            stmt.setString(6, obj.getNumber());
-            stmt.setString(7, obj.getBeltLevel());
+            stmt.setInt(1, obj.getId());
+            stmt.setString(2, obj.getName());
+            stmt.setString(3, obj.getLastName());
+            stmt.setString(4, obj.getEmail());
+            stmt.setString(5, obj.getAddress());
+            stmt.setInt(6,obj.getDateOfBirth());
+            stmt.setString(7, obj.getNumber());
+            stmt.setString(8, obj.getBeltLevel());
             stmt.executeUpdate();
         }catch(Exception e){
             e.printStackTrace();
@@ -33,7 +34,7 @@ public class DatabaseTrainer extends DatabaseRepo<org.example.Model.Trainer>{
     }
 
     @Override
-    public void remove(Integer RemoveId) throws SQLException {
+    public void remove(Integer RemoveId){
         String sql =  "DELETE FROM dbo.Trainer WHERE id = ?";
         try(PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setInt(1, RemoveId);
@@ -64,7 +65,7 @@ public class DatabaseTrainer extends DatabaseRepo<org.example.Model.Trainer>{
     }
 
     @Override
-    public Trainer get(Integer getId) throws SQLException {
+    public Trainer get(Integer getId){
         String sql =  "SELECT * FROM dbo.Trainer WHERE id = ?";
         try(PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setInt(1, getId);
@@ -93,7 +94,7 @@ public class DatabaseTrainer extends DatabaseRepo<org.example.Model.Trainer>{
     }
 
     @Override
-    public List<Trainer> getAll() throws SQLException {
+    public List<Trainer> getAll(){
         String sql =  "SELECT * FROM dbo.Trainer";
         List<Trainer> trainers = new ArrayList<>();
         try(PreparedStatement stmt = connection.prepareStatement(sql)){

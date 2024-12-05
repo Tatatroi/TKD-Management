@@ -4,5 +4,6 @@
     <file url="file://$PROJECT_DIR$/src/main/java/org/example/Main.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java/org/example/Model/BeltExam.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java/org/example/Model/Contest.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/org/example/Model/TrainingCamp.java" charset="UTF-8" />
   </component>
 </project>

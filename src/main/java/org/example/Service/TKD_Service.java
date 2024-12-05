@@ -1,10 +1,12 @@
 package org.example.Service;
 
 import org.example.Model.*;
+import org.example.Repository.DatabaseRepo;
 import org.example.Repository.InMemoryRepo;
 import org.example.Repository.InMemoryRepo;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -14,19 +16,19 @@ import java.util.stream.Collectors;
  * A service class that provides the business logic for the TKD-Management system.
  */
 public class TKD_Service {
-    private InMemoryRepo<Student> students;
+    private DatabaseRepo<Student> students;
 
-    private InMemoryRepo<Trainer> trainers;
+    private DatabaseRepo<Trainer> trainers;
 
-    private InMemoryRepo<Parent> parents;
+    private DatabaseRepo<Parent> parents;
 
-    private InMemoryRepo<Session> sessions;
+    private DatabaseRepo<Session> sessions;
 
-    private InMemoryRepo<Contest> contests;
+    private DatabaseRepo<Contest> contests;
 
-    private InMemoryRepo<TrainingCamp> trainingCamps;
+    private DatabaseRepo<TrainingCamp> trainingCamps;
 
-    private InMemoryRepo<BeltExam> beltExams;
+    private DatabaseRepo<BeltExam> beltExams;
 
     /**
      * Constructs a new TKD_Service with the given repositories.
@@ -38,7 +40,7 @@ public class TKD_Service {
      * @param trainingCamps     The repository for training camps.
      * @param beltExams         The repository for belt exams.
      */
-    public TKD_Service(InMemoryRepo<Student> students, InMemoryRepo<Trainer> trainers, InMemoryRepo<Parent> parent, InMemoryRepo<Session> sessions, InMemoryRepo<Contest> contests, InMemoryRepo<TrainingCamp> trainingCamps, InMemoryRepo<BeltExam> beltExams) {
+    public TKD_Service(DatabaseRepo<Student> students, DatabaseRepo<Trainer> trainers, DatabaseRepo<Parent> parent, DatabaseRepo<Session> sessions, DatabaseRepo<Contest> contests, DatabaseRepo<TrainingCamp> trainingCamps, DatabaseRepo<BeltExam> beltExams) {
         this.students = students;
         this.trainers = trainers;
         this.parents = parent;
@@ -55,16 +57,37 @@ public class TKD_Service {
      * @throws IOException  If no trainer or session was found.
      */
     public void assignGroupToTrainer(int trainerId, int sessionId) throws IOException {
-        if(trainers.getAll().stream().noneMatch(tr -> tr.getId() == trainerId)){
-            throw new IOException("Invalid trainer ID");
-        }
-        if(sessions.getAll().stream().noneMatch(ss->ss.getId()== sessionId)){
-            throw new IOException("Invalid session ID");
-        }
-        Trainer tr = trainers.get(trainerId);
-        Session ss = sessions.get(sessionId);
-        ss.trainer=tr.getId();
-        sessions.update(ss);
+//        try {
+//            if(trainers.getAll().stream().noneMatch(tr -> tr.getId() == trainerId)){
+//                throw new IOException("Invalid trainer ID");
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//        try {
+//            if(sessions.getAll().stream().noneMatch(ss->ss.getId()== sessionId)){
+//                throw new IOException("Invalid session ID");
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+        Trainer tr = null; 
+try {
+    tr = trainers.get(trainerId);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}        Session ss = null; 
+try {
+    ss = sessions.get(sessionId);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}        ss.trainer=tr.getId();
+    try {
+    sessions.update(ss);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}
+
     }
 
     /**
@@ -74,22 +97,48 @@ public class TKD_Service {
      * @throws IOException  If no student or session was found.
      */
     public void changeStudentGroup(int studentId,int sessionId) throws IOException {
-        if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
-            throw new IOException("Invalid student ID");
+//        if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
+//            throw new IOException("Invalid student ID");
+//        }
+//        if(sessions.getAll().stream().noneMatch(ss->ss.getId()== sessionId)){
+//            throw new IOException("Invalid session ID");
+//        }
+        Student st = null; 
+try {
+    st = students.get(studentId);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}        Session new_ss = null; 
+try {
+    new_ss = sessions.get(sessionId);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}
+        Session old_ss = null;
+        try {
+            old_ss = sessions.get(st.getSession());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        if(sessions.getAll().stream().noneMatch(ss->ss.getId()== sessionId)){
-            throw new IOException("Invalid session ID");
-        }
-        Student st = students.get(studentId);
-        Session new_ss = sessions.get(sessionId);
-        Session old_ss = sessions.get(st.getSession());
 
         old_ss.getSessionStudents().remove(st.getId());
         new_ss.getSessionStudents().add(st.getId());
         st.setSession(new_ss.id);
-        students.update(st);
-        sessions.update(new_ss);
-        sessions.update(old_ss);
+        try {
+    students.update(st);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}
+        try {
+    sessions.update(new_ss);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}
+        try {
+    sessions.update(old_ss);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}
     }
 
     /**
@@ -97,11 +146,15 @@ public class TKD_Service {
      * @param beltExamID  The unique identifier of a belt exam.
      */
     public void changeBeltlevel(Integer beltExamID){
-        for(int stId: beltExams.get(beltExamID).getListOfResults().keySet()){
-            if(beltExams.get(beltExamID).getListOfResults().get(stId)==1){
-                students.get(stId).setBeltLevel(beltExams.get(beltExamID).getBeltColor());
-                students.update(students.get(stId));
+        try {
+            for(int stId: beltExams.get(beltExamID).getListOfResults().keySet()){
+                if(beltExams.get(beltExamID).getListOfResults().get(stId)==1){
+                    students.get(stId).setBeltLevel(beltExams.get(beltExamID).getBeltColor());
+                    students.update(students.get(stId));
+                }
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -112,10 +165,15 @@ public class TKD_Service {
      * @throws IOException      If no student was found.
      */
     public Map<String,Integer> numberOfAttendencesAndAbsences(int studentId) throws IOException {
-        if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
-            throw new IOException("Invalid student ID");
+//        if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
+//            throw new IOException("Invalid student ID");
+//        }
+        Student st= null;
+        try {
+            st = students.get(studentId);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        Student st=students.get(studentId);
         Map<String,Integer> attendencesAbsences= new HashMap<>();
         attendencesAbsences.put("Attendences",0);
         attendencesAbsences.put("Absences",0);
@@ -162,7 +220,7 @@ public class TKD_Service {
      * @param amountOfMoney     the range that it's forbidden to be exceeded
      * @return                  a list of lists with all possible combinations
      */
-    public List<List<Integer>> eventsThatdontExceedAmountOfMoney(double amountOfMoney){
+    public List<List<Integer>> eventsThatdontExceedAmountOfMoney(double amountOfMoney) throws SQLException {
         List<Map.Entry<Integer,Double>> eventPairs = new ArrayList<>();
 
         for(int i = 0; i<contests.getAll().size(); i++){
@@ -188,16 +246,28 @@ public class TKD_Service {
      * @throws IOException  If no student or belt exam was found.
      */
     public void addStudentToBeltExam(int idStudent, int idBeltExam) throws IOException {
-        if(students.getAll().stream().noneMatch(st -> st.getId() == idStudent)){
-            throw new IOException("Invalid student ID");
-        }
-        if(beltExams.getAll().stream().noneMatch(bt -> bt.getId() == idBeltExam)){
-            throw new IOException("Invalid belt exam ID");
-        }
-        Student s = students.get(idStudent);
-        BeltExam belt = beltExams.get(idBeltExam);
-        belt.getListOfResults().put(s.getId(),-1);
-        beltExams.update(belt);
+//        if(students.getAll().stream().noneMatch(st -> st.getId() == idStudent)){
+//            throw new IOException("Invalid student ID");
+//        }
+//        if(beltExams.getAll().stream().noneMatch(bt -> bt.getId() == idBeltExam)){
+//            throw new IOException("Invalid belt exam ID");
+//        }
+        Student s = null; 
+try {
+    s = students.get(idStudent);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}        BeltExam belt = null; 
+try {
+    belt = beltExams.get(idBeltExam);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}        belt.getListOfResults().put(s.getId(),-1);
+        try {
+    beltExams.update(belt);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}
     }
 
     /**
@@ -208,22 +278,43 @@ public class TKD_Service {
      * @throws IOException  If no student or belt exam was found.
      */
     public void addResultBeltExam(int idStudent, int idBeltExam, boolean promoted) throws IOException {
-        if(students.getAll().stream().noneMatch(st -> st.getId() == idStudent)){
+        try {
+    if(students.getAll().stream().noneMatch(st -> st.getId() == idStudent)){
             throw new IOException("Invalid student ID");
         }
-        if(beltExams.getAll().stream().noneMatch(bt -> bt.getId() == idBeltExam)){
+
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}        try {
+    if(beltExams.getAll().stream().noneMatch(bt -> bt.getId() == idBeltExam)){
             throw new IOException("Invalid belt exam ID");
         }
-        Student s = students.get(idStudent);
-        BeltExam belt = beltExams.get(idBeltExam);
-        if(promoted){
+
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}
+        Student s = null; 
+try {
+    s = students.get(idStudent);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}        BeltExam belt = null; 
+try {
+    belt = beltExams.get(idBeltExam);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}        if(promoted){
             belt.getListOfResults().put(s.getId(),1); // promoted
             changeBeltlevel(idBeltExam);
         }
         else{
             belt.getListOfResults().put(s.getId(),0); // failed
         }
-        beltExams.update(belt);
+        try {
+    beltExams.update(belt);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}
     }
 
     /**
@@ -236,16 +327,32 @@ public class TKD_Service {
      * @throws IOException  If no student or session was found.
      */
     public void addAttendance(int studentId,int sessionId,boolean attendance,String weekday,String date) throws IOException {
-        if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
+        try {
+    if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
             throw new IOException("Invalid student ID");
         }
-        if(sessions.getAll().stream().noneMatch(ss -> ss.getId() == sessionId)){
+
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}        try {
+    if(sessions.getAll().stream().noneMatch(ss -> ss.getId() == sessionId)){
             throw new IOException("Invalid session ID");
         }
-        Student s=students.get(studentId);
-        SessionDate sessionDate = new SessionDate(weekday,date,sessionId,attendance);
+
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}        Student s = null; 
+try {
+    s = students.get(studentId);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}        SessionDate sessionDate = new SessionDate(weekday,date,sessionId,attendance);
         s.getSessionDateList().add(sessionDate);
-        students.update(s);
+        try {
+    students.update(s);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}
     }
 
     /**
@@ -255,18 +362,42 @@ public class TKD_Service {
      * @throws IOException  If no student or contest was found.
      */
     public void addStudentToContest(int studentId,int contestId) throws IOException {
-        if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
+        try {
+    if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
             throw new IOException("Invalid student ID");
         }
-        if(contests.getAll().stream().noneMatch(ct -> ct.getId() == contestId)){
+
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}        try {
+    if(contests.getAll().stream().noneMatch(ct -> ct.getId() == contestId)){
             throw new IOException("Invalid contest ID");
         }
-        Student st = students.get(studentId);
-        Contest ct = contests.get(contestId);
-        ct.getStudents().add(st.getId());
+
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}        Student st = null; 
+try {
+    st = students.get(studentId);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}        Contest ct = null; 
+try {
+    ct = contests.get(contestId);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}        ct.getStudents().add(st.getId());
         st.getContestList().add(ct.getId());
-        contests.update(ct);
-        students.update(st);
+        try {
+    contests.update(ct);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}
+        try {
+    students.update(st);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}
     }
 
     /**
@@ -276,18 +407,42 @@ public class TKD_Service {
      * @throws IOException      If no student or training camp was found.
      */
     public void addStudentToTraining(int studentId,int trainingCampId) throws IOException {
-        if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
+        try {
+    if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
             throw new IOException("Invalid student ID");
         }
-        if(trainingCamps.getAll().stream().noneMatch(tc -> tc.getId() == trainingCampId)){
+
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}        try {
+    if(trainingCamps.getAll().stream().noneMatch(tc -> tc.getId() == trainingCampId)){
             throw new IOException("Invalid training camp ID");
         }
-        Student st = students.get(studentId);
-        TrainingCamp tc = trainingCamps.get(trainingCampId);
-        tc.getStudents().add(st.getId());
+
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}        Student st = null; 
+try {
+    st = students.get(studentId);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}        TrainingCamp tc = null; 
+try {
+    tc = trainingCamps.get(trainingCampId);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}        tc.getStudents().add(st.getId());
         st.getTrainingCampList().add(tc.getId());
-        trainingCamps.update(tc);
-        students.update(st);
+        try {
+    trainingCamps.update(tc);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}
+        try {
+    students.update(st);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}
     }
 
     /**
@@ -297,14 +452,32 @@ public class TKD_Service {
      */
     public void addStudentToParent(Student student, Parent parent){
         if(findParent(parent.getEmail())){
-            Parent updateParent = parents.getAll().stream().filter(pt ->Objects.equals(pt.getEmail(),parent.getEmail())).findFirst().orElse(null);
+            Parent updateParent = null;
+            try {
+                updateParent = parents.getAll().stream().filter(pt -> Objects.equals(pt.getEmail(),parent.getEmail())).findFirst().orElse(null);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
             updateParent.getChildren().add(student.getId());
-            parents.update(updateParent);
+            try {
+                parents.update(updateParent);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
             student.setParent(updateParent.getId());
         }
         else {
+            try {
+                parents.add(parent);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
             parent.getChildren().add(student.getId());
-            parents.add(parent);
+            try {
+                parents.update(parent);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
             student.setParent(parent.getId());
         }
     }
@@ -315,7 +488,11 @@ public class TKD_Service {
      * @return          true/false if parent found
      */
     public boolean findParent(String email){
-        return parents.getAll().stream() .anyMatch(pt -> Objects.equals(pt.getEmail(), email));
+        try {
+            return parents.getAll().stream().anyMatch(pt -> Objects.equals(pt.getEmail(), email));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -325,47 +502,72 @@ public class TKD_Service {
      */
     public void addObject(Object o) throws IOException {
         if(o instanceof Student){
-            if(students.getAll().stream().anyMatch(st->st.getId()==((Student) o).getId())){
-                throw new IOException("Student ID already exists");
+            try {
+                students.add((Student) o);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
-            students.add((Student) o);
 
         }
         else if(o instanceof Trainer){
-            if(trainers.getAll().stream().anyMatch(tr->tr.getId()==((Trainer) o).getId())){
-                throw new IOException("Trainer ID already exists");
+//            if(trainers.getAll().stream().anyMatch(tr->tr.getId()==((Trainer) o).getId())){
+//                throw new IOException("Trainer ID already exists");
+//            }
+            try {
+                trainers.add((Trainer) o);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
-            trainers.add((Trainer) o);
         }
         else if(o instanceof Parent){
-            if(parents.getAll().stream().anyMatch(pt->pt.getId()==((Parent) o).getId())){
-                throw new IOException("Parent ID already exists");
+//            if(parents.getAll().stream().anyMatch(pt->pt.getId()==((Parent) o).getId())){
+//                throw new IOException("Parent ID already exists");
+//            }
+            try {
+                parents.add((Parent) o);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
-            parents.add((Parent) o);
         }
         else if(o instanceof Session){
-            if(sessions.getAll().stream().anyMatch(ss->ss.getId()==((Session) o).getId())){
-                throw new IOException("Session ID already exists");
+//            if(sessions.getAll().stream().anyMatch(ss->ss.getId()==((Session) o).getId())){
+//                throw new IOException("Session ID already exists");
+//            }
+            try {
+                sessions.add((Session) o);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
-            sessions.add((Session) o);
         }
         else if(o instanceof BeltExam){
-            if(beltExams.getAll().stream().anyMatch(bx->bx.getId()==((BeltExam) o).getId())){
-                throw new IOException("Belt exam ID already exists");
+//            if(beltExams.getAll().stream().anyMatch(bx->bx.getId()==((BeltExam) o).getId())){
+//                throw new IOException("Belt exam ID already exists");
+//            }
+            try {
+                beltExams.add((BeltExam) o);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
-            beltExams.add((BeltExam) o);
         }
         else if(o instanceof Contest){
-            if(contests.getAll().stream().anyMatch(ct->ct.getId()==((Contest) o).getId())){
-                throw new RuntimeException();
+//            if(contests.getAll().stream().anyMatch(ct->ct.getId()==((Contest) o).getId())){
+//                throw new RuntimeException();
+//            }
+            try {
+                contests.add((Contest) o);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
-            contests.add((Contest) o);
         }
         else if(o instanceof TrainingCamp){
-            if(trainingCamps.getAll().stream().anyMatch(tc->tc.getId()==((TrainingCamp) o).getId())){
-                throw new IOException("Training camp ID already exists");
+//            if(trainingCamps.getAll().stream().anyMatch(tc->tc.getId()==((TrainingCamp) o).getId())){
+//                throw new IOException("Training camp ID already exists");
+//            }
+            try {
+                trainingCamps.add((TrainingCamp) o);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
-            trainingCamps.add((TrainingCamp) o);
         }
     }
 
@@ -379,22 +581,39 @@ public class TKD_Service {
      */
 
     public String generateInvoice(Integer parentID,String month) throws IOException {
-        if(parents.getAll().stream().noneMatch(pt -> pt.getId() == parentID)){
+        try {
+    if(parents.getAll().stream().noneMatch(pt -> pt.getId() == parentID)){
             throw new IOException("Invalid parent ID");
         }
-        Parent parent = parents.get(parentID);
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }        Parent parent = null;
+        try {
+            parent = parents.get(parentID);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         String invoice="Invoice for the month " + month + "\nParent name: " + parent.getLastName() + " " + parent.getName() + "\n";
         double total = 0;
         for(int studentId: parent.getChildren()){
-            Student student = students.get(studentId);
-            int presences=0;
+            Student student = null; 
+            try {
+                student = students.get(studentId);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }            int presences=0;
             double individualTotal = 0;
             for(SessionDate sd: student.getSessionDateList()){
-                if(sd.isAttended() && sd.getDate().substring(3, 5).equals(month)){
+                if(sd.isAttended() && sd.getDate().substring(5, 7).equals(month)){
                     presences++;
                 }
             }
-            individualTotal += presences*(sessions.get(student.getSession())).getPricePerSession();
+            try {
+                individualTotal += presences*(sessions.get(student.getSession())).getPricePerSession();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
             total+= individualTotal;
             invoice += "Student name: " + student.getLastName() + " " + student.getName() + "\n Total for student: " + individualTotal + "\n";
         }
@@ -408,21 +627,52 @@ public class TKD_Service {
      * @throws IOException      If no student was found.
      */
     public void removeStudent(Integer studentID) throws IOException {
-        if(students.getAll().stream().noneMatch(st -> st.getId() == studentID)){
+        try {
+    if(students.getAll().stream().noneMatch(st -> st.getId() == studentID)){
             throw new IOException("Invalid student ID");
         }
-        Parent parent = parents.get(students.get(studentID).getParent());
+
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}
+        Parent parent = null;
+        try {
+            parent = parents.get(students.get(studentID).getParent());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         if(parent.getChildren().size()>1){
             parent.getChildren().remove(studentID);
-            parents.update(parent);
+            try {
+    parents.update(parent);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}
         }
         else{
-            parents.remove(parent.getId());
+            try {
+                parents.remove(parent.getId());
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
-        Session session = sessions.get(students.get(studentID).getSession());
+        Session session = null;
+        try {
+            session = sessions.get(students.get(studentID).getSession());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         session.getSessionStudents().remove( studentID);
-        sessions.update(session);
-        students.remove(studentID);
+        try {
+    sessions.update(session);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}
+        try {
+            students.remove(studentID);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -431,10 +681,19 @@ public class TKD_Service {
      * @throws IOException      If no trainer was found.
      */
     public void removeTrainer(Integer trainerID) throws IOException {
-        if(trainers.getAll().stream().noneMatch(t -> t.getId() == trainerID)){
+        try {
+    if(trainers.getAll().stream().noneMatch(t -> t.getId() == trainerID)){
             throw new IOException("Invalid trainer ID");
         }
-        trainers.remove(trainerID);
+
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}
+        try {
+            trainers.remove(trainerID);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -443,10 +702,19 @@ public class TKD_Service {
      * @throws IOException      If no parent was found.
      */
     public void removeParent(Integer parentID) throws IOException {
-        if(parents.getAll().stream().noneMatch(pt -> pt.getId() == parentID)){
+        try {
+    if(parents.getAll().stream().noneMatch(pt -> pt.getId() == parentID)){
             throw new IOException("Invalid parent ID");
         }
-        parents.remove(parentID);
+
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}
+        try {
+            parents.remove(parentID);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -455,10 +723,19 @@ public class TKD_Service {
      * @throws IOException      If no session was found.
      */
     public void removeSession(Integer sessionID) throws IOException {
-        if(sessions.getAll().stream().noneMatch(ss -> ss.getId() == sessionID)){
+        try {
+    if(sessions.getAll().stream().noneMatch(ss -> ss.getId() == sessionID)){
             throw new IOException("Invalid session ID");
         }
-        sessions.remove(sessionID);
+
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}
+        try {
+            sessions.remove(sessionID);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -467,10 +744,19 @@ public class TKD_Service {
      * @throws IOException      If no belt exam was found.
      */
     public void removeBeltExam(Integer beltExamID) throws IOException {
-        if(beltExams.getAll().stream().noneMatch(bt -> bt.getId() == beltExamID)){
+        try {
+    if(beltExams.getAll().stream().noneMatch(bt -> bt.getId() == beltExamID)){
             throw new IOException("Invalid belt exam ID");
         }
-        beltExams.remove(beltExamID);
+
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}
+        try {
+            beltExams.remove(beltExamID);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -479,10 +765,19 @@ public class TKD_Service {
      * @throws IOException      If no contest was found.
      */
     public void removeContest(Integer contestID) throws IOException {
-        if(contests.getAll().stream().noneMatch(ct -> ct.getId() == contestID)){
+        try {
+    if(contests.getAll().stream().noneMatch(ct -> ct.getId() == contestID)){
             throw new IOException("Invalid contest ID");
         }
-        contests.remove(contestID);
+
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}
+        try {
+            contests.remove(contestID);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -491,10 +786,19 @@ public class TKD_Service {
      * @throws IOException      If no training camp was found.
      */
     public void removeTrainingCamp(Integer trainingCampID) throws IOException {
-        if(trainingCamps.getAll().stream().noneMatch(tc -> tc.getId() == trainingCampID)){
+        try {
+    if(trainingCamps.getAll().stream().noneMatch(tc -> tc.getId() == trainingCampID)){
             throw new IOException("Invalid training camp ID");
         }
-        trainingCamps.remove(trainingCampID);
+
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}
+        try {
+            trainingCamps.remove(trainingCampID);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -505,11 +809,23 @@ public class TKD_Service {
      */
     public void addStudentToSession(Integer idSession, Integer studentID){
 
-        Session ss = sessions.get(idSession);
-        Student st = students.get(studentID);
-
+        Session ss = null; 
+try {
+    ss = sessions.get(idSession);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}        Student st = null; 
+try {
+    st = students.get(studentID);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}
         ss.getSessionStudents().add(st.getId());
-        sessions.update(ss);
+        try {
+    sessions.update(ss);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}
 
     }
 
@@ -520,10 +836,19 @@ public class TKD_Service {
      * @throws IOException      If no trainer was found.
      */
     public Trainer getTrainerById(int trainerId) throws IOException {
-        if(trainers.getAll().stream().noneMatch(st -> st.getId() == trainerId)){
+        try {
+    if(trainers.getAll().stream().noneMatch(st -> st.getId() == trainerId)){
             throw new IOException("Invalid trainer ID");
         }
-        return trainers.get(trainerId);
+
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}
+        try {
+            return trainers.get(trainerId);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -532,7 +857,11 @@ public class TKD_Service {
      * @return      an object of type Contest
      */
     public Contest getContestById(int contestID){
-        return contests.get(contestID);
+        try {
+            return contests.get(contestID);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -541,7 +870,11 @@ public class TKD_Service {
      * @return                  an object of type Training Camp
      */
     public TrainingCamp getTrainingCampByIs(int idTrainingCamp){
-        return trainingCamps.get(idTrainingCamp);
+        try {
+            return trainingCamps.get(idTrainingCamp);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -551,10 +884,19 @@ public class TKD_Service {
      * @throws IOException      If no session was found.
      */
     public Session getSessionById(int sessionId) throws IOException {
-        if(sessions.getAll().stream().noneMatch(st -> st.getId() == sessionId)){
+        try {
+    if(sessions.getAll().stream().noneMatch(st -> st.getId() == sessionId)){
             throw new IOException("Invalid session ID");
         }
-        return sessions.get(sessionId);
+
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}
+        try {
+            return sessions.get(sessionId);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /** display all Students
@@ -563,11 +905,15 @@ public class TKD_Service {
      */
     public String viewAllStudents(){
         StringBuilder allStudents= new StringBuilder();
-        for(Session s: sessions.getAll()){
-            for(int stId: s.getSessionStudents()){
-                allStudents.append(students.get(stId).toString2());
+        try {
+            for(Session s: sessions.getAll()){
+                for(int stId: s.getSessionStudents()){
+                    allStudents.append(students.get(stId).toString2());
+                }
+                allStudents.append('\n');
             }
-            allStudents.append('\n');
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         return allStudents.toString();
     }
@@ -578,8 +924,12 @@ public class TKD_Service {
      */
     public String viewAllTrainers(){
         StringBuilder allTrainers= new StringBuilder();
-        for(Trainer t: trainers.getAll()){
-            allTrainers.append(t.toString2()).append('\n');
+        try {
+            for(Trainer t: trainers.getAll()){
+                allTrainers.append(t.toString2()).append('\n');
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         return allTrainers.toString();
     }
@@ -606,19 +956,27 @@ public class TKD_Service {
         final String ANSI_GREEN = "\u001B[32m";
         final String ANSI_RESET = "\u001B[0m";
 
-        for (Parent p : parents.getAll()) {
-            allParents.append(ANSI_RED).append("Parent").append(ANSI_RESET)
-                    .append(" with id: ").append(p.getId())
-                    .append(", name ").append(p.getName()).append(" ").append(p.getLastName())
-                    .append(" has childrens: ");
-            for (int sId : p.getChildren()) {
-                Student s = students.get(sId);
-                allParents.append("\n")
-                        .append(ANSI_GREEN).append("Student").append(ANSI_RESET)
-                        .append(" with id: ").append(s.getId())
-                        .append(" ").append(s.getLastName()).append(" ").append(s.getName());
+        try {
+            for (Parent p : parents.getAll()) {
+                allParents.append(ANSI_RED).append("Parent").append(ANSI_RESET)
+                        .append(" with id: ").append(p.getId())
+                        .append(", name ").append(p.getName()).append(" ").append(p.getLastName())
+                        .append(" has childrens: ");
+                for (int sId : p.getChildren()) {
+                    Student s = null;
+    try {
+        s = students.get(sId);
+    } catch (SQLException e) {
+        throw new RuntimeException(e);
+    }                allParents.append("\n")
+                            .append(ANSI_GREEN).append("Student").append(ANSI_RESET)
+                            .append(" with id: ").append(s.getId())
+                            .append(" ").append(s.getLastName()).append(" ").append(s.getName());
+                }
+                allParents.append("\n");
             }
-            allParents.append("\n");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         return allParents.toString();
     }
@@ -649,14 +1007,18 @@ public class TKD_Service {
         final String ANSI_YELLOW = "\u001B[33m";
         final String ANSI_RESET = "\u001B[0m";
 
-        for (Contest c : contests.getAll()) {
-            allContests.append(c.toString()).append('\n');
+        try {
+            for (Contest c : contests.getAll()) {
+                allContests.append(c.toString2()).append('\n');
 
-            for (int sId : c.getStudents()) {
-                allContests.append(students.get(sId).toString3()).append('\n');
+                for (int sId : c.getStudents()) {
+                    allContests.append(students.get(sId).toString3()).append('\n');
+                }
+
+                allContests.append('\n');
             }
-
-            allContests.append('\n');
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
 
         return allContests.toString();
@@ -668,12 +1030,16 @@ public class TKD_Service {
      */
     public String viewTrainingCamps(){
         StringBuilder allTrainingCamps = new StringBuilder();
-        for(TrainingCamp t: trainingCamps.getAll()){
-            allTrainingCamps.append(t.toString2()).append('\n');
-            for(int sId: t.getStudents()){
-                allTrainingCamps.append(students.get(sId).toString2()).append('\n');
+        try {
+            for(TrainingCamp t: trainingCamps.getAll()){
+                allTrainingCamps.append(t.toString2()).append('\n');
+                for(int sId: t.getStudents()){
+                    allTrainingCamps.append(students.get(sId).toString2()).append('\n');
+                }
+                allTrainingCamps.append('\n');
             }
-            allTrainingCamps.append('\n');
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         return allTrainingCamps.toString();
     }
@@ -684,12 +1050,16 @@ public class TKD_Service {
      */
     public String viewBeltExams() {
         StringBuilder allBeltExams = new StringBuilder();
-        for (BeltExam b : beltExams.getAll()) {
-            allBeltExams.append(b.toString2()).append('\n');
-            for (int sId : b.getListOfResults().keySet()) {
-                allBeltExams.append(students.get(sId).toString2()).append('\n');
+        try {
+            for (BeltExam b : beltExams.getAll()) {
+                allBeltExams.append(b.toString2()).append('\n');
+                for (int sId : b.getListOfResults().keySet()) {
+                    allBeltExams.append(students.get(sId).toString2()).append('\n');
+                }
+                allBeltExams.append('\n');
             }
-            allBeltExams.append('\n');
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         return allBeltExams.toString();
     }
@@ -700,7 +1070,12 @@ public class TKD_Service {
      * @return a sorted List of Contests based on ther starting dates
      */
     public List<Contest> sortContestsByDates(){
-        List<Contest> sorted = new ArrayList<>(contests.getAll());
+        List<Contest> sorted = null;
+        try {
+            sorted = new ArrayList<>(contests.getAll());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         sorted.sort((c1, c2) -> {
             LocalDate date1 = LocalDate.parse(c1.startDate, formatter);
@@ -716,7 +1091,12 @@ public class TKD_Service {
      */
 
     public List<BeltExam> sortBeltExamnsByDates(){
-        List<BeltExam> sorted = new ArrayList<>(beltExams.getAll());
+        List<BeltExam> sorted = null;
+        try {
+            sorted = new ArrayList<>(beltExams.getAll());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         sorted.sort((c1, c2) -> {
             LocalDate date1 = LocalDate.parse(c1.startDate, formatter);
@@ -731,7 +1111,12 @@ public class TKD_Service {
      * @return a sorted list of training Camps based on their starting date
      */
     public List<TrainingCamp> sortTrainingCampsByDates(){
-        List<TrainingCamp> sorted = new ArrayList<>(trainingCamps.getAll());
+        List<TrainingCamp> sorted = null;
+        try {
+            sorted = new ArrayList<>(trainingCamps.getAll());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         sorted.sort((c1, c2) -> {
             LocalDate date1 = LocalDate.parse(c1.startDate, formatter);
@@ -746,7 +1131,12 @@ public class TKD_Service {
      * @return a list of Session sorted based on their number of participants
      */
     public List<Session> sortSessionByNumberOfParticipants(){
-        List<Session> sorted = new ArrayList<>(sessions.getAll());
+        List<Session> sorted = null;
+        try {
+            sorted = new ArrayList<>(sessions.getAll());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         sorted.sort(Comparator.comparingInt(c -> c.getSessionStudents().size()));
         return sorted;
     }
@@ -756,7 +1146,12 @@ public class TKD_Service {
      * @return a list of students ordered alphabetical
      */
     public List<Student> sortStudentsAlphabetical(){
-        List<Student> sorted = new ArrayList<>(students.getAll());
+        List<Student> sorted = null;
+        try {
+            sorted = new ArrayList<>(students.getAll());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         sorted.sort(Comparator.comparing(s -> s.name));
         return sorted;
     }
@@ -766,7 +1161,12 @@ public class TKD_Service {
      * @return a list of Students ordered by number of Attendances
      */
     public List<Student> sortStudentsByNumberOfAttendences(){
-        List<Student> sorted = new ArrayList<>(students.getAll());
+        List<Student> sorted = null;
+        try {
+            sorted = new ArrayList<>(students.getAll());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         sorted.sort((s1, s2) -> {
             try {
                 return Integer.compare(numberOfAttendencesAndAbsences(s1.getId()).get("Attendences"), numberOfAttendencesAndAbsences(s2.getId()).get("Attendences"));
@@ -783,7 +1183,12 @@ public class TKD_Service {
      * @return  List of all students having the belt level specified
      */
     public List<Student> filterStudentsByBelt(String beltLevel){
-        List<Student> filtered = new ArrayList<>(students.getAll());
+        List<Student> filtered = null;
+        try {
+            filtered = new ArrayList<>(students.getAll());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         filtered = filtered.stream().filter((s1)->s1.getBeltLevel().equals(beltLevel)).toList();
         return filtered;
     }
@@ -798,9 +1203,13 @@ public class TKD_Service {
         if(noOfChildren<0){
             throw new IOException("Children number can't be negative");
         }
-        return parents.getAll().stream()  // Obținem stream-ul de la lista de părinți
-                .filter(p -> p.getChildren().size() == noOfChildren)  // Filtrăm părinții care au exact numărul de copii dorit
-                .collect(Collectors.toList());  // Colectăm rezultatele într-o listă
+        try {
+            return parents.getAll().stream()  // Obținem stream-ul de la lista de părinți
+                    .filter(p -> p.getChildren().size() == noOfChildren)  // Filtrăm părinții care au exact numărul de copii dorit
+                    .collect(Collectors.toList());  // Colectăm rezultatele într-o listă
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -811,24 +1220,36 @@ public class TKD_Service {
      * @throws IOException      If no session was found.
      */
     public AbstractMap.SimpleEntry<String, Double> getMostProfitableDateForSession(int sessionId) throws IOException {
-        if(sessions.getAll().stream().noneMatch(ss -> ss.getId() == sessionId)){
+        try {
+    if(sessions.getAll().stream().noneMatch(ss -> ss.getId() == sessionId)){
             throw new IOException("Invalid session ID");
         }
-        Session session = sessions.get(sessionId);
-        Map<String,Double> freqWeekdays = new HashMap<>();
-        for(Student st: students.getAll()){
-            if(st.session == sessionId){
-                for(SessionDate sd: st.getSessionDateList()) {
-                    if(sd.isAttended()) {
-                        if (freqWeekdays.containsKey(sd.getDate())){
-                            freqWeekdays.replace(sd.getDate(),freqWeekdays.get(sd.getDate())+sessions.get(sessionId).getPricePerSession());
-                        }
-                        else{
-                            freqWeekdays.put(sd.getDate(),sessions.get(sessionId).getPricePerSession());
+
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}        Session session = null; 
+try {
+    session = sessions.get(sessionId);
+} catch (SQLException e) {
+    throw new RuntimeException(e);
+}        Map<String,Double> freqWeekdays = new HashMap<>();
+        try {
+            for(Student st: students.getAll()){
+                if(st.session == sessionId){
+                    for(SessionDate sd: st.getSessionDateList()) {
+                        if(sd.isAttended()) {
+                            if (freqWeekdays.containsKey(sd.getDate())){
+                                freqWeekdays.replace(sd.getDate(),freqWeekdays.get(sd.getDate())+sessions.get(sessionId).getPricePerSession());
+                            }
+                            else{
+                                freqWeekdays.put(sd.getDate(),sessions.get(sessionId).getPricePerSession());
+                            }
                         }
                     }
                 }
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         double max = 0;
         String date = "";

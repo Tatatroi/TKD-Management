@@ -58,14 +58,14 @@ public class DatabaseTrainingCamp extends DatabaseRepo<TrainingCamp> {
     public void update(TrainingCamp trainingCamp) {
         String sql = "UPDATE TrainingCamps SET startDate=?, endDate=?, price=?,country=?,city=?,address=?,numberOfParticipants=?  WHERE ID=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, trainingCamp.getId());
-            stmt.setDate(2, Date.valueOf(trainingCamp.getStartDate()));
-            stmt.setDate(3, Date.valueOf(trainingCamp.getEndDate()));
-            stmt.setDouble(4, trainingCamp.getPrice());
-            stmt.setString(5, trainingCamp.getCountry());
-            stmt.setString(6, trainingCamp.getCity());
-            stmt.setString(7, trainingCamp.getAddress());
-            stmt.setInt(8, trainingCamp.getNumberOfParticipants());
+            stmt.setDate(1, Date.valueOf(trainingCamp.getStartDate()));
+            stmt.setDate(2, Date.valueOf(trainingCamp.getEndDate()));
+            stmt.setDouble(3, trainingCamp.getPrice());
+            stmt.setString(4, trainingCamp.getCountry());
+            stmt.setString(5, trainingCamp.getCity());
+            stmt.setString(6, trainingCamp.getAddress());
+            stmt.setInt(7, trainingCamp.getNumberOfParticipants());
+            stmt.setInt(8, trainingCamp.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -121,7 +121,7 @@ public class DatabaseTrainingCamp extends DatabaseRepo<TrainingCamp> {
             List<TrainingCamp> trainingCamps = new ArrayList<>();
 
             while(resultSet.next()){
-                List<Integer> students = getStudentsFromTrainingCamp(resultSet.getInt("idTrainingCamp"));
+                List<Integer> students = getStudentsFromTrainingCamp(resultSet.getInt("id"));
                 trainingCamps.add(extractFromResultSet(resultSet,students));
             }
 
@@ -130,9 +130,14 @@ public class DatabaseTrainingCamp extends DatabaseRepo<TrainingCamp> {
             throw new RuntimeException(e);
         }
     }
-    public static TrainingCamp extractFromResultSet(ResultSet resultSet,List<Integer> students) throws SQLException {
-        TrainingCamp trainingCamp = new TrainingCamp(resultSet.getInt("id"),resultSet.getDate("startDate").toString(), resultSet.getDate("endDate").toString(),resultSet.getDouble("price"),
-                resultSet.getString("country"),resultSet.getString("city"),resultSet.getString("address"),resultSet.getInt("numberOfParticipants"));
+    public static TrainingCamp extractFromResultSet(ResultSet resultSet,List<Integer> students){
+        TrainingCamp trainingCamp = null;
+        try {
+            trainingCamp = new TrainingCamp(resultSet.getInt("id"),resultSet.getDate("startDate").toString(), resultSet.getDate("endDate").toString(),resultSet.getDouble("price"),
+                    resultSet.getString("country"),resultSet.getString("city"),resultSet.getString("address"),resultSet.getInt("numberOfParticipants"));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         trainingCamp.setStudents(students);
         return trainingCamp;
     }

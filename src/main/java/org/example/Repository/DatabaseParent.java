@@ -12,7 +12,7 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
     }
 
     @Override
-    public void add(Parent obj) throws SQLException {
+    public void add(Parent obj){
         String sql = "INSERT INTO PARENT (id,name,lastName, email, address, dateOfBirth, number) VALUES (?,?,?,?,?,?,?)";
         try( PreparedStatement stmt= connection.prepareStatement(sql)) {
             stmt.setInt(1, obj.getId());
@@ -29,7 +29,7 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
     }
 
     @Override
-    public void remove(Integer RemoveId) throws SQLException {
+    public void remove(Integer RemoveId){
         String sql = "DELETE FROM PARENT WHERE id = ?";
         try( PreparedStatement stmt= connection.prepareStatement(sql)) {
             stmt.setInt(1, RemoveId);
@@ -40,8 +40,8 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
     }
 
     @Override
-    public void update(Parent obj) throws SQLException {
-        String sql = "UPDATE dbo.Parent SET name = ?, lastName = ?, email = ?, address = ?, dateOfBirth = ? WHERE id = ?";
+    public void update(Parent obj){
+        String sql = "UPDATE dbo.Parent SET name = ?, lastName = ?, email = ?, address = ?, dateOfBirth = ?, number=? WHERE id = ?";
         try( PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, obj.getName());
             stmt.setString(2, obj.getLastName());
@@ -79,14 +79,14 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
     }
 
     @Override
-    public Parent get(Integer getId) throws SQLException {
+    public Parent get(Integer getId){
         String sql =  "SELECT * FROM dbo.Parent WHERE id = ?";
         try( PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setInt(1, getId);
             try(ResultSet rs = stmt.executeQuery()){
                 if(rs.next()){
                     List<Integer> children = getParentChildren(getId);
-                    return extractContest(rs,children);
+                    return extractParent(rs,children);
                 }
             }catch (SQLException e){
                 e.printStackTrace();
@@ -102,14 +102,14 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
 
 
     @Override
-    public List<Parent> getAll() throws SQLException {
-        String sql =  "SELECT * FROM dbo.Parent WHERE id = ?";
+    public List<Parent> getAll(){
+        String sql =  "SELECT * FROM dbo.Parent";
         List<Parent> parents = new ArrayList<>();
         try( PreparedStatement stmt = connection.prepareStatement(sql)){
             try(ResultSet rs = stmt.executeQuery()){
                 while(rs.next()){
                     List<Integer> children = getParentChildren(rs.getInt("id"));
-                    parents.add(extractContest(rs,children));
+                    parents.add(extractParent(rs,children));
                 }
             }catch (SQLException e){
                 e.printStackTrace();
@@ -119,31 +119,38 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
         catch(Exception e){
             e.printStackTrace();
         }
-        return null;
+        return parents;
     }
 
-    public List<Integer> getParentChildren(int ParentId) throws SQLException {
+    public List<Integer> getParentChildren(int ParentId){
         String sql = "SELECT * FROM ParentsStudents WHERE idParent = ?";
         List<Integer> children = new ArrayList<>();
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, ParentId);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    children.add(rs.getInt("idParent"));
+                    children.add(rs.getInt("idStudent"));
                 }
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         return children;
     }
 
-    public static Parent extractContest(ResultSet rs, List<Integer> students) throws SQLException {
-        Parent parent = new Parent(rs.getInt("id"),
-                rs.getString("name"),
-                rs.getString("lastName"),
-                rs.getString("email"),
-                rs.getString("address"),
-                rs.getInt("dateOfBirth"),
-                rs.getString("number"));
+    public static Parent extractParent(ResultSet rs, List<Integer> students){
+        Parent parent = null;
+        try {
+            parent = new Parent(rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getString("lastName"),
+                    rs.getString("email"),
+                    rs.getString("address"),
+                    rs.getInt("dateOfBirth"),
+                    rs.getString("number"));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         parent.setChildren(students);
         return parent;
     }

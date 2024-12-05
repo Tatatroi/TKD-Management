@@ -16,7 +16,7 @@ public class DatabaseContest extends DatabaseRepo<org.example.Model.Contest>{
     }
 
     @Override
-    public void add(Contest obj) throws SQLException {
+    public void add(Contest obj){
         String sql = "INSERT INTO dbo.Contest(id,startDate, endDate, price, country, city, name, address) values(?,?,?,?,?,?,?,?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setInt(1, obj.getId());
@@ -34,7 +34,7 @@ public class DatabaseContest extends DatabaseRepo<org.example.Model.Contest>{
     }
 
     @Override
-    public void remove(Integer RemoveId) throws SQLException {
+    public void remove(Integer RemoveId){
 
         String removeStudentContests = "DELETE FROM StudentsContests WHERE idContest = ?";
 
@@ -98,7 +98,7 @@ public class DatabaseContest extends DatabaseRepo<org.example.Model.Contest>{
     }
 
     @Override
-    public Contest get(Integer getId) throws SQLException {
+    public Contest get(Integer getId){
         String sql = "SELECT * FROM Contest WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, getId);
@@ -117,13 +117,13 @@ public class DatabaseContest extends DatabaseRepo<org.example.Model.Contest>{
 
 
     @Override
-    public List<Contest> getAll() throws SQLException {
+    public List<Contest> getAll(){
         String sql = "SELECT * FROM Contest";
         List<Contest> contests = new ArrayList<>();
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    List<Integer> studentList = getContestsStudents(rs.getInt("idContest"));
+                    List<Integer> studentList = getContestsStudents(rs.getInt("id"));
                     contests.add(extractContest(rs,studentList));
                 }
             }
@@ -133,7 +133,7 @@ public class DatabaseContest extends DatabaseRepo<org.example.Model.Contest>{
         return contests;
     }
 
-    public List<Integer> getContestsStudents(int ContestId) throws SQLException {
+    public List<Integer> getContestsStudents(int ContestId){
         String sql = "SELECT * FROM StudentsContests WHERE idContest = ?";
         List<Integer> students = new ArrayList<>();
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -143,19 +143,26 @@ public class DatabaseContest extends DatabaseRepo<org.example.Model.Contest>{
                     students.add(rs.getInt("idStud"));
                 }
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         return students;
     }
 
-    public static Contest extractContest(ResultSet rs, List<Integer> students) throws SQLException {
-        Contest contest = new Contest(rs.getInt("id"),
-                rs.getString("startDate"),
-                rs.getString("endDate"),
-                rs.getDouble("price"),
-                rs.getString("country"),
-                rs.getString("city"),
-                rs.getString("name"),
-                rs.getString("address"));
+    public static Contest extractContest(ResultSet rs, List<Integer> students){
+        Contest contest = null;
+        try {
+            contest = new Contest(rs.getInt("id"),
+                    rs.getString("startDate"),
+                    rs.getString("endDate"),
+                    rs.getDouble("price"),
+                    rs.getString("country"),
+                    rs.getString("city"),
+                    rs.getString("name"),
+                    rs.getString("address"));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         contest.setStudents(students);
         return contest;
     }

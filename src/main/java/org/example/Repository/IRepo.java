@@ -1,5 +1,6 @@
 package org.example.Repository;
 
+import org.example.Exceptions.DatabaseException;
 import org.example.Model.HasID;
 
 import java.sql.SQLException;
@@ -26,7 +27,7 @@ public interface IRepo <T extends HasID>{
      * Updates an existing object in the repository.
      * @param obj The object to update.
      */
-    void update(T obj) throws SQLException;
+    void update(T obj) throws SQLException, DatabaseException;
 
     /**
      * Retrieves an object from the repository by its ID.

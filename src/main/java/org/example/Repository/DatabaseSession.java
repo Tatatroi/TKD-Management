@@ -23,7 +23,7 @@ public class DatabaseSession extends DatabaseRepo<Session> {
             stmt.setString(2, String.valueOf(session.getDifficultyLevel()));
             stmt.setInt(3, session.getMaximumParticipants());
             stmt.setInt(4, session.getTrainer());
-            stmt.setDouble(5, session.getPricePerSession());
+            stmt.setFloat(5, (float) session.getPricePerSession());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -52,13 +52,13 @@ public class DatabaseSession extends DatabaseRepo<Session> {
 
     @Override
     public void update(Session session) {
-        String sql = "UPDATE Sessions SET difficultyLevel=?, maximumParticipants=?, trainer=?,pricePerSession=?  WHERE ID=?";
+        String sql = "UPDATE Sessions SET difficultyLevel=?, maximumParticipants=?, trainer=?,pricePerSession=?  WHERE id=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, session.getId());
-            stmt.setString(2, session.getDifficultyLevel().name());
-            stmt.setInt(3, session.getMaximumParticipants());
-            stmt.setInt(4, session.getTrainer());
-            stmt.setDouble(5, session.getPricePerSession());
+            stmt.setString(1, session.getDifficultyLevel().name());
+            stmt.setInt(2, session.getMaximumParticipants());
+            stmt.setInt(3, session.getTrainer());
+            stmt.setDouble(4, session.getPricePerSession());
+            stmt.setInt(5, session.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -75,7 +75,8 @@ public class DatabaseSession extends DatabaseRepo<Session> {
             ResultSet resultSet = statement.executeQuery();
 
             if(resultSet.next()){
-                return extractFromResultSet(resultSet);
+                List<Integer> students = getSessionStudents(getId);
+                return extractFromResultSet(resultSet,students);
             } else {
                 return null;
             }
@@ -94,7 +95,8 @@ public class DatabaseSession extends DatabaseRepo<Session> {
             List<Session> sessions = new ArrayList<>();
 
             while(resultSet.next()){
-                sessions.add(extractFromResultSet(resultSet));
+                List<Integer> students = getSessionStudents(resultSet.getInt("id"));
+                sessions.add(extractFromResultSet(resultSet,students));
             }
 
             return sessions;
@@ -102,8 +104,28 @@ public class DatabaseSession extends DatabaseRepo<Session> {
             throw new RuntimeException(e);
         }
     }
-    public static Session extractFromResultSet(ResultSet resultSet) throws SQLException {
-        return new Session(resultSet.getInt("id"),DifficultyLevel.valueOf(resultSet.getString("difficultyLevel")),resultSet.getInt("maximumParticipants"),
-                resultSet.getInt("trainer"),resultSet.getDouble("pricePerSession"));
+    public static Session extractFromResultSet(ResultSet resultSet,List<Integer> students){
+        try {
+            Session session = new Session(resultSet.getInt("id"),DifficultyLevel.valueOf(resultSet.getString("difficultyLevel")),resultSet.getInt("maximumParticipants"),
+                    resultSet.getInt("trainer"),resultSet.getDouble("pricePerSession"));
+            session.setSessionStudents(students);
+            return session;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public List<Integer> getSessionStudents(int sessionId){
+        String sql = "SELECT * FROM SessionStudents WHERE sessionId=?";
+        List<Integer> studentList = new ArrayList<>();
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setInt(1,sessionId);
+            ResultSet resultSet = statement.executeQuery();
+            while(resultSet.next()){
+                studentList.add(resultSet.getInt("studentId"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return studentList;
     }
 }

@@ -60,14 +60,14 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
     public void update(BeltExam beltExam) {
         String sql = "UPDATE BeltExams SET startDate=?, endDate=?, price=?,country=?,city=?,address=?,beltColor=?  WHERE ID=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, beltExam.getId());
-            stmt.setDate(2, Date.valueOf(beltExam.getStartDate()));
-            stmt.setDate(3, Date.valueOf(beltExam.getEndDate()));
-            stmt.setDouble(4, beltExam.getPrice());
-            stmt.setString(5, beltExam.getCountry());
-            stmt.setString(6, beltExam.getCity());
-            stmt.setString(7, beltExam.getAddress());
-            stmt.setString(8, beltExam.getBeltColor());
+            stmt.setDate(1, Date.valueOf(beltExam.getStartDate()));
+            stmt.setDate(2, Date.valueOf(beltExam.getEndDate()));
+            stmt.setDouble(3, beltExam.getPrice());
+            stmt.setString(4, beltExam.getCountry());
+            stmt.setString(5, beltExam.getCity());
+            stmt.setString(6, beltExam.getAddress());
+            stmt.setString(7, beltExam.getBeltColor());
+            stmt.setInt(8, beltExam.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -124,7 +124,7 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
             List<BeltExam> beltExams = new ArrayList<>();
 
             while(resultSet.next()){
-                Map<Integer,Integer> results = getResultListFromBeltExam(resultSet.getInt("idBeltExam"));
+                Map<Integer,Integer> results = getResultListFromBeltExam(resultSet.getInt("id"));
                 beltExams.add(extractFromResultSet(resultSet,results));
             }
 
@@ -133,9 +133,14 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
             throw new RuntimeException(e);
         }
     }
-    public static BeltExam extractFromResultSet(ResultSet resultSet,Map<Integer,Integer> results) throws SQLException {
-        BeltExam beltExam = new BeltExam(resultSet.getInt("id"),resultSet.getDate("startDate").toString(), resultSet.getDate("endDate").toString(),resultSet.getDouble("price"),
-                resultSet.getString("country"),resultSet.getString("city"),resultSet.getString("address"),resultSet.getString("beltColor"));
+    public static BeltExam extractFromResultSet(ResultSet resultSet,Map<Integer,Integer> results){
+        BeltExam beltExam = null;
+        try {
+            beltExam = new BeltExam(resultSet.getInt("id"),resultSet.getDate("startDate").toString(), resultSet.getDate("endDate").toString(),resultSet.getDouble("price"),
+                    resultSet.getString("country"),resultSet.getString("city"),resultSet.getString("address"),resultSet.getString("beltColor"));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         beltExam.setListOfResults(results);
         return beltExam;
     }

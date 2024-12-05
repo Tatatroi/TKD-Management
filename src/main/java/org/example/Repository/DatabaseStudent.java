@@ -1,5 +1,6 @@
 package org.example.Repository;
 
+import org.example.Exceptions.DatabaseException;
 import org.example.Model.SessionDate;
 import org.example.Model.Student;
 
@@ -103,7 +104,7 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
     }
 
     @Override
-    public void update(Student obj) {
+    public void update(Student obj) throws DatabaseException {
         String updateStudent = "UPDATE Students SET name=?, lastName=?,email=?,address=?,dateOfBirth=?,number=?, beltLevel=?, session=? WHERE id=?";
 
         try(PreparedStatement statement = connection.prepareStatement(updateStudent)){
@@ -140,7 +141,7 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
                 statement.setBoolean(5, sd.isAttended());
                 statement.execute();
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                throw new DatabaseException("An error is by update occurred");
             }
         }
     }
@@ -200,11 +201,15 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
         student.setParent(parentId);
         return student;
     }
-    public static SessionDate extractFromSessionDate(ResultSet resultSet) throws SQLException {
-        return new SessionDate(resultSet.getString("weekday"),String.valueOf(resultSet.getDate("date")),resultSet.getInt("sessionId"),resultSet.getBoolean("attended"));
+    public static SessionDate extractFromSessionDate(ResultSet resultSet) {
+        try {
+            return new SessionDate(resultSet.getString("weekday"),String.valueOf(resultSet.getDate("date")),resultSet.getInt("sessionId"),resultSet.getBoolean("attended"));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public List<SessionDate> getSessionDateStudent(int studentId) throws SQLException {
+    public List<SessionDate> getSessionDateStudent(int studentId) {
         String sql = "SELECT * FROM SessionDates WHERE studentId=?";
         List<SessionDate> sessionDateList = new ArrayList<>();
         try(PreparedStatement statement = connection.prepareStatement(sql)){
@@ -220,7 +225,7 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
         }
         return sessionDateList;
     }
-    public List<Integer> getTrainingCampsStudent(int studentId) throws SQLException {
+    public List<Integer> getTrainingCampsStudent(int studentId) {
         String sql = "SELECT * FROM StudentsTrainingCamp WHERE idStud=?";
         List<Integer> trainingCampList = new ArrayList<>();
         try(PreparedStatement statement = connection.prepareStatement(sql)){
@@ -229,10 +234,12 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
             while(resultSet.next()){
                 trainingCampList.add(resultSet.getInt("idTrainingCamp"));
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         return trainingCampList;
     }
-    public List<Integer> getContestsStudent(int studentId) throws SQLException {
+    public List<Integer> getContestsStudent(int studentId) {
         String sql = "SELECT * FROM StudentsContests WHERE idStud=?";
         List<Integer> contestList = new ArrayList<>();
         try(PreparedStatement statement = connection.prepareStatement(sql)){
@@ -241,11 +248,13 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
             while(resultSet.next()){
                 contestList.add(resultSet.getInt("idContest"));
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         return contestList;
     }
 
-    public int getIdParentfromStudent(int studentId) throws SQLException {
+    public int getIdParentfromStudent(int studentId) {
         String sql = "SELECT * FROM ParentsStudents WHERE idStudent = ?";
         try(PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setInt(1,studentId);
