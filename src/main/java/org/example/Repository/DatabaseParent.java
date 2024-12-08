@@ -1,4 +1,5 @@
 package org.example.Repository;
+import org.example.Exceptions.DatabaseException;
 import org.example.Model.Parent;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,7 +13,7 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
     }
 
     @Override
-    public void add(Parent obj){
+    public void add(Parent obj) throws DatabaseException {
         String sql = "INSERT INTO PARENT (id,name,lastName, email, address, dateOfBirth, number) VALUES (?,?,?,?,?,?,?)";
         try( PreparedStatement stmt= connection.prepareStatement(sql)) {
             stmt.setInt(1, obj.getId());
@@ -24,23 +25,23 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
             stmt.setString(7, obj.getNumber());
             stmt.executeUpdate();
         }catch(Exception e) {
-            e.printStackTrace();
+            throw new DatabaseException("DataBase Exception Error");
         }
     }
 
     @Override
-    public void remove(Integer RemoveId){
+    public void remove(Integer RemoveId) throws DatabaseException {
         String sql = "DELETE FROM PARENT WHERE id = ?";
         try( PreparedStatement stmt= connection.prepareStatement(sql)) {
             stmt.setInt(1, RemoveId);
             stmt.executeUpdate();
         }catch(Exception e) {
-            e.printStackTrace();
+            throw new DatabaseException("DataBase Exception Error");
         }
     }
 
     @Override
-    public void update(Parent obj){
+    public void update(Parent obj) throws DatabaseException {
         String sql = "UPDATE dbo.Parent SET name = ?, lastName = ?, email = ?, address = ?, dateOfBirth = ?, number=? WHERE id = ?";
         try( PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, obj.getName());
@@ -52,7 +53,7 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
             stmt.setInt(7, obj.getId());
             stmt.executeUpdate();
         }catch (Exception e) {
-            e.printStackTrace();
+            throw new DatabaseException("DataBase Exception Error");
         }
 
         String deleteChildrenFromParent = "DELETE From ParentsStudents WHERE idParent = ?";
@@ -60,7 +61,7 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
             stmt2.setInt(1, obj.getId());
             stmt2.executeUpdate();
         }catch(SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("DataBase Exception Error");
         }
 
 
@@ -71,7 +72,7 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
                 stmt.setInt(2, idStudent);
                 stmt.executeUpdate();
             }catch(SQLException e) {
-                e.printStackTrace();
+                throw new DatabaseException("DataBase Exception Error");
             }
         }
 
@@ -79,7 +80,7 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
     }
 
     @Override
-    public Parent get(Integer getId){
+    public Parent get(Integer getId) throws DatabaseException {
         String sql =  "SELECT * FROM dbo.Parent WHERE id = ?";
         try( PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setInt(1, getId);
@@ -89,12 +90,12 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
                     return extractParent(rs,children);
                 }
             }catch (SQLException e){
-                e.printStackTrace();
+                throw new DatabaseException("DataBase Exception Error");
             }
 
         }
         catch(Exception e){
-            e.printStackTrace();
+            throw new DatabaseException("DataBase Exception Error");
         }
         return null;
     }
@@ -102,7 +103,7 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
 
 
     @Override
-    public List<Parent> getAll(){
+    public List<Parent> getAll() throws DatabaseException {
         String sql =  "SELECT * FROM dbo.Parent";
         List<Parent> parents = new ArrayList<>();
         try( PreparedStatement stmt = connection.prepareStatement(sql)){
@@ -112,17 +113,17 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
                     parents.add(extractParent(rs,children));
                 }
             }catch (SQLException e){
-                e.printStackTrace();
+                throw new DatabaseException("DataBase Exception Error");
             }
 
         }
         catch(Exception e){
-            e.printStackTrace();
+            throw new DatabaseException("DataBase Exception Error");
         }
         return parents;
     }
 
-    public List<Integer> getParentChildren(int ParentId){
+    public List<Integer> getParentChildren(int ParentId) throws DatabaseException {
         String sql = "SELECT * FROM ParentsStudents WHERE idParent = ?";
         List<Integer> children = new ArrayList<>();
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {

@@ -1,12 +1,12 @@
 package org.example.Service;
 
+import org.example.Exceptions.DatabaseException;
 import org.example.Model.*;
 import org.example.Repository.DatabaseRepo;
 import org.example.Repository.InMemoryRepo;
 import org.example.Repository.InMemoryRepo;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -61,30 +61,30 @@ public class TKD_Service {
 //            if(trainers.getAll().stream().noneMatch(tr -> tr.getId() == trainerId)){
 //                throw new IOException("Invalid trainer ID");
 //            }
-//        } catch (SQLException e) {
+//        } catch (DatabaseException e) {
 //            throw new RuntimeException(e);
 //        }
 //        try {
 //            if(sessions.getAll().stream().noneMatch(ss->ss.getId()== sessionId)){
 //                throw new IOException("Invalid session ID");
 //            }
-//        } catch (SQLException e) {
+//        } catch (DatabaseException e) {
 //            throw new RuntimeException(e);
 //        }
         Trainer tr = null; 
 try {
     tr = trainers.get(trainerId);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }        Session ss = null; 
 try {
     ss = sessions.get(sessionId);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }        ss.trainer=tr.getId();
     try {
     sessions.update(ss);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }
 
@@ -106,18 +106,18 @@ try {
         Student st = null; 
 try {
     st = students.get(studentId);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }        Session new_ss = null; 
 try {
     new_ss = sessions.get(sessionId);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }
         Session old_ss = null;
         try {
             old_ss = sessions.get(st.getSession());
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
 
@@ -126,17 +126,17 @@ try {
         st.setSession(new_ss.id);
         try {
     students.update(st);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }
         try {
     sessions.update(new_ss);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }
         try {
     sessions.update(old_ss);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }
     }
@@ -153,7 +153,7 @@ try {
                     students.update(students.get(stId));
                 }
             }
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
     }
@@ -171,7 +171,7 @@ try {
         Student st= null;
         try {
             st = students.get(studentId);
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
         Map<String,Integer> attendencesAbsences= new HashMap<>();
@@ -220,22 +220,26 @@ try {
      * @param amountOfMoney     the range that it's forbidden to be exceeded
      * @return                  a list of lists with all possible combinations
      */
-    public List<List<Integer>> eventsThatdontExceedAmountOfMoney(double amountOfMoney) throws SQLException {
-        List<Map.Entry<Integer,Double>> eventPairs = new ArrayList<>();
+    public List<List<Integer>> eventsThatdontExceedAmountOfMoney(double amountOfMoney) throws DatabaseException{
+        try{
+            List<Map.Entry<Integer, Double>> eventPairs = new ArrayList<>();
 
-        for(int i = 0; i<contests.getAll().size(); i++){
-            Contest ct = contests.getAll().get(i);
-            eventPairs.add(new AbstractMap.SimpleEntry<>(ct.getId(),ct.price)) ;
+            for (int i = 0; i < contests.getAll().size(); i++) {
+                Contest ct = contests.getAll().get(i);
+                eventPairs.add(new AbstractMap.SimpleEntry<>(ct.getId(), ct.price));
+            }
+            for (int i = 0; i < trainingCamps.getAll().size(); i++) {
+                TrainingCamp ct = trainingCamps.getAll().get(i);
+                eventPairs.add(new AbstractMap.SimpleEntry<>(ct.getId(), ct.price));
+            }
+
+            List<List<Integer>> results = new ArrayList<>();
+            findCombinations(eventPairs, amountOfMoney, 0, new ArrayList<>(), results);
+            return results;
+
+        }catch (DatabaseException e){
+            throw new RuntimeException();
         }
-        for(int i = 0; i<trainingCamps.getAll().size(); i++){
-            TrainingCamp ct = trainingCamps.getAll().get(i);
-            eventPairs.add(new AbstractMap.SimpleEntry<>(ct.getId(),ct.price)) ;
-        }
-
-        List<List<Integer>> results = new ArrayList<>();
-        findCombinations(eventPairs, amountOfMoney, 0, new ArrayList<>(), results);
-
-        return results;
 
     }
 
@@ -255,17 +259,17 @@ try {
         Student s = null; 
 try {
     s = students.get(idStudent);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }        BeltExam belt = null; 
 try {
     belt = beltExams.get(idBeltExam);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }        belt.getListOfResults().put(s.getId(),-1);
         try {
     beltExams.update(belt);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }
     }
@@ -283,25 +287,25 @@ try {
             throw new IOException("Invalid student ID");
         }
 
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }        try {
     if(beltExams.getAll().stream().noneMatch(bt -> bt.getId() == idBeltExam)){
             throw new IOException("Invalid belt exam ID");
         }
 
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }
         Student s = null; 
 try {
     s = students.get(idStudent);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }        BeltExam belt = null; 
 try {
     belt = beltExams.get(idBeltExam);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }        if(promoted){
             belt.getListOfResults().put(s.getId(),1); // promoted
@@ -312,7 +316,7 @@ try {
         }
         try {
     beltExams.update(belt);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }
     }
@@ -332,25 +336,25 @@ try {
             throw new IOException("Invalid student ID");
         }
 
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }        try {
     if(sessions.getAll().stream().noneMatch(ss -> ss.getId() == sessionId)){
             throw new IOException("Invalid session ID");
         }
 
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }        Student s = null; 
 try {
     s = students.get(studentId);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }        SessionDate sessionDate = new SessionDate(weekday,date,sessionId,attendance);
         s.getSessionDateList().add(sessionDate);
         try {
     students.update(s);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }
     }
@@ -367,35 +371,35 @@ try {
             throw new IOException("Invalid student ID");
         }
 
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }        try {
     if(contests.getAll().stream().noneMatch(ct -> ct.getId() == contestId)){
             throw new IOException("Invalid contest ID");
         }
 
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }        Student st = null; 
 try {
     st = students.get(studentId);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }        Contest ct = null; 
 try {
     ct = contests.get(contestId);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }        ct.getStudents().add(st.getId());
         st.getContestList().add(ct.getId());
         try {
     contests.update(ct);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }
         try {
     students.update(st);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }
     }
@@ -412,35 +416,35 @@ try {
             throw new IOException("Invalid student ID");
         }
 
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }        try {
     if(trainingCamps.getAll().stream().noneMatch(tc -> tc.getId() == trainingCampId)){
             throw new IOException("Invalid training camp ID");
         }
 
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }        Student st = null; 
 try {
     st = students.get(studentId);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }        TrainingCamp tc = null; 
 try {
     tc = trainingCamps.get(trainingCampId);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }        tc.getStudents().add(st.getId());
         st.getTrainingCampList().add(tc.getId());
         try {
     trainingCamps.update(tc);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }
         try {
     students.update(st);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }
     }
@@ -455,13 +459,13 @@ try {
             Parent updateParent = null;
             try {
                 updateParent = parents.getAll().stream().filter(pt -> Objects.equals(pt.getEmail(),parent.getEmail())).findFirst().orElse(null);
-            } catch (SQLException e) {
+            } catch (DatabaseException e) {
                 throw new RuntimeException(e);
             }
             updateParent.getChildren().add(student.getId());
             try {
                 parents.update(updateParent);
-            } catch (SQLException e) {
+            } catch (DatabaseException e) {
                 throw new RuntimeException(e);
             }
             student.setParent(updateParent.getId());
@@ -469,13 +473,13 @@ try {
         else {
             try {
                 parents.add(parent);
-            } catch (SQLException e) {
+            } catch (DatabaseException e) {
                 throw new RuntimeException(e);
             }
             parent.getChildren().add(student.getId());
             try {
                 parents.update(parent);
-            } catch (SQLException e) {
+            } catch (DatabaseException e) {
                 throw new RuntimeException(e);
             }
             student.setParent(parent.getId());
@@ -490,7 +494,7 @@ try {
     public boolean findParent(String email){
         try {
             return parents.getAll().stream().anyMatch(pt -> Objects.equals(pt.getEmail(), email));
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
     }
@@ -504,7 +508,7 @@ try {
         if(o instanceof Student){
             try {
                 students.add((Student) o);
-            } catch (SQLException e) {
+            } catch (DatabaseException e) {
                 throw new RuntimeException(e);
             }
 
@@ -515,7 +519,7 @@ try {
 //            }
             try {
                 trainers.add((Trainer) o);
-            } catch (SQLException e) {
+            } catch (DatabaseException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -525,7 +529,7 @@ try {
 //            }
             try {
                 parents.add((Parent) o);
-            } catch (SQLException e) {
+            } catch (DatabaseException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -535,7 +539,7 @@ try {
 //            }
             try {
                 sessions.add((Session) o);
-            } catch (SQLException e) {
+            } catch (DatabaseException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -545,7 +549,7 @@ try {
 //            }
             try {
                 beltExams.add((BeltExam) o);
-            } catch (SQLException e) {
+            } catch (DatabaseException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -555,7 +559,7 @@ try {
 //            }
             try {
                 contests.add((Contest) o);
-            } catch (SQLException e) {
+            } catch (DatabaseException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -565,7 +569,7 @@ try {
 //            }
             try {
                 trainingCamps.add((TrainingCamp) o);
-            } catch (SQLException e) {
+            } catch (DatabaseException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -586,12 +590,12 @@ try {
             throw new IOException("Invalid parent ID");
         }
 
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }        Parent parent = null;
         try {
             parent = parents.get(parentID);
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
         String invoice="Invoice for the month " + month + "\nParent name: " + parent.getLastName() + " " + parent.getName() + "\n";
@@ -600,7 +604,7 @@ try {
             Student student = null; 
             try {
                 student = students.get(studentId);
-            } catch (SQLException e) {
+            } catch (DatabaseException e) {
                 throw new RuntimeException(e);
             }            int presences=0;
             double individualTotal = 0;
@@ -611,7 +615,7 @@ try {
             }
             try {
                 individualTotal += presences*(sessions.get(student.getSession())).getPricePerSession();
-            } catch (SQLException e) {
+            } catch (DatabaseException e) {
                 throw new RuntimeException(e);
             }
             total+= individualTotal;
@@ -632,45 +636,45 @@ try {
             throw new IOException("Invalid student ID");
         }
 
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }
         Parent parent = null;
         try {
             parent = parents.get(students.get(studentID).getParent());
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
         if(parent.getChildren().size()>1){
             parent.getChildren().remove(studentID);
             try {
     parents.update(parent);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }
         }
         else{
             try {
                 parents.remove(parent.getId());
-            } catch (SQLException e) {
+            } catch (DatabaseException e) {
                 throw new RuntimeException(e);
             }
         }
         Session session = null;
         try {
             session = sessions.get(students.get(studentID).getSession());
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
         session.getSessionStudents().remove( studentID);
         try {
     sessions.update(session);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }
         try {
             students.remove(studentID);
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
     }
@@ -686,12 +690,12 @@ try {
             throw new IOException("Invalid trainer ID");
         }
 
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }
         try {
             trainers.remove(trainerID);
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
     }
@@ -707,12 +711,12 @@ try {
             throw new IOException("Invalid parent ID");
         }
 
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }
         try {
             parents.remove(parentID);
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
     }
@@ -728,12 +732,12 @@ try {
             throw new IOException("Invalid session ID");
         }
 
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }
         try {
             sessions.remove(sessionID);
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
     }
@@ -749,12 +753,12 @@ try {
             throw new IOException("Invalid belt exam ID");
         }
 
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }
         try {
             beltExams.remove(beltExamID);
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
     }
@@ -770,12 +774,12 @@ try {
             throw new IOException("Invalid contest ID");
         }
 
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }
         try {
             contests.remove(contestID);
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
     }
@@ -791,12 +795,12 @@ try {
             throw new IOException("Invalid training camp ID");
         }
 
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }
         try {
             trainingCamps.remove(trainingCampID);
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
     }
@@ -812,18 +816,18 @@ try {
         Session ss = null; 
 try {
     ss = sessions.get(idSession);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }        Student st = null; 
 try {
     st = students.get(studentID);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }
         ss.getSessionStudents().add(st.getId());
         try {
     sessions.update(ss);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }
 
@@ -841,12 +845,12 @@ try {
             throw new IOException("Invalid trainer ID");
         }
 
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }
         try {
             return trainers.get(trainerId);
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
     }
@@ -859,7 +863,7 @@ try {
     public Contest getContestById(int contestID){
         try {
             return contests.get(contestID);
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
     }
@@ -872,7 +876,7 @@ try {
     public TrainingCamp getTrainingCampByIs(int idTrainingCamp){
         try {
             return trainingCamps.get(idTrainingCamp);
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
     }
@@ -889,12 +893,12 @@ try {
             throw new IOException("Invalid session ID");
         }
 
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }
         try {
             return sessions.get(sessionId);
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
     }
@@ -912,7 +916,7 @@ try {
                 }
                 allStudents.append('\n');
             }
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
         return allStudents.toString();
@@ -928,7 +932,7 @@ try {
             for(Trainer t: trainers.getAll()){
                 allTrainers.append(t.toString2()).append('\n');
             }
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
         return allTrainers.toString();
@@ -966,7 +970,7 @@ try {
                     Student s = null;
     try {
         s = students.get(sId);
-    } catch (SQLException e) {
+    } catch (DatabaseException e) {
         throw new RuntimeException(e);
     }                allParents.append("\n")
                             .append(ANSI_GREEN).append("Student").append(ANSI_RESET)
@@ -975,7 +979,7 @@ try {
                 }
                 allParents.append("\n");
             }
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
         return allParents.toString();
@@ -1017,7 +1021,7 @@ try {
 
                 allContests.append('\n');
             }
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
 
@@ -1038,7 +1042,7 @@ try {
                 }
                 allTrainingCamps.append('\n');
             }
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
         return allTrainingCamps.toString();
@@ -1058,7 +1062,7 @@ try {
                 }
                 allBeltExams.append('\n');
             }
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
         return allBeltExams.toString();
@@ -1073,7 +1077,7 @@ try {
         List<Contest> sorted = null;
         try {
             sorted = new ArrayList<>(contests.getAll());
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -1094,7 +1098,7 @@ try {
         List<BeltExam> sorted = null;
         try {
             sorted = new ArrayList<>(beltExams.getAll());
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -1114,7 +1118,7 @@ try {
         List<TrainingCamp> sorted = null;
         try {
             sorted = new ArrayList<>(trainingCamps.getAll());
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -1134,7 +1138,7 @@ try {
         List<Session> sorted = null;
         try {
             sorted = new ArrayList<>(sessions.getAll());
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
         sorted.sort(Comparator.comparingInt(c -> c.getSessionStudents().size()));
@@ -1149,7 +1153,7 @@ try {
         List<Student> sorted = null;
         try {
             sorted = new ArrayList<>(students.getAll());
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
         sorted.sort(Comparator.comparing(s -> s.name));
@@ -1164,7 +1168,7 @@ try {
         List<Student> sorted = null;
         try {
             sorted = new ArrayList<>(students.getAll());
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
         sorted.sort((s1, s2) -> {
@@ -1186,7 +1190,7 @@ try {
         List<Student> filtered = null;
         try {
             filtered = new ArrayList<>(students.getAll());
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
         filtered = filtered.stream().filter((s1)->s1.getBeltLevel().equals(beltLevel)).toList();
@@ -1207,7 +1211,7 @@ try {
             return parents.getAll().stream()  // Obținem stream-ul de la lista de părinți
                     .filter(p -> p.getChildren().size() == noOfChildren)  // Filtrăm părinții care au exact numărul de copii dorit
                     .collect(Collectors.toList());  // Colectăm rezultatele într-o listă
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
     }
@@ -1225,12 +1229,12 @@ try {
             throw new IOException("Invalid session ID");
         }
 
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }        Session session = null; 
 try {
     session = sessions.get(sessionId);
-} catch (SQLException e) {
+} catch (DatabaseException e) {
     throw new RuntimeException(e);
 }        Map<String,Double> freqWeekdays = new HashMap<>();
         try {
@@ -1248,7 +1252,7 @@ try {
                     }
                 }
             }
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
         double max = 0;

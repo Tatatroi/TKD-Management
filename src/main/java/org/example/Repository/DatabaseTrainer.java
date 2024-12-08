@@ -1,5 +1,6 @@
 package org.example.Repository;
 
+import org.example.Exceptions.DatabaseException;
 import org.example.Model.Contest;
 import org.example.Model.Trainer;
 
@@ -16,7 +17,7 @@ public class DatabaseTrainer extends DatabaseRepo<org.example.Model.Trainer>{
     }
 
     @Override
-    public void add(Trainer obj){
+    public void add(Trainer obj) throws DatabaseException {
         String sql =  "INSERT INTO dbo.Trainer (id,name,lastName, email, address, dateOfBirth, number, beltLevel) Values (?,?,?,?,?,?,?,?)";
         try(PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setInt(1, obj.getId());
@@ -29,19 +30,19 @@ public class DatabaseTrainer extends DatabaseRepo<org.example.Model.Trainer>{
             stmt.setString(8, obj.getBeltLevel());
             stmt.executeUpdate();
         }catch(Exception e){
-            e.printStackTrace();
+            throw new DatabaseException("DataBase Exception Error");
         }
     }
 
     @Override
-    public void remove(Integer RemoveId){
+    public void remove(Integer RemoveId) throws DatabaseException {
         String sql =  "DELETE FROM dbo.Trainer WHERE id = ?";
         try(PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setInt(1, RemoveId);
             stmt.executeUpdate();
         }
         catch(Exception e){
-            e.printStackTrace();
+            throw new DatabaseException("DataBase Exception Error");
         }
     }
 
@@ -65,7 +66,7 @@ public class DatabaseTrainer extends DatabaseRepo<org.example.Model.Trainer>{
     }
 
     @Override
-    public Trainer get(Integer getId){
+    public Trainer get(Integer getId) throws DatabaseException {
         String sql =  "SELECT * FROM dbo.Trainer WHERE id = ?";
         try(PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setInt(1, getId);
@@ -83,18 +84,18 @@ public class DatabaseTrainer extends DatabaseRepo<org.example.Model.Trainer>{
                     );
                 }
             }catch (SQLException e){
-                e.printStackTrace();
+                throw new DatabaseException("DataBase Exception Error");
             }
 
         }
         catch(Exception e){
-            e.printStackTrace();
+            throw new DatabaseException("DataBase Exception Error");
         }
         return null;
     }
 
     @Override
-    public List<Trainer> getAll(){
+    public List<Trainer> getAll() throws DatabaseException {
         String sql =  "SELECT * FROM dbo.Trainer";
         List<Trainer> trainers = new ArrayList<>();
         try(PreparedStatement stmt = connection.prepareStatement(sql)){
@@ -112,12 +113,12 @@ public class DatabaseTrainer extends DatabaseRepo<org.example.Model.Trainer>{
                     ));
                 }
             }catch (SQLException e){
-                e.printStackTrace();
+                throw new DatabaseException("DataBase Exception Error");
             }
 
         }
         catch(Exception e){
-            e.printStackTrace();
+            throw new DatabaseException("DataBase Exception Error");
         }
         return trainers;
     }

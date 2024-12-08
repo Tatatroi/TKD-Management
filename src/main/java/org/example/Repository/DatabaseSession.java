@@ -1,5 +1,6 @@
 package org.example.Repository;
 
+import org.example.Exceptions.DatabaseException;
 import org.example.Model.DifficultyLevel;
 import org.example.Model.Session;
 import org.example.Model.TrainingCamp;
@@ -16,8 +17,8 @@ public class DatabaseSession extends DatabaseRepo<Session> {
     }
 
     @Override
-    public void add(Session session) {
-        String sql = "INSERT INTO Sessions (id, difficultyLevel,maximumParticipants,trainer,pricePerSession) VALUES (?, ?, ?, ?, ?)";
+    public void add(Session session) throws DatabaseException {
+        String sql = "INSERT INTO Sessions (id, difficultyLevel,maximumParticipants,trainerId,pricePerSession) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, session.getId());
             stmt.setString(2, String.valueOf(session.getDifficultyLevel()));
@@ -26,12 +27,12 @@ public class DatabaseSession extends DatabaseRepo<Session> {
             stmt.setFloat(5, (float) session.getPricePerSession());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("DataBase Exception Error");
         }
     }
 
     @Override
-    public void remove(Integer RemoveId) {
+    public void remove(Integer RemoveId) throws DatabaseException {
         String removeFromSession = "DELETE FROM Sessions WHERE ID=?";
 
         try(PreparedStatement statement = connection.prepareStatement(removeFromSession)){
@@ -51,8 +52,8 @@ public class DatabaseSession extends DatabaseRepo<Session> {
     }
 
     @Override
-    public void update(Session session) {
-        String sql = "UPDATE Sessions SET difficultyLevel=?, maximumParticipants=?, trainer=?,pricePerSession=?  WHERE id=?";
+    public void update(Session session)  throws DatabaseException {
+        String sql = "UPDATE Sessions SET difficultyLevel=?, maximumParticipants=?, trainerId=?,pricePerSession=?  WHERE id=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, session.getDifficultyLevel().name());
             stmt.setInt(2, session.getMaximumParticipants());
@@ -61,12 +62,12 @@ public class DatabaseSession extends DatabaseRepo<Session> {
             stmt.setInt(5, session.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("DataBase Exception Error");
         }
     }
 
     @Override
-    public Session get(Integer getId) {
+    public Session get(Integer getId)  {
         String sql = "SELECT * FROM Sessions WHERE ID=?";
 
         try(PreparedStatement statement = connection.prepareStatement(sql)){
@@ -107,7 +108,7 @@ public class DatabaseSession extends DatabaseRepo<Session> {
     public static Session extractFromResultSet(ResultSet resultSet,List<Integer> students){
         try {
             Session session = new Session(resultSet.getInt("id"),DifficultyLevel.valueOf(resultSet.getString("difficultyLevel")),resultSet.getInt("maximumParticipants"),
-                    resultSet.getInt("trainer"),resultSet.getDouble("pricePerSession"));
+                    resultSet.getInt("trainerId"),resultSet.getDouble("pricePerSession"));
             session.setSessionStudents(students);
             return session;
         } catch (SQLException e) {

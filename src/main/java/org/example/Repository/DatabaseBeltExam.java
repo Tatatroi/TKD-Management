@@ -1,5 +1,6 @@
 package org.example.Repository;
 
+import org.example.Exceptions.DatabaseException;
 import org.example.Model.BeltExam;
 import org.example.Model.Student;
 
@@ -18,7 +19,7 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
     }
 
     @Override
-    public void add(BeltExam beltExam) {
+    public void add(BeltExam beltExam) throws DatabaseException {
         String sql = "INSERT INTO BeltExams (id, startDate,endDate,price,country,city,address,beltColor) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, beltExam.getId());
@@ -31,7 +32,7 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
             stmt.setString(8, beltExam.getBeltColor());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("DataBase Exception Error");
         }
     }
 
@@ -57,7 +58,7 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
     }
 
     @Override
-    public void update(BeltExam beltExam) {
+    public void update(BeltExam beltExam) throws DatabaseException {
         String sql = "UPDATE BeltExams SET startDate=?, endDate=?, price=?,country=?,city=?,address=?,beltColor=?  WHERE ID=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setDate(1, Date.valueOf(beltExam.getStartDate()));
@@ -70,7 +71,7 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
             stmt.setInt(8, beltExam.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("DataBase Exception Error");
         }
         String deleteStudentsBeltExams = "DELETE From ResultsBeltExams WHERE idStud=?";
 

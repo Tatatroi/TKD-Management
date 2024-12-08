@@ -1,5 +1,6 @@
 package org.example.Controller;
 
+import org.example.Exceptions.DatabaseException;
 import org.example.Model.*;
 import org.example.Service.TKD_Service;
 
@@ -334,7 +335,7 @@ public class TKDController {
         List<List<Integer>> results = null;
         try {
             results = tkdService.eventsThatdontExceedAmountOfMoney(amountOfMoney);
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
         System.out.println("Events combinations that don t exceed the sum : " + amountOfMoney);

@@ -1,5 +1,6 @@
 package org.example.Repository;
 
+import org.example.Exceptions.DatabaseException;
 import org.example.Model.BeltExam;
 import org.example.Model.SessionDate;
 import org.example.Model.TrainingCamp;
@@ -17,7 +18,7 @@ public class DatabaseTrainingCamp extends DatabaseRepo<TrainingCamp> {
     }
 
     @Override
-    public void add(TrainingCamp trainingCamp) {
+    public void add(TrainingCamp trainingCamp) throws DatabaseException {
         String sql = "INSERT INTO TrainingCamps (id, startDate,endDate,price,country,city,address,numberOfParticipants) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, trainingCamp.getId());
@@ -30,7 +31,7 @@ public class DatabaseTrainingCamp extends DatabaseRepo<TrainingCamp> {
             stmt.setInt(8, trainingCamp.getNumberOfParticipants());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("DataBase Exception Error");
         }
     }
 
@@ -55,7 +56,7 @@ public class DatabaseTrainingCamp extends DatabaseRepo<TrainingCamp> {
     }
 
     @Override
-    public void update(TrainingCamp trainingCamp) {
+    public void update(TrainingCamp trainingCamp) throws DatabaseException {
         String sql = "UPDATE TrainingCamps SET startDate=?, endDate=?, price=?,country=?,city=?,address=?,numberOfParticipants=?  WHERE ID=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setDate(1, Date.valueOf(trainingCamp.getStartDate()));
@@ -68,7 +69,7 @@ public class DatabaseTrainingCamp extends DatabaseRepo<TrainingCamp> {
             stmt.setInt(8, trainingCamp.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("DataBase Exception Error");
         }
         String deleteStudentsTrainingCamps = "DELETE From StudentsTrainingCamp WHERE idStud=?";
 

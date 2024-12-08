@@ -14,7 +14,7 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
     }
 
     @Override
-    public void add(Student student) {
+    public void add(Student student) throws DatabaseException {
         String addToStudent = "INSERT INTO Students (id, name,lastName,email,address,dateOfBirth,number, beltLevel, session) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)";
         try (PreparedStatement stmt = connection.prepareStatement(addToStudent)) {
             stmt.setInt(1, student.getId());
@@ -28,7 +28,7 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
             stmt.setInt(9, student.getSession());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("DataBase Exception Error");
         }
         String addToSessionStudents = "INSERT INTO SessionStudents (studentId, sessionId) VALUES (?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(addToSessionStudents)) {
@@ -37,19 +37,19 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("DataBase Exception Error");
         }
     }
 
     @Override
-    public void remove(Integer RemoveId) {
+    public void remove(Integer RemoveId) throws DatabaseException {
 
         String removeChildrenFromParents = "DELETE FROM ParentsStudents WHERE idStudent = ?";
         try(PreparedStatement stmt0 = connection.prepareStatement(removeChildrenFromParents)){
             stmt0.setInt(1, RemoveId);
             stmt0.executeUpdate();
         }catch(SQLException e){
-            e.printStackTrace();
+            throw new DatabaseException("DataBase Exception Error");
         }
 
         String removeFromSessionStudents = "DELETE FROM SessionStudents WHERE studentId=?";
@@ -104,7 +104,7 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
     }
 
     @Override
-    public void update(Student obj) throws DatabaseException {
+    public void update(Student obj) {
         String updateStudent = "UPDATE Students SET name=?, lastName=?,email=?,address=?,dateOfBirth=?,number=?, beltLevel=?, session=? WHERE id=?";
 
         try(PreparedStatement statement = connection.prepareStatement(updateStudent)){
@@ -141,7 +141,8 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
                 statement.setBoolean(5, sd.isAttended());
                 statement.execute();
             } catch (SQLException e) {
-                throw new DatabaseException("An error is by update occurred");
+                //throw new DatabaseException("An error is by update occurred");
+                throw new RuntimeException();
             }
         }
     }
