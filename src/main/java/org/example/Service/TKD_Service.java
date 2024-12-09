@@ -1,11 +1,13 @@
 package org.example.Service;
 
 import org.example.Exceptions.DatabaseException;
+import org.example.Exceptions.EntityNotFoundException;
 import org.example.Model.*;
 import org.example.Repository.DatabaseRepo;
 import org.example.Repository.InMemoryRepo;
 import org.example.Repository.InMemoryRepo;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -54,39 +56,48 @@ public class TKD_Service {
      * Change the trainer of a session.
      * @param trainerId     The unique identifier of a trainer.
      * @param sessionId     The unique identifier of a session.
-     * @throws IOException  If no trainer or session was found.
+     * @  throws EntityNoFound or DataBaseException
      */
-    public void assignGroupToTrainer(int trainerId, int sessionId) throws IOException {
+    public void assignGroupToTrainer(int trainerId, int sessionId) throws EntityNotFoundException, DatabaseException {
 //        try {
 //            if(trainers.getAll().stream().noneMatch(tr -> tr.getId() == trainerId)){
 //                throw new IOException("Invalid trainer ID");
 //            }
 //        } catch (DatabaseException e) {
-//            throw new RuntimeException(e);
+//            throw e;
 //        }
 //        try {
 //            if(sessions.getAll().stream().noneMatch(ss->ss.getId()== sessionId)){
 //                throw new IOException("Invalid session ID");
 //            }
 //        } catch (DatabaseException e) {
-//            throw new RuntimeException(e);
+//            throw e;
 //        }
-        Trainer tr = null; 
-try {
-    tr = trainers.get(trainerId);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}        Session ss = null; 
-try {
-    ss = sessions.get(sessionId);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}        ss.trainer=tr.getId();
-    try {
-    sessions.update(ss);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}
+
+        Trainer tr = null;
+        try {
+            tr = trainers.get(trainerId);
+            if(tr == null){
+                throw new EntityNotFoundException("No trainer with this ID found");
+            }
+        } catch (DatabaseException e) {
+            throw e;
+        }
+        Session ss = null;
+        try {
+            ss = sessions.get(sessionId);
+            if(ss == null){
+                throw new EntityNotFoundException("No session with this ID found");
+            }
+        } catch (DatabaseException e) {
+            throw e;
+        }
+        ss.trainer=tr.getId();
+        try {
+            sessions.update(ss);
+        } catch (DatabaseException e) {
+            throw e;
+        }
 
     }
 
@@ -94,59 +105,75 @@ try {
      * Change the session of a student and remove him from the previous one.
      * @param studentId     The unique identifier of a student.
      * @param sessionId     The unique identifier of a session.
-     * @throws IOException  If no student or session was found.
+     * @  If no student or session was found.
+     * throws EntityNoFound or DataBaseException
      */
-    public void changeStudentGroup(int studentId,int sessionId) throws IOException {
+    public void changeStudentGroup(int studentId,int sessionId) throws EntityNotFoundException, DatabaseException {
 //        if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
 //            throw new IOException("Invalid student ID");
 //        }
 //        if(sessions.getAll().stream().noneMatch(ss->ss.getId()== sessionId)){
 //            throw new IOException("Invalid session ID");
 //        }
-        Student st = null; 
-try {
-    st = students.get(studentId);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}        Session new_ss = null; 
-try {
-    new_ss = sessions.get(sessionId);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}
+        Student st = null;
+        try {
+            st = students.get(studentId);
+            if(st == null){
+                throw new EntityNotFoundException("No student with this ID found");
+            }
+        } catch (DatabaseException e) {
+            throw e;
+        }
+        Session new_ss = null;
+        try {
+            new_ss = sessions.get(sessionId);
+            if(new_ss == null){
+                throw new EntityNotFoundException("No new session with this ID found");
+            }
+        } catch (DatabaseException e) {
+            throw e;
+        }
         Session old_ss = null;
         try {
             old_ss = sessions.get(st.getSession());
+            if(old_ss == null){
+                throw new EntityNotFoundException("No old session with this ID found");
+            }
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
 
         old_ss.getSessionStudents().remove(st.getId());
         new_ss.getSessionStudents().add(st.getId());
         st.setSession(new_ss.id);
         try {
-    students.update(st);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}
+            students.update(st);
+        } catch (DatabaseException e) {
+            throw e;
+        }
         try {
-    sessions.update(new_ss);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}
+            sessions.update(new_ss);
+        } catch (DatabaseException e) {
+            throw e;
+        }
         try {
-    sessions.update(old_ss);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}
+            sessions.update(old_ss);
+        } catch (DatabaseException e) {
+            throw e;
+        }
     }
 
     /**
      * Changes the belt color of a student if he passed the exam.
      * @param beltExamID  The unique identifier of a belt exam.
+     * throws EntityNoFound or DataBaseException
      */
-    public void changeBeltlevel(Integer beltExamID){
+    public void changeBeltlevel(Integer beltExamID) throws EntityNotFoundException, DatabaseException {
         try {
+            BeltExam beltExam = beltExams.get(beltExamID);
+            if(beltExam == null){
+                throw new EntityNotFoundException("No belt exam with this ID found");
+            }
             for(int stId: beltExams.get(beltExamID).getListOfResults().keySet()){
                 if(beltExams.get(beltExamID).getListOfResults().get(stId)==1){
                     students.get(stId).setBeltLevel(beltExams.get(beltExamID).getBeltColor());
@@ -154,7 +181,7 @@ try {
                 }
             }
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 
@@ -162,28 +189,35 @@ try {
      * Counts the number of attendances and absences of a student.
      * @param studentId         The unique identifier of a student.
      * @return                  Map containing the number of attendances and absences of a student.
-     * @throws IOException      If no student was found.
+     * @    throws EntityNoFound If no student was found.
+     *
      */
-    public Map<String,Integer> numberOfAttendencesAndAbsences(int studentId) throws IOException {
+    public Map<String,Integer> numberOfAttendencesAndAbsences(int studentId) throws EntityNotFoundException, DatabaseException {
 //        if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
 //            throw new IOException("Invalid student ID");
 //        }
         Student st= null;
         try {
             st = students.get(studentId);
+            if(st == null){
+                throw new EntityNotFoundException("No student with this ID found");
+            }
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
+
         Map<String,Integer> attendencesAbsences= new HashMap<>();
         attendencesAbsences.put("Attendences",0);
         attendencesAbsences.put("Absences",0);
+
         for(SessionDate sd: st.getSessionDateList()){
             if(sd.isAttended()){
-                int count=attendencesAbsences.get("Attendences");
+                int count = attendencesAbsences.get("Attendences");
+
                 attendencesAbsences.put("Attendences",count+1);
             }
             else{
-                int count=attendencesAbsences.get("Absences");
+                int count = attendencesAbsences.get("Absences");
                 attendencesAbsences.put("Absences",count+1);
             }
         }
@@ -220,16 +254,22 @@ try {
      * @param amountOfMoney     the range that it's forbidden to be exceeded
      * @return                  a list of lists with all possible combinations
      */
-    public List<List<Integer>> eventsThatdontExceedAmountOfMoney(double amountOfMoney) throws DatabaseException{
+    public List<List<Integer>> eventsThatdontExceedAmountOfMoney(double amountOfMoney) throws DatabaseException, EntityNotFoundException {
         try{
             List<Map.Entry<Integer, Double>> eventPairs = new ArrayList<>();
 
             for (int i = 0; i < contests.getAll().size(); i++) {
                 Contest ct = contests.getAll().get(i);
+                if(ct == null){
+                    throw new EntityNotFoundException("No contest with this ID found");
+                }
                 eventPairs.add(new AbstractMap.SimpleEntry<>(ct.getId(), ct.price));
             }
             for (int i = 0; i < trainingCamps.getAll().size(); i++) {
                 TrainingCamp ct = trainingCamps.getAll().get(i);
+                if(ct == null){
+                    throw new EntityNotFoundException("No training camp with this ID found");
+                }
                 eventPairs.add(new AbstractMap.SimpleEntry<>(ct.getId(), ct.price));
             }
 
@@ -238,7 +278,7 @@ try {
             return results;
 
         }catch (DatabaseException e){
-            throw new RuntimeException();
+            throw e;
         }
 
     }
@@ -247,31 +287,39 @@ try {
      * Adds a student to a belt exam.
      * @param idStudent     The unique identifier of a student.
      * @param idBeltExam    The unique identifier of a belt exam.
-     * @throws IOException  If no student or belt exam was found.
+     * @  If no student or belt exam was found.
      */
-    public void addStudentToBeltExam(int idStudent, int idBeltExam) throws IOException {
+    public void addStudentToBeltExam(int idStudent, int idBeltExam) throws EntityNotFoundException, DatabaseException {
 //        if(students.getAll().stream().noneMatch(st -> st.getId() == idStudent)){
 //            throw new IOException("Invalid student ID");
 //        }
 //        if(beltExams.getAll().stream().noneMatch(bt -> bt.getId() == idBeltExam)){
 //            throw new IOException("Invalid belt exam ID");
 //        }
-        Student s = null; 
-try {
-    s = students.get(idStudent);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}        BeltExam belt = null; 
-try {
-    belt = beltExams.get(idBeltExam);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}        belt.getListOfResults().put(s.getId(),-1);
+        Student s = null;
         try {
-    beltExams.update(belt);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}
+            s = students.get(idStudent);
+            if(s == null){
+                throw new EntityNotFoundException("No student with this ID found");
+            }
+        } catch (DatabaseException e) {
+            throw e;
+        }
+        BeltExam belt = null;
+        try {
+            belt = beltExams.get(idBeltExam);
+            if(belt == null){
+                throw new EntityNotFoundException("No belt exam with this ID found");
+            }
+        } catch (DatabaseException e) {
+            throw e;
+        }
+        belt.getListOfResults().put(s.getId(),-1);
+        try {
+            beltExams.update(belt);
+        } catch (DatabaseException e) {
+            throw e;
+        }
     }
 
     /**
@@ -279,46 +327,54 @@ try {
      * @param idStudent     The unique identifier of a student.
      * @param idBeltExam    The unique identifier of a belt exam.
      * @param promoted      The result of the exam, passed(true) or failed(false).
-     * @throws IOException  If no student or belt exam was found.
+     * @  If no student or belt exam was found.
      */
-    public void addResultBeltExam(int idStudent, int idBeltExam, boolean promoted) throws IOException {
+    public void addResultBeltExam(int idStudent, int idBeltExam, boolean promoted) throws EntityNotFoundException, DatabaseException {
         try {
     if(students.getAll().stream().noneMatch(st -> st.getId() == idStudent)){
-            throw new IOException("Invalid student ID");
+            throw new EntityNotFoundException("Invalid student id");
         }
 
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}        try {
-    if(beltExams.getAll().stream().noneMatch(bt -> bt.getId() == idBeltExam)){
-            throw new IOException("Invalid belt exam ID");
+    } catch (DatabaseException e) {
+        throw e;
+    }
+    try {
+        if(beltExams.getAll().stream().noneMatch(bt -> bt.getId() == idBeltExam)){
+            throw new EntityNotFoundException("Invalid belt exam ID");
         }
 
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}
-        Student s = null; 
-try {
-    s = students.get(idStudent);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}        BeltExam belt = null; 
-try {
-    belt = beltExams.get(idBeltExam);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}        if(promoted){
-            belt.getListOfResults().put(s.getId(),1); // promoted
-            changeBeltlevel(idBeltExam);
+    } catch (DatabaseException e) {
+        throw e;
+    }
+        Student s = null;
+    try {
+        s = students.get(idStudent);
+        if(s == null){
+            throw new EntityNotFoundException("No student with this ID found");
         }
-        else{
-            belt.getListOfResults().put(s.getId(),0); // failed
+    } catch (DatabaseException e) {
+        throw e;
+    }
+    BeltExam belt = null;
+    try {
+        belt = beltExams.get(idBeltExam);
+        if(belt == null){
+            throw new EntityNotFoundException("No belt exam with this ID found");
         }
-        try {
-    beltExams.update(belt);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}
+    } catch (DatabaseException e) {
+        throw e;
+    }        if(promoted){
+                belt.getListOfResults().put(s.getId(),1); // promoted
+                changeBeltlevel(idBeltExam);
+            }
+            else{
+                belt.getListOfResults().put(s.getId(),0); // failed
+            }
+            try {
+        beltExams.update(belt);
+    } catch (DatabaseException e) {
+        throw e;
+    }
     }
 
     /**
@@ -328,145 +384,168 @@ try {
      * @param attendance    The attendance of a student which can be true(was present) or false(wasn't present).
      * @param weekday       The day of the week of the session.
      * @param date          The exact date the session took place.
-     * @throws IOException  If no student or session was found.
+     * @  If no student or session was found.
      */
-    public void addAttendance(int studentId,int sessionId,boolean attendance,String weekday,String date) throws IOException {
+    public void addAttendance(int studentId,int sessionId,boolean attendance,String weekday,String date) throws EntityNotFoundException, DatabaseException {
         try {
-    if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
-            throw new IOException("Invalid student ID");
-        }
+            if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
+                throw new EntityNotFoundException("Invalid student ID");
+            }
 
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}        try {
-    if(sessions.getAll().stream().noneMatch(ss -> ss.getId() == sessionId)){
-            throw new IOException("Invalid session ID");
-        }
+        } catch (DatabaseException e) {
+            throw e;
+        }        try {
+            if(sessions.getAll().stream().noneMatch(ss -> ss.getId() == sessionId)){
+                    throw new EntityNotFoundException("Invalid session ID");
+                }
 
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}        Student s = null; 
-try {
-    s = students.get(studentId);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}        SessionDate sessionDate = new SessionDate(weekday,date,sessionId,attendance);
-        s.getSessionDateList().add(sessionDate);
+        } catch (DatabaseException e) {
+            throw e;
+        }        Student s = null;
         try {
-    students.update(s);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}
+            s = students.get(studentId);
+            if(s == null){
+                throw new EntityNotFoundException("No student with this ID found");
+            }
+        } catch (DatabaseException e) {
+            throw e;
+        }
+        SessionDate sessionDate = new SessionDate(weekday,date,sessionId,attendance);
+            s.getSessionDateList().add(sessionDate);
+            try {
+                students.update(s);
+        } catch (DatabaseException e) {
+            throw e;
+        }
     }
 
     /**
      * Adds a student to a contest.
      * @param studentId     The unique identifier of a student.
      * @param contestId     The unique identifier of a contest.
-     * @throws IOException  If no student or contest was found.
+     * @  If no student or contest was found.
      */
-    public void addStudentToContest(int studentId,int contestId) throws IOException {
+    public void addStudentToContest(int studentId,int contestId) throws EntityNotFoundException, DatabaseException {
         try {
     if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
-            throw new IOException("Invalid student ID");
+            throw new EntityNotFoundException("Invalid student ID");
         }
 
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}        try {
-    if(contests.getAll().stream().noneMatch(ct -> ct.getId() == contestId)){
-            throw new IOException("Invalid contest ID");
+    } catch (DatabaseException e) {
+        throw e;
+    }
+
+    try {
+        if(contests.getAll().stream().noneMatch(ct -> ct.getId() == contestId)){
+            throw new EntityNotFoundException("Invalid contest ID");
         }
 
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}        Student st = null; 
-try {
-    st = students.get(studentId);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}        Contest ct = null; 
-try {
-    ct = contests.get(contestId);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}        ct.getStudents().add(st.getId());
+        } catch (DatabaseException e) {
+            throw e;
+        }        Student st = null;
+        try {
+            st = students.get(studentId);
+            if(st == null){
+                throw new EntityNotFoundException("No student with this ID found");
+            }
+        } catch (DatabaseException e) {
+            throw e;
+        }        Contest ct = null;
+        try {
+            ct = contests.get(contestId);
+            if(ct == null){
+                throw new EntityNotFoundException("No contest with this ID found");
+            }
+        } catch (DatabaseException e) {
+            throw e;
+        }
+        ct.getStudents().add(st.getId());
         st.getContestList().add(ct.getId());
         try {
-    contests.update(ct);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}
+            contests.update(ct);
+        } catch (DatabaseException e) {
+            throw e;
+        }
         try {
-    students.update(st);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}
+            students.update(st);
+        } catch (DatabaseException e) {
+            throw e;
+        }
     }
 
     /**
      * Adds a student to a training camp.
      * @param studentId         The unique identifier of a student.
      * @param trainingCampId    The unique identifier of a training camp.
-     * @throws IOException      If no student or training camp was found.
+     * @      If no student or training camp was found.
      */
-    public void addStudentToTraining(int studentId,int trainingCampId) throws IOException {
+    public void addStudentToTraining(int studentId,int trainingCampId) throws EntityNotFoundException, DatabaseException {
         try {
     if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
-            throw new IOException("Invalid student ID");
+            throw new EntityNotFoundException("Invalid student ID");
         }
 
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}        try {
-    if(trainingCamps.getAll().stream().noneMatch(tc -> tc.getId() == trainingCampId)){
-            throw new IOException("Invalid training camp ID");
-        }
+    } catch (DatabaseException e) {
+        throw e;
+    }        try {
+        if(trainingCamps.getAll().stream().noneMatch(tc -> tc.getId() == trainingCampId)){
+                throw new EntityNotFoundException("Invalid training camp ID");
+            }
 
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}        Student st = null; 
-try {
-    st = students.get(studentId);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}        TrainingCamp tc = null; 
-try {
-    tc = trainingCamps.get(trainingCampId);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}        tc.getStudents().add(st.getId());
-        st.getTrainingCampList().add(tc.getId());
-        try {
-    trainingCamps.update(tc);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}
-        try {
-    students.update(st);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}
+    } catch (DatabaseException e) {
+        throw e;
+    }        Student st = null;
+    try {
+        st = students.get(studentId);
+        if(st == null){
+            throw new EntityNotFoundException("No student with this ID found");
+        }
+    } catch (DatabaseException e) {
+        throw e;
     }
+    TrainingCamp tc = null;
+    try {
+        tc = trainingCamps.get(trainingCampId);
+        if(tc == null){
+            throw new EntityNotFoundException("No training camp with this ID found");
+        }
+    } catch (DatabaseException e) {
+        throw e;
+    }
+
+    tc.getStudents().add(st.getId());
+    st.getTrainingCampList().add(tc.getId());
+
+    try {
+        trainingCamps.update(tc);
+    } catch (DatabaseException e) {
+        throw e;
+    }
+    try {
+        students.update(st);
+    } catch (DatabaseException e) {
+        throw e;
+    }
+        }
 
     /**
      * Adds a student to a parent, by searching the for the parent by email to see if it needs to be added to the repo.
      * @param student   The student object that needs to be added to the parent.
      * @param parent    The parent object that needs to be updated/ created.
      */
-    public void addStudentToParent(Student student, Parent parent){
+    public void addStudentToParent(Student student, Parent parent) throws EntityNotFoundException, DatabaseException {
         if(findParent(parent.getEmail())){
             Parent updateParent = null;
             try {
                 updateParent = parents.getAll().stream().filter(pt -> Objects.equals(pt.getEmail(),parent.getEmail())).findFirst().orElse(null);
             } catch (DatabaseException e) {
-                throw new RuntimeException(e);
+                throw e;
             }
             updateParent.getChildren().add(student.getId());
             try {
                 parents.update(updateParent);
             } catch (DatabaseException e) {
-                throw new RuntimeException(e);
+                throw e;
             }
             student.setParent(updateParent.getId());
         }
@@ -474,13 +553,13 @@ try {
             try {
                 parents.add(parent);
             } catch (DatabaseException e) {
-                throw new RuntimeException(e);
+                throw e;
             }
             parent.getChildren().add(student.getId());
             try {
                 parents.update(parent);
             } catch (DatabaseException e) {
-                throw new RuntimeException(e);
+                throw e;
             }
             student.setParent(parent.getId());
         }
@@ -491,25 +570,25 @@ try {
      * @param email     the unique email of a Parent
      * @return          true/false if parent found
      */
-    public boolean findParent(String email){
+    public boolean findParent(String email) throws DatabaseException {
         try {
             return parents.getAll().stream().anyMatch(pt -> Objects.equals(pt.getEmail(), email));
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 
     /**
      * this function adds an object in their repo based on their type
      * @param                o represent the given object
-     * @throws IOException   If object id already exists.
+     * @   If object id already exists.
      */
-    public void addObject(Object o) throws IOException {
+    public void addObject(Object o) throws DatabaseException {
         if(o instanceof Student){
             try {
                 students.add((Student) o);
             } catch (DatabaseException e) {
-                throw new RuntimeException(e);
+                throw e;
             }
 
         }
@@ -520,7 +599,7 @@ try {
             try {
                 trainers.add((Trainer) o);
             } catch (DatabaseException e) {
-                throw new RuntimeException(e);
+                throw e;
             }
         }
         else if(o instanceof Parent){
@@ -530,7 +609,7 @@ try {
             try {
                 parents.add((Parent) o);
             } catch (DatabaseException e) {
-                throw new RuntimeException(e);
+                throw e;
             }
         }
         else if(o instanceof Session){
@@ -540,7 +619,7 @@ try {
             try {
                 sessions.add((Session) o);
             } catch (DatabaseException e) {
-                throw new RuntimeException(e);
+                throw e;
             }
         }
         else if(o instanceof BeltExam){
@@ -550,7 +629,7 @@ try {
             try {
                 beltExams.add((BeltExam) o);
             } catch (DatabaseException e) {
-                throw new RuntimeException(e);
+                throw e;
             }
         }
         else if(o instanceof Contest){
@@ -560,7 +639,7 @@ try {
             try {
                 contests.add((Contest) o);
             } catch (DatabaseException e) {
-                throw new RuntimeException(e);
+                throw e;
             }
         }
         else if(o instanceof TrainingCamp){
@@ -570,7 +649,7 @@ try {
             try {
                 trainingCamps.add((TrainingCamp) o);
             } catch (DatabaseException e) {
-                throw new RuntimeException(e);
+                throw e;
             }
         }
     }
@@ -581,31 +660,38 @@ try {
      * @param parentID          the ID of the parent
      * @param month             the month they want an invoice
      * @return                  a string that holds information an invoice need to have (for every child they have)
-     * @throws IOException      If no parent was found.
+     * @      If no parent was found.
      */
 
-    public String generateInvoice(Integer parentID,String month) throws IOException {
+    public String generateInvoice(Integer parentID,String month) throws DatabaseException, EntityNotFoundException{
         try {
     if(parents.getAll().stream().noneMatch(pt -> pt.getId() == parentID)){
-            throw new IOException("Invalid parent ID");
+            throw new EntityNotFoundException("Invalid parent ID");
         }
 
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
-        }        Parent parent = null;
+            throw e;
+        }
+        Parent parent = null;
         try {
             parent = parents.get(parentID);
+            if(parent == null){
+                throw new EntityNotFoundException("No parent with this ID found");
+            }
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
         String invoice="Invoice for the month " + month + "\nParent name: " + parent.getLastName() + " " + parent.getName() + "\n";
         double total = 0;
         for(int studentId: parent.getChildren()){
-            Student student = null; 
+            Student student = null;
             try {
                 student = students.get(studentId);
+                if(student == null){
+                    throw new EntityNotFoundException("No student with this ID found");
+                }
             } catch (DatabaseException e) {
-                throw new RuntimeException(e);
+                throw e;
             }            int presences=0;
             double individualTotal = 0;
             for(SessionDate sd: student.getSessionDateList()){
@@ -616,7 +702,7 @@ try {
             try {
                 individualTotal += presences*(sessions.get(student.getSession())).getPricePerSession();
             } catch (DatabaseException e) {
-                throw new RuntimeException(e);
+                throw e;
             }
             total+= individualTotal;
             invoice += "Student name: " + student.getLastName() + " " + student.getName() + "\n Total for student: " + individualTotal + "\n";
@@ -628,92 +714,99 @@ try {
     /**
      * it deletes a student based on their ID
      * @param studentID         the id of the student
-     * @throws IOException      If no student was found.
+     * @      If no student was found.
      */
-    public void removeStudent(Integer studentID) throws IOException {
+    public void removeStudent(Integer studentID) throws EntityNotFoundException, DatabaseException {
         try {
     if(students.getAll().stream().noneMatch(st -> st.getId() == studentID)){
-            throw new IOException("Invalid student ID");
+            throw new EntityNotFoundException("Invalid student ID");
         }
 
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}
+    } catch (DatabaseException e) {
+        throw e;
+    }
         Parent parent = null;
         try {
             parent = parents.get(students.get(studentID).getParent());
+            if(parent == null){
+                throw new EntityNotFoundException("No parent with this ID-Student found");
+            }
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
         if(parent.getChildren().size()>1){
             parent.getChildren().remove(studentID);
             try {
     parents.update(parent);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}
+    } catch (DatabaseException e) {
+        throw e;
+    }
         }
         else{
             try {
                 parents.remove(parent.getId());
             } catch (DatabaseException e) {
-                throw new RuntimeException(e);
+                throw e;
             }
         }
         Session session = null;
         try {
             session = sessions.get(students.get(studentID).getSession());
+            if(session == null){
+                throw new EntityNotFoundException("No session assign to these ID student found");
+            }
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
         session.getSessionStudents().remove( studentID);
         try {
-    sessions.update(session);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}
+        sessions.update(session);
+
+        } catch (DatabaseException e) {
+            throw e;
+        }
         try {
             students.remove(studentID);
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 
     /**
      * it deletes a trainer based on their ID
      * @param trainerID         the id of the trainer
-     * @throws IOException      If no trainer was found.
+     * @      If no trainer was found.
      */
-    public void removeTrainer(Integer trainerID) throws IOException {
+    public void removeTrainer(Integer trainerID) throws EntityNotFoundException, DatabaseException {
         try {
-    if(trainers.getAll().stream().noneMatch(t -> t.getId() == trainerID)){
-            throw new IOException("Invalid trainer ID");
+            if(trainers.getAll().stream().noneMatch(t -> t.getId() == trainerID)){
+                throw new EntityNotFoundException("Invalid trainer ID");
         }
 
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}
-        try {
-            trainers.remove(trainerID);
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
+                try {
+                    trainers.remove(trainerID);
+                } catch (DatabaseException e) {
+                    throw e;
+                }
     }
 
     /**
      * it deletes a parent based on their ID
      * @param parentID          the id of the Parent
-     * @throws IOException      If no parent was found.
+     * @      If no parent was found.
      */
-    public void removeParent(Integer parentID) throws IOException {
+    public void removeParent(Integer parentID) throws EntityNotFoundException, DatabaseException {
         try {
-    if(parents.getAll().stream().noneMatch(pt -> pt.getId() == parentID)){
-            throw new IOException("Invalid parent ID");
-        }
+            if(parents.getAll().stream().noneMatch(pt -> pt.getId() == parentID)){
+                    throw new EntityNotFoundException("Invalid parent ID");
+            }
 
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}
+        } catch (DatabaseException e) {
+            throw e;
+        }
         try {
             List<Integer> children = parents.get(parentID).getChildren();
             for(int i=0; i<children.size(); i++){
@@ -721,23 +814,22 @@ try {
             }
             parents.remove(parentID);
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 
     /**
      * it deletes a session based on their ID
      * @param sessionID         the id of the session
-     * @throws IOException      If no session was found.
+     * @      If no session was found.
      */
-    public void removeSession(Integer sessionID) throws IOException {
+    public void removeSession(Integer sessionID) throws EntityNotFoundException, DatabaseException {
         try {
         if(sessions.getAll().stream().noneMatch(ss -> ss.getId() == sessionID)){
-                throw new IOException("Invalid session ID");
+                throw new EntityNotFoundException("Invalid session ID");
             }
-
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
         try {
             for (int i = 0; i < sessions.get(sessionID).getSessionStudents().size(); i++) {
@@ -747,75 +839,75 @@ try {
             }
         }
         catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
         try {
             sessions.remove(sessionID);
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 
     /**
      * it deletes a BeltExam based on their ID
      * @param beltExamID        the id of the BeltExam
-     * @throws IOException      If no belt exam was found.
+     * @      If no belt exam was found.
      */
-    public void removeBeltExam(Integer beltExamID) throws IOException {
+    public void removeBeltExam(Integer beltExamID) throws EntityNotFoundException, DatabaseException {
         try {
     if(beltExams.getAll().stream().noneMatch(bt -> bt.getId() == beltExamID)){
-            throw new IOException("Invalid belt exam ID");
+            throw new EntityNotFoundException("Invalid belt exam ID");
         }
 
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}
+        } catch (DatabaseException e) {
+            throw e;
+        }
         try {
             beltExams.remove(beltExamID);
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 
     /**
      * it deletes a Contest based on their ID
      * @param contestID         the id of the contest
-     * @throws IOException      If no contest was found.
+     * @      If no contest was found.
      */
-    public void removeContest(Integer contestID) throws IOException {
+    public void removeContest(Integer contestID) throws EntityNotFoundException, DatabaseException {
         try {
-    if(contests.getAll().stream().noneMatch(ct -> ct.getId() == contestID)){
-            throw new IOException("Invalid contest ID");
+            if(contests.getAll().stream().noneMatch(ct -> ct.getId() == contestID)){
+                throw new EntityNotFoundException("Invalid contest ID");
         }
 
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}
+        } catch (DatabaseException e) {
+            throw e;
+        }
         try {
             contests.remove(contestID);
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 
     /**
      * it deletes a training camp based on their ID
      * @param trainingCampID    the id of the trainingCamp
-     * @throws IOException      If no training camp was found.
+     * @      If no training camp was found.
      */
-    public void removeTrainingCamp(Integer trainingCampID) throws IOException {
+    public void removeTrainingCamp(Integer trainingCampID) throws EntityNotFoundException, DatabaseException {
         try {
-    if(trainingCamps.getAll().stream().noneMatch(tc -> tc.getId() == trainingCampID)){
-            throw new IOException("Invalid training camp ID");
-        }
+            if(trainingCamps.getAll().stream().noneMatch(tc -> tc.getId() == trainingCampID)){
+                    throw new EntityNotFoundException("Invalid training camp ID");
+                }
 
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}
+        } catch (DatabaseException e) {
+            throw e;
+        }
         try {
             trainingCamps.remove(trainingCampID);
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 
@@ -825,25 +917,32 @@ try {
      * @param idSession the id of the session
      * @param studentID the id of the Student
      */
-    public void addStudentToSession(Integer idSession, Integer studentID){
+    public void addStudentToSession(Integer idSession, Integer studentID) throws EntityNotFoundException, DatabaseException {
 
-        Session ss = null; 
-try {
-    ss = sessions.get(idSession);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}        Student st = null; 
-try {
-    st = students.get(studentID);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}
+        Session ss = null;
+        try {
+            ss = sessions.get(idSession);
+            if(ss == null){
+                throw new EntityNotFoundException("No session with these id found");
+            }
+        } catch (DatabaseException e) {
+            throw e;
+        }
+        Student st = null;
+        try {
+            st = students.get(studentID);
+            if(st == null){
+                throw new EntityNotFoundException("No student with these id found");
+            }
+        } catch (DatabaseException e) {
+            throw e;
+        }
         ss.getSessionStudents().add(st.getId());
         try {
-    sessions.update(ss);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}
+            sessions.update(ss);
+        } catch (DatabaseException e) {
+            throw e;
+        }
 
     }
 
@@ -851,21 +950,25 @@ try {
      * get a Trainer based on their id
      * @param trainerId         the trainer id
      * @return                  object of type Trainer
-     * @throws IOException      If no trainer was found.
+     * @      If no trainer was found.
      */
-    public Trainer getTrainerById(int trainerId) throws IOException {
+    public Trainer getTrainerById(int trainerId) throws EntityNotFoundException, DatabaseException {
         try {
-    if(trainers.getAll().stream().noneMatch(st -> st.getId() == trainerId)){
-            throw new IOException("Invalid trainer ID");
+            if(trainers.getAll().stream().noneMatch(st -> st.getId() == trainerId)){
+                throw new EntityNotFoundException("Invalid trainer ID");
         }
 
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}
+        } catch (DatabaseException e) {
+            throw e;
+        }
         try {
+            Trainer tr = trainers.get(trainerId);
+            if(tr == null){
+                throw new EntityNotFoundException("No trainer with these id found");
+            }
             return trainers.get(trainerId);
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 
@@ -874,11 +977,15 @@ try {
      * @param       contestID the contest id
      * @return      an object of type Contest
      */
-    public Contest getContestById(int contestID){
+    public Contest getContestById(int contestID) throws EntityNotFoundException, DatabaseException {
         try {
+            Contest c = contests.get(contestID);
+            if(c == null){
+                throw new EntityNotFoundException("No contest with these id found");
+            }
             return contests.get(contestID);
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 
@@ -887,11 +994,15 @@ try {
      * @param idTrainingCamp    the Training Camp id
      * @return                  an object of type Training Camp
      */
-    public TrainingCamp getTrainingCampByIs(int idTrainingCamp){
+    public TrainingCamp getTrainingCampByIs(int idTrainingCamp) throws EntityNotFoundException, DatabaseException {
         try {
+            TrainingCamp tc = trainingCamps.get(idTrainingCamp);
+            if(tc == null){
+                throw new EntityNotFoundException("No training camp with these id found");
+            }
             return trainingCamps.get(idTrainingCamp);
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 
@@ -899,21 +1010,25 @@ try {
      * get a session based on their id
      * @param sessionId         the session id
      * @return                  an object of type Session
-     * @throws IOException      If no session was found.
+     * @      If no session was found.
      */
-    public Session getSessionById(int sessionId) throws IOException {
+    public Session getSessionById(int sessionId) throws EntityNotFoundException, DatabaseException {
         try {
-    if(sessions.getAll().stream().noneMatch(st -> st.getId() == sessionId)){
-            throw new IOException("Invalid session ID");
+            if(sessions.getAll().stream().noneMatch(st -> st.getId() == sessionId)){
+                throw new EntityNotFoundException("Invalid session ID");
         }
 
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}
+        } catch (DatabaseException e) {
+            throw e;
+        }
         try {
+            Session s = sessions.get(sessionId);
+            if(s == null){
+                throw new EntityNotFoundException("No session with these id found");
+            }
             return sessions.get(sessionId);
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 
@@ -921,7 +1036,7 @@ try {
      *
      * @return a String that holds all students
      */
-    public String viewAllStudents(){
+    public String viewAllStudents() throws EntityNotFoundException, DatabaseException {
         StringBuilder allStudents= new StringBuilder();
         try {
             for(Session s: sessions.getAll()){
@@ -931,7 +1046,7 @@ try {
                 allStudents.append('\n');
             }
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
         return allStudents.toString();
     }
@@ -940,14 +1055,14 @@ try {
      * display all Trainers
      * @return a String that holds all trainers
      */
-    public String viewAllTrainers(){
+    public String viewAllTrainers() throws DatabaseException {
         StringBuilder allTrainers= new StringBuilder();
         try {
             for(Trainer t: trainers.getAll()){
                 allTrainers.append(t.toString2()).append('\n');
             }
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
         return allTrainers.toString();
     }
@@ -967,7 +1082,7 @@ try {
 //        }
 //        return allParents.toString();
 //    }
-    public String viewAllParents() {
+    public String viewAllParents() throws DatabaseException {
         StringBuilder allParents = new StringBuilder();
         // Coduri ANSI pentru culori
         final String ANSI_RED = "\u001B[31m";
@@ -985,7 +1100,7 @@ try {
     try {
         s = students.get(sId);
     } catch (DatabaseException e) {
-        throw new RuntimeException(e);
+        throw e;
     }                allParents.append("\n")
                             .append(ANSI_GREEN).append("Student").append(ANSI_RESET)
                             .append(" with id: ").append(s.getId())
@@ -994,7 +1109,7 @@ try {
                 allParents.append("\n");
             }
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
         return allParents.toString();
     }
@@ -1016,7 +1131,7 @@ try {
 //        }
 //        return allContests.toString();
 //    }
-    public String viewAllContests() {
+    public String viewAllContests()  throws DatabaseException {
         StringBuilder allContests = new StringBuilder();
 
         // Coduri ANSI pentru culori
@@ -1036,7 +1151,7 @@ try {
                 allContests.append('\n');
             }
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
 
         return allContests.toString();
@@ -1046,7 +1161,7 @@ try {
      * display all Training Camps
      * @return a String that holds all Training Camps
      */
-    public String viewTrainingCamps(){
+    public String viewTrainingCamps() throws DatabaseException {
         StringBuilder allTrainingCamps = new StringBuilder();
         try {
             for(TrainingCamp t: trainingCamps.getAll()){
@@ -1057,7 +1172,7 @@ try {
                 allTrainingCamps.append('\n');
             }
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
         return allTrainingCamps.toString();
     }
@@ -1066,7 +1181,7 @@ try {
      * display all BeltExams
      * @return a string that holds all BeltExams
      */
-    public String viewBeltExams() {
+    public String viewBeltExams()  throws DatabaseException {
         StringBuilder allBeltExams = new StringBuilder();
         try {
             for (BeltExam b : beltExams.getAll()) {
@@ -1077,7 +1192,7 @@ try {
                 allBeltExams.append('\n');
             }
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
         return allBeltExams.toString();
     }
@@ -1087,12 +1202,12 @@ try {
      * Sorts the contests based on their starting date.
      * @return a sorted List of Contests based on ther starting dates
      */
-    public List<Contest> sortContestsByDates(){
+    public List<Contest> sortContestsByDates() throws DatabaseException{
         List<Contest> sorted = null;
         try {
             sorted = new ArrayList<>(contests.getAll());
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         sorted.sort((c1, c2) -> {
@@ -1108,12 +1223,12 @@ try {
      *  @return a sorted List of Belt Exams based on their starting dates
      */
 
-    public List<BeltExam> sortBeltExamnsByDates(){
+    public List<BeltExam> sortBeltExamnsByDates() throws DatabaseException{
         List<BeltExam> sorted = null;
         try {
             sorted = new ArrayList<>(beltExams.getAll());
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         sorted.sort((c1, c2) -> {
@@ -1128,12 +1243,12 @@ try {
      * Sorts the training camps based on their starting dates.
      * @return a sorted list of training Camps based on their starting date
      */
-    public List<TrainingCamp> sortTrainingCampsByDates(){
+    public List<TrainingCamp> sortTrainingCampsByDates() throws DatabaseException{
         List<TrainingCamp> sorted = null;
         try {
             sorted = new ArrayList<>(trainingCamps.getAll());
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         sorted.sort((c1, c2) -> {
@@ -1148,12 +1263,12 @@ try {
      * Sorts the sessions based on their number of participants.
      * @return a list of Session sorted based on their number of participants
      */
-    public List<Session> sortSessionByNumberOfParticipants(){
+    public List<Session> sortSessionByNumberOfParticipants() throws DatabaseException{
         List<Session> sorted = null;
         try {
             sorted = new ArrayList<>(sessions.getAll());
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
         sorted.sort(Comparator.comparingInt(c -> c.getSessionStudents().size()));
         return sorted;
@@ -1163,12 +1278,12 @@ try {
      * Sorts the students based on their name.
      * @return a list of students ordered alphabetical
      */
-    public List<Student> sortStudentsAlphabetical(){
+    public List<Student> sortStudentsAlphabetical() throws DatabaseException{
         List<Student> sorted = null;
         try {
             sorted = new ArrayList<>(students.getAll());
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
         sorted.sort(Comparator.comparing(s -> s.name));
         return sorted;
@@ -1178,18 +1293,21 @@ try {
      * Sorts the students based on their number of attendances.
      * @return a list of Students ordered by number of Attendances
      */
-    public List<Student> sortStudentsByNumberOfAttendences(){
+    public List<Student> sortStudentsByNumberOfAttendences() throws DatabaseException, EntityNotFoundException {
         List<Student> sorted = null;
         try {
             sorted = new ArrayList<>(students.getAll());
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
         sorted.sort((s1, s2) -> {
             try {
-                return Integer.compare(numberOfAttendencesAndAbsences(s1.getId()).get("Attendences"), numberOfAttendencesAndAbsences(s2.getId()).get("Attendences"));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                return Integer.compare(
+                        numberOfAttendencesAndAbsences(s1.getId()).get("Attendences"),
+                        numberOfAttendencesAndAbsences(s2.getId()).get("Attendences")
+                );
+            } catch (DatabaseException | EntityNotFoundException e) {
+                throw e; // Rearuncă excepția mai departe
             }
         });
         return sorted;
@@ -1200,12 +1318,12 @@ try {
      * @param   beltLevel The belt level upon which the filter will apply
      * @return  List of all students having the belt level specified
      */
-    public List<Student> filterStudentsByBelt(String beltLevel){
+    public List<Student> filterStudentsByBelt(String beltLevel) throws DatabaseException {
         List<Student> filtered = null;
         try {
             filtered = new ArrayList<>(students.getAll());
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
         filtered = filtered.stream().filter((s1)->s1.getBeltLevel().equals(beltLevel)).toList();
         return filtered;
@@ -1215,18 +1333,18 @@ try {
      * Filters parents based of their number of children
      * @param noOfChildren      number of children we want to filter
      * @return                  a list of parents that have noOfChildren as number of children
-     * @throws IOException      If noOfChildren is negative.
+     * @      If noOfChildren is negative.
      */
-    public List<Parent> filterParentsNumberOfChildren(int noOfChildren) throws IOException {
+    public List<Parent> filterParentsNumberOfChildren(int noOfChildren) throws DatabaseException, EntityNotFoundException {
         if(noOfChildren<0){
-            throw new IOException("Children number can't be negative");
+            throw new EntityNotFoundException("Children number can't be negative");
         }
         try {
             return parents.getAll().stream()  // Obținem stream-ul de la lista de părinți
                     .filter(p -> p.getChildren().size() == noOfChildren)  // Filtrăm părinții care au exact numărul de copii dorit
                     .collect(Collectors.toList());  // Colectăm rezultatele într-o listă
         } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 
@@ -1235,49 +1353,52 @@ try {
      * session date list to find the most attended date for all students.
      * @param sessionId         The unique identifier of the session.
      * @return                  A simple entry containing the most attended date and the number of students.
-     * @throws IOException      If no session was found.
+     * @      If no session was found.
      */
-    public AbstractMap.SimpleEntry<String, Double> getMostProfitableDateForSession(int sessionId) throws IOException {
+    public AbstractMap.SimpleEntry<String, Double> getMostProfitableDateForSession(int sessionId) throws DatabaseException, EntityNotFoundException {
         try {
-    if(sessions.getAll().stream().noneMatch(ss -> ss.getId() == sessionId)){
-            throw new IOException("Invalid session ID");
+            if(sessions.getAll().stream().noneMatch(ss -> ss.getId() == sessionId)){
+                throw new EntityNotFoundException("Invalid session ID");
         }
 
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}        Session session = null; 
-try {
-    session = sessions.get(sessionId);
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}        Map<String,Double> freqWeekdays = new HashMap<>();
+        } catch (DatabaseException e) {
+            throw e;
+        }        Session session = null;
         try {
-            for(Student st: students.getAll()){
-                if(st.session == sessionId){
-                    for(SessionDate sd: st.getSessionDateList()) {
-                        if(sd.isAttended()) {
-                            if (freqWeekdays.containsKey(sd.getDate())){
-                                freqWeekdays.replace(sd.getDate(),freqWeekdays.get(sd.getDate())+sessions.get(sessionId).getPricePerSession());
-                            }
-                            else{
-                                freqWeekdays.put(sd.getDate(),sessions.get(sessionId).getPricePerSession());
+            session = sessions.get(sessionId);
+            if(session == null){
+                throw new EntityNotFoundException("Invalid session ID");
+            }
+        } catch (DatabaseException e) {
+            throw e;
+        }        Map<String,Double> freqWeekdays = new HashMap<>();
+                try {
+                    for(Student st: students.getAll()){
+                        if(st.session == sessionId){
+                            for(SessionDate sd: st.getSessionDateList()) {
+                                if(sd.isAttended()) {
+                                    if (freqWeekdays.containsKey(sd.getDate())){
+                                        freqWeekdays.replace(sd.getDate(),freqWeekdays.get(sd.getDate())+sessions.get(sessionId).getPricePerSession());
+                                    }
+                                    else{
+                                        freqWeekdays.put(sd.getDate(),sessions.get(sessionId).getPricePerSession());
+                                    }
+                                }
                             }
                         }
                     }
+                } catch (DatabaseException e) {
+                    throw e;
                 }
-            }
-        } catch (DatabaseException e) {
-            throw new RuntimeException(e);
-        }
-        double max = 0;
-        String date = "";
-        for(String d: freqWeekdays.keySet()){
-            if(freqWeekdays.get(d)>max){
-                max = freqWeekdays.get(d);
-                date = d;
-            }
-        }
-        return new AbstractMap.SimpleEntry<String,Double>(date,max);
+                double max = 0;
+                String date = "";
+                for(String d: freqWeekdays.keySet()){
+                    if(freqWeekdays.get(d)>max){
+                        max = freqWeekdays.get(d);
+                        date = d;
+                    }
+                }
+                return new AbstractMap.SimpleEntry<String,Double>(date,max);
     }
 
 }

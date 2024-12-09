@@ -58,7 +58,7 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
             statement.setInt(1,RemoveId);
             statement.execute();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
         String removeFromSessionDates = "DELETE FROM SessionDates WHERE studentId=?";
 
@@ -66,7 +66,7 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
             statement.setInt(1,RemoveId);
             statement.execute();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
         String removeFromStudentsTrainingCamp = "DELETE FROM StudentsTrainingCamp WHERE idStud=?";
 
@@ -74,7 +74,7 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
             statement.setInt(1,RemoveId);
             statement.execute();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
         String removeFromStudentsContests = "DELETE FROM StudentsContests WHERE idStud=?";
 
@@ -82,7 +82,7 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
             statement.setInt(1,RemoveId);
             statement.execute();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
         String removeFromResultsBeltExams = "DELETE FROM ResultsBeltExams WHERE idStud=?";
 
@@ -90,7 +90,7 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
             statement.setInt(1,RemoveId);
             statement.execute();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
         String removeFromStudent = "DELETE FROM Students WHERE id=?";
 
@@ -98,13 +98,13 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
             statement.setInt(1,RemoveId);
             statement.execute();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
 
     }
 
     @Override
-    public void update(Student obj) {
+    public void update(Student obj) throws DatabaseException{
         String updateStudent = "UPDATE Students SET name=?, lastName=?,email=?,address=?,dateOfBirth=?,number=?, beltLevel=?, session=? WHERE id=?";
 
         try(PreparedStatement statement = connection.prepareStatement(updateStudent)){
@@ -120,7 +120,7 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
 
             statement.execute();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
         String deleteSessionDates = "DELETE From SessionDates WHERE studentId=?";
 
@@ -128,7 +128,7 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
             statement.setInt(1,obj.getId());
             statement.execute();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
         String addSessionDates = "INSERT INTO SessionDates (studentId, sessionId,weekday,date,attended) VALUES (?,?,?,?,?)";
 
@@ -148,7 +148,7 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
     }
 
     @Override
-    public Student get(Integer getId) {
+    public Student get(Integer getId) throws DatabaseException{
         String sql = "SELECT * FROM Students WHERE id=?";
 
         try(PreparedStatement statement = connection.prepareStatement(sql)){
@@ -166,12 +166,12 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
                 return null;
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
     }
 
     @Override
-    public List<Student> getAll() {
+    public List<Student> getAll() throws DatabaseException{
         String sql = "SELECT * FROM Students";
 
         try(PreparedStatement statement = connection.prepareStatement(sql)){
@@ -189,7 +189,7 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
 
             return students;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
     }
     public static Student extractFromResultSet(ResultSet resultSet,List<SessionDate> sessionDateList, List<Integer> trainingCamps,List<Integer> contests, int parentId) throws SQLException {
@@ -202,15 +202,16 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
         student.setParent(parentId);
         return student;
     }
-    public static SessionDate extractFromSessionDate(ResultSet resultSet) {
+
+    public static SessionDate extractFromSessionDate(ResultSet resultSet) throws DatabaseException {
         try {
             return new SessionDate(resultSet.getString("weekday"),String.valueOf(resultSet.getDate("date")),resultSet.getInt("sessionId"),resultSet.getBoolean("attended"));
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
     }
 
-    public List<SessionDate> getSessionDateStudent(int studentId) {
+    public List<SessionDate> getSessionDateStudent(int studentId) throws DatabaseException{
         String sql = "SELECT * FROM SessionDates WHERE studentId=?";
         List<SessionDate> sessionDateList = new ArrayList<>();
         try(PreparedStatement statement = connection.prepareStatement(sql)){
@@ -222,11 +223,12 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
             }
         }
         catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
         return sessionDateList;
     }
-    public List<Integer> getTrainingCampsStudent(int studentId) {
+
+    public List<Integer> getTrainingCampsStudent(int studentId) throws DatabaseException{
         String sql = "SELECT * FROM StudentsTrainingCamp WHERE idStud=?";
         List<Integer> trainingCampList = new ArrayList<>();
         try(PreparedStatement statement = connection.prepareStatement(sql)){
@@ -236,11 +238,12 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
                 trainingCampList.add(resultSet.getInt("idTrainingCamp"));
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
         return trainingCampList;
     }
-    public List<Integer> getContestsStudent(int studentId) {
+
+    public List<Integer> getContestsStudent(int studentId) throws DatabaseException{
         String sql = "SELECT * FROM StudentsContests WHERE idStud=?";
         List<Integer> contestList = new ArrayList<>();
         try(PreparedStatement statement = connection.prepareStatement(sql)){
@@ -250,12 +253,12 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
                 contestList.add(resultSet.getInt("idContest"));
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
         return contestList;
     }
 
-    public int getIdParentfromStudent(int studentId) {
+    public int getIdParentfromStudent(int studentId) throws DatabaseException{
         String sql = "SELECT * FROM ParentsStudents WHERE idStudent = ?";
         try(PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setInt(1,studentId);
@@ -266,7 +269,7 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
             else return 0;
 
         }catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
     }
 

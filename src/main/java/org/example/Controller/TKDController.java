@@ -29,7 +29,7 @@ public class TKDController {
      * @param obj           The object to be added.
      * @throws IOException  If object already exists.
      */
-    public void addObject(Object obj) throws IOException {
+    public void addObject(Object obj) throws IOException, DatabaseException {
         tkdService.addObject(obj);
         if(obj instanceof Student){
             System.out.println("Student" + ((Student) obj).getName() + " added with ID " + ((Student) obj).getId());

@@ -39,7 +39,7 @@ public class DatabaseSession extends DatabaseRepo<Session> {
             statement.setInt(1,RemoveId);
             statement.execute();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
         String removeFromSessionStudents = "DELETE FROM SessionStudents WHERE sessionId=?";
 
@@ -47,7 +47,7 @@ public class DatabaseSession extends DatabaseRepo<Session> {
             statement.setInt(1,RemoveId);
             statement.execute();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
     }
 
@@ -67,7 +67,7 @@ public class DatabaseSession extends DatabaseRepo<Session> {
     }
 
     @Override
-    public Session get(Integer getId)  {
+    public Session get(Integer getId) throws DatabaseException{
         String sql = "SELECT * FROM Sessions WHERE ID=?";
 
         try(PreparedStatement statement = connection.prepareStatement(sql)){
@@ -82,12 +82,12 @@ public class DatabaseSession extends DatabaseRepo<Session> {
                 return null;
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
     }
 
     @Override
-    public List<Session> getAll() {
+    public List<Session> getAll() throws DatabaseException {
         String sql = "SELECT * FROM Sessions";
 
         try(PreparedStatement statement = connection.prepareStatement(sql)){
@@ -102,20 +102,21 @@ public class DatabaseSession extends DatabaseRepo<Session> {
 
             return sessions;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
     }
-    public static Session extractFromResultSet(ResultSet resultSet,List<Integer> students){
+    public static Session extractFromResultSet(ResultSet resultSet,List<Integer> students) throws DatabaseException {
         try {
             Session session = new Session(resultSet.getInt("id"),DifficultyLevel.valueOf(resultSet.getString("difficultyLevel")),resultSet.getInt("maximumParticipants"),
                     resultSet.getInt("trainerId"),resultSet.getDouble("pricePerSession"));
             session.setSessionStudents(students);
             return session;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
     }
-    public List<Integer> getSessionStudents(int sessionId){
+
+    public List<Integer> getSessionStudents(int sessionId) throws DatabaseException {
         String sql = "SELECT * FROM SessionStudents WHERE sessionId=?";
         List<Integer> studentList = new ArrayList<>();
         try(PreparedStatement statement = connection.prepareStatement(sql)){
@@ -125,7 +126,7 @@ public class DatabaseSession extends DatabaseRepo<Session> {
                 studentList.add(resultSet.getInt("studentId"));
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
         return studentList;
     }

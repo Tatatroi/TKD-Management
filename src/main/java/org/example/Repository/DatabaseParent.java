@@ -141,12 +141,12 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
         return children;
     }
 
-    public static Parent extractParent(ResultSet rs, List<Integer> students){
+    public static Parent extractParent(ResultSet rs, List<Integer> students) throws DatabaseException{
         Parent parent = null;
         try {
             parent = new Parent(rs.getInt("id"),
@@ -157,7 +157,7 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
                     rs.getInt("dateOfBirth"),
                     rs.getString("number"));
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
         parent.setChildren(students);
         return parent;

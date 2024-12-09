@@ -134,7 +134,7 @@ public class DatabaseContest extends DatabaseRepo<org.example.Model.Contest>{
         return contests;
     }
 
-    public List<Integer> getContestsStudents(int ContestId){
+    public List<Integer> getContestsStudents(int ContestId) throws DatabaseException{
         String sql = "SELECT * FROM StudentsContests WHERE idContest = ?";
         List<Integer> students = new ArrayList<>();
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -145,12 +145,12 @@ public class DatabaseContest extends DatabaseRepo<org.example.Model.Contest>{
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
         return students;
     }
 
-    public static Contest extractContest(ResultSet rs, List<Integer> students){
+    public static Contest extractContest(ResultSet rs, List<Integer> students) throws DatabaseException{
         Contest contest = null;
         try {
             contest = new Contest(rs.getInt("id"),
@@ -162,7 +162,7 @@ public class DatabaseContest extends DatabaseRepo<org.example.Model.Contest>{
                     rs.getString("name"),
                     rs.getString("address"));
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
         contest.setStudents(students);
         return contest;

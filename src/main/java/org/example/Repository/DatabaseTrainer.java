@@ -47,7 +47,7 @@ public class DatabaseTrainer extends DatabaseRepo<org.example.Model.Trainer>{
     }
 
     @Override
-    public void update(Trainer obj) {
+    public void update(Trainer obj) throws DatabaseException{
         String sql = "UPDATE dbo.Trainer SET name = ?, lastName = ?, email = ?, address = ?, " +
                 "dateOfBirth = ?, number = ?, beltLevel = ? WHERE id = ?";
         try(PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -61,7 +61,7 @@ public class DatabaseTrainer extends DatabaseRepo<org.example.Model.Trainer>{
             stmt.setInt(8, obj.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
     }
 

@@ -37,14 +37,14 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
     }
 
     @Override
-    public void remove(Integer RemoveId) {
+    public void remove(Integer RemoveId) throws DatabaseException {
         String removeFromResultsBeltExams = "DELETE FROM ResultsBeltExams WHERE idBeltExam=?";
 
         try(PreparedStatement statement = connection.prepareStatement(removeFromResultsBeltExams)){
             statement.setInt(1,RemoveId);
             statement.execute();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
         String sql = "DELETE FROM BeltExams WHERE ID=?";
 
@@ -52,7 +52,7 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
             statement.setInt(1,RemoveId);
             statement.execute();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
 
     }
@@ -79,7 +79,7 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
             statement.setInt(1,beltExam.getId());
             statement.execute();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
         String addStudentsTrainingCamps = "INSERT INTO ResultsBeltExams (idBeltExam,idStud,result) VALUES (?,?,?)";
 
@@ -90,13 +90,13 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
                 statement.setInt(3, beltExam.getListOfResults().get(studentId));
                 statement.execute();
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                throw new DatabaseException("DataBase Exception Error");
             }
         }
     }
 
     @Override
-    public BeltExam get(Integer getId) {
+    public BeltExam get(Integer getId) throws DatabaseException{
         String sql = "SELECT * FROM BeltExams WHERE id=?";
 
         try(PreparedStatement statement = connection.prepareStatement(sql)){
@@ -111,12 +111,12 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
                 return null;
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
     }
 
     @Override
-    public List<BeltExam> getAll() {
+    public List<BeltExam> getAll() throws DatabaseException {
         String sql = "SELECT * FROM BeltExams";
 
         try(PreparedStatement statement = connection.prepareStatement(sql)){
@@ -131,21 +131,23 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
 
             return beltExams;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
     }
-    public static BeltExam extractFromResultSet(ResultSet resultSet,Map<Integer,Integer> results){
+
+    public static BeltExam extractFromResultSet(ResultSet resultSet,Map<Integer,Integer> results) throws DatabaseException {
         BeltExam beltExam = null;
         try {
             beltExam = new BeltExam(resultSet.getInt("id"),resultSet.getDate("startDate").toString(), resultSet.getDate("endDate").toString(),resultSet.getDouble("price"),
                     resultSet.getString("country"),resultSet.getString("city"),resultSet.getString("address"),resultSet.getString("beltColor"));
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
         beltExam.setListOfResults(results);
         return beltExam;
     }
-    public Map<Integer,Integer> getResultListFromBeltExam(int trainingCampId) {
+
+    public Map<Integer,Integer> getResultListFromBeltExam(int trainingCampId)  throws DatabaseException {
         String sql = "SELECT * FROM ResultsBeltExams WHERE idBeltExam=?";
         Map<Integer,Integer> results= new HashMap<>();
         try(PreparedStatement statement = connection.prepareStatement(sql)){
@@ -157,7 +159,7 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
             }
         }
         catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
         return results;
     }

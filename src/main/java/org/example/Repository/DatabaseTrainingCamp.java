@@ -36,14 +36,14 @@ public class DatabaseTrainingCamp extends DatabaseRepo<TrainingCamp> {
     }
 
     @Override
-    public void remove(Integer RemoveId) {
+    public void remove(Integer RemoveId) throws DatabaseException{
         String removeFromStudentsTrainingCamp = "DELETE FROM StudentsTrainingCamp WHERE idTrainingCamp=?";
 
         try(PreparedStatement statement = connection.prepareStatement(removeFromStudentsTrainingCamp)){
             statement.setInt(1,RemoveId);
             statement.execute();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
         String sql = "DELETE FROM TrainingCamps WHERE id=?";
 
@@ -51,7 +51,7 @@ public class DatabaseTrainingCamp extends DatabaseRepo<TrainingCamp> {
             statement.setInt(1,RemoveId);
             statement.execute();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
     }
 
@@ -77,7 +77,7 @@ public class DatabaseTrainingCamp extends DatabaseRepo<TrainingCamp> {
             statement.setInt(1,trainingCamp.getId());
             statement.execute();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
         String addStudentsTrainingCamps = "INSERT INTO StudentsTrainingCamp (idTrainingCamp,idStud) VALUES (?,?)";
 
@@ -87,13 +87,13 @@ public class DatabaseTrainingCamp extends DatabaseRepo<TrainingCamp> {
                 statement.setInt(2, studentId);
                 statement.execute();
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                throw new DatabaseException("DataBase Exception Error");
             }
         }
     }
 
     @Override
-    public TrainingCamp get(Integer getId) {
+    public TrainingCamp get(Integer getId) throws DatabaseException{
         String sql = "SELECT * FROM TrainingCamps WHERE ID=?";
 
         try(PreparedStatement statement = connection.prepareStatement(sql)){
@@ -108,12 +108,12 @@ public class DatabaseTrainingCamp extends DatabaseRepo<TrainingCamp> {
                 return null;
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
     }
 
     @Override
-    public List<TrainingCamp> getAll() {
+    public List<TrainingCamp> getAll() throws DatabaseException{
         String sql = "SELECT * FROM TrainingCamps";
 
         try(PreparedStatement statement = connection.prepareStatement(sql)){
@@ -128,22 +128,23 @@ public class DatabaseTrainingCamp extends DatabaseRepo<TrainingCamp> {
 
             return trainingCamps;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
     }
-    public static TrainingCamp extractFromResultSet(ResultSet resultSet,List<Integer> students){
+
+    public static TrainingCamp extractFromResultSet(ResultSet resultSet,List<Integer> students) throws DatabaseException {
         TrainingCamp trainingCamp = null;
         try {
             trainingCamp = new TrainingCamp(resultSet.getInt("id"),resultSet.getDate("startDate").toString(), resultSet.getDate("endDate").toString(),resultSet.getDouble("price"),
                     resultSet.getString("country"),resultSet.getString("city"),resultSet.getString("address"),resultSet.getInt("numberOfParticipants"));
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
         trainingCamp.setStudents(students);
         return trainingCamp;
     }
 
-    public List<Integer> getStudentsFromTrainingCamp(int trainingCampId) {
+    public List<Integer> getStudentsFromTrainingCamp(int trainingCampId) throws DatabaseException{
         String sql = "SELECT * FROM StudentsTrainingCamp WHERE idTrainingCamp=?";
         List<Integer> students = new ArrayList<>();
         try(PreparedStatement statement = connection.prepareStatement(sql)){
@@ -155,7 +156,7 @@ public class DatabaseTrainingCamp extends DatabaseRepo<TrainingCamp> {
             }
         }
         catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException("DataBase Exception Error");
         }
         return students;
     }
