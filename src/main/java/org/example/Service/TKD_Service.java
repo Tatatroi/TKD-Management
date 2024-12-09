@@ -715,6 +715,10 @@ try {
     throw new RuntimeException(e);
 }
         try {
+            List<Integer> children = parents.get(parentID).getChildren();
+            for(int i=0; i<children.size(); i++){
+                students.remove(children.get(i));
+            }
             parents.remove(parentID);
         } catch (DatabaseException e) {
             throw new RuntimeException(e);
@@ -728,13 +732,23 @@ try {
      */
     public void removeSession(Integer sessionID) throws IOException {
         try {
-    if(sessions.getAll().stream().noneMatch(ss -> ss.getId() == sessionID)){
-            throw new IOException("Invalid session ID");
-        }
+        if(sessions.getAll().stream().noneMatch(ss -> ss.getId() == sessionID)){
+                throw new IOException("Invalid session ID");
+            }
 
-} catch (DatabaseException e) {
-    throw new RuntimeException(e);
-}
+        } catch (DatabaseException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            for (int i = 0; i < sessions.get(sessionID).getSessionStudents().size(); i++) {
+                Student student = students.get(sessions.get(sessionID).getSessionStudents().get(i));
+                student.setSession(0);
+                students.update(student);
+            }
+        }
+        catch (DatabaseException e) {
+            throw new RuntimeException(e);
+        }
         try {
             sessions.remove(sessionID);
         } catch (DatabaseException e) {

@@ -31,6 +31,13 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
 
     @Override
     public void remove(Integer RemoveId) throws DatabaseException {
+        String removeChildrenFromParents = "DELETE FROM ParentsStudents WHERE idParent = ?";
+        try(PreparedStatement stmt0 = connection.prepareStatement(removeChildrenFromParents)){
+            stmt0.setInt(1, RemoveId);
+            stmt0.executeUpdate();
+        }catch(SQLException e){
+            throw new DatabaseException("DataBase Exception Error");
+        }
         String sql = "DELETE FROM PARENT WHERE id = ?";
         try( PreparedStatement stmt= connection.prepareStatement(sql)) {
             stmt.setInt(1, RemoveId);

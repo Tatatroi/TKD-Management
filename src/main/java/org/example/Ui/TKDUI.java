@@ -124,7 +124,7 @@ public class TKDUI {
         boolean continueLoop = true;
         while (continueLoop){
             printParent();
-            String option = scanner.next();
+            String option = scanner.nextLine();
             try {
                 switch (option) {
                     case "0" -> continueLoop = false;
