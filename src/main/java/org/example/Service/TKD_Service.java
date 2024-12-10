@@ -718,8 +718,8 @@ public class TKD_Service {
      */
     public void removeStudent(Integer studentID) throws EntityNotFoundException, DatabaseException {
         try {
-    if(students.getAll().stream().noneMatch(st -> st.getId() == studentID)){
-            throw new EntityNotFoundException("Invalid student ID");
+            if(students.getAll().stream().noneMatch(st -> st.getId() == studentID)){
+                throw new EntityNotFoundException("Invalid student ID");
         }
 
     } catch (DatabaseException e) {

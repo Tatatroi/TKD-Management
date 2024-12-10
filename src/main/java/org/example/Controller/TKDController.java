@@ -31,27 +31,25 @@ public class TKDController {
      * @  If object already exists.
      */
     public void addObject(Object obj) {
-        tkdService.addObject(obj);
-        if(obj instanceof Student){
-            System.out.println("Student" + ((Student) obj).getName() + " added with ID " + ((Student) obj).getId());
-        }
-        else if(obj instanceof Trainer){
-            System.out.println("Trainer" + ((Trainer) obj).getName() + " added with ID " + ((Trainer) obj).getId());
-        }
-        else if(obj instanceof Parent){
-            System.out.println("Parent" + ((Parent) obj).getName() + " added with ID " + ((Parent) obj).getId());
-        }
-        else if(obj instanceof Session){
-            System.out.println("Session with ID " + ((Session) obj).id + " added with ID " + ((Session) obj).getId());
-        }
-        else if(obj instanceof BeltExam){
-            System.out.println("Belt Exam with ID " + ((BeltExam) obj).getId() + " added");
-        }
-        else if(obj instanceof Contest){
-            System.out.println("Contest with ID " + ((Contest) obj).getId() + " added");
-        }
-        else if(obj instanceof TrainingCamp){
-            System.out.println("Training camp with ID " + ((TrainingCamp) obj).getId() + " added");
+        try {
+            tkdService.addObject(obj);
+            if (obj instanceof Student) {
+                System.out.println("Student" + ((Student) obj).getName() + " added with ID " + ((Student) obj).getId());
+            } else if (obj instanceof Trainer) {
+                System.out.println("Trainer" + ((Trainer) obj).getName() + " added with ID " + ((Trainer) obj).getId());
+            } else if (obj instanceof Parent) {
+                System.out.println("Parent" + ((Parent) obj).getName() + " added with ID " + ((Parent) obj).getId());
+            } else if (obj instanceof Session) {
+                System.out.println("Session with ID " + ((Session) obj).id + " added with ID " + ((Session) obj).getId());
+            } else if (obj instanceof BeltExam) {
+                System.out.println("Belt Exam with ID " + ((BeltExam) obj).getId() + " added");
+            } else if (obj instanceof Contest) {
+                System.out.println("Contest with ID " + ((Contest) obj).getId() + " added");
+            } else if (obj instanceof TrainingCamp) {
+                System.out.println("Training camp with ID " + ((TrainingCamp) obj).getId() + " added");
+            }
+        }catch (DatabaseException e) {
+            System.out.println("Error: " + e.getMessage());
         }
     }
 
@@ -88,9 +86,13 @@ public class TKDController {
      * @param idParent          The unique identifier of the parent.
      * @      If no parent was found.
      */
-    public void deleteParent(Integer idParent){
-        tkdService.removeParent(idParent);
-        System.out.println("Parent with ID " + idParent + " deleted");
+    public void deleteParent(Integer idParent) {
+        try {
+            tkdService.removeParent(idParent);
+            System.out.println("Parent with ID " + idParent + " deleted");
+        }catch (EntityNotFoundException | DatabaseException e) {
+            System.out.println("Error: "+ e.getMessage());
+        }
     }
 
     /**
@@ -98,9 +100,13 @@ public class TKDController {
      * @param idSession         The unique identifier of the session.
      * @      If no session was found.
      */
-    public void deleteSession(Integer idSession){
-        tkdService.removeSession(idSession);
-        System.out.println("Session with ID " + idSession + " deleted");
+    public void deleteSession(Integer idSession) {
+        try {
+            tkdService.removeSession(idSession);
+            System.out.println("Session with ID " + idSession + " deleted");
+        }catch (EntityNotFoundException | DatabaseException e) {
+            System.out.println("Error: "+ e.getMessage());
+        }
     }
 
     /**
@@ -108,9 +114,13 @@ public class TKDController {
      * @param idBeltExam        The unique identifier of the belt exam.
      * @      If no belt exam was found.
      */
-    public void deleteBeltExam(Integer idBeltExam){
-        tkdService.removeBeltExam(idBeltExam);
-        System.out.println("Belt Exam with ID " + idBeltExam + " deleted");
+    public void deleteBeltExam(Integer idBeltExam) {
+        try {
+            tkdService.removeBeltExam(idBeltExam);
+            System.out.println("Belt Exam with ID " + idBeltExam + " deleted");
+        }catch (EntityNotFoundException | DatabaseException e) {
+            System.out.println("Error: "+ e.getMessage());
+        }
     }
 
     /**
@@ -118,9 +128,13 @@ public class TKDController {
      * @param idContest         The unique identifier of the contest.
      * @ception      If no contest was found.
      */
-    public void deleteContest(Integer idContest)  {
-        tkdService.removeContest(idContest);
-        System.out.println("Contest with ID " + idContest + " deleted");
+    public void deleteContest(Integer idContest) {
+        try {
+            tkdService.removeContest(idContest);
+            System.out.println("Contest with ID " + idContest + " deleted");
+        }catch (EntityNotFoundException | DatabaseException e) {
+            System.out.println("Error: "+ e.getMessage());
+        }
     }
 
     /**
@@ -128,9 +142,13 @@ public class TKDController {
      * @param idTrainingCamp    The unique identifier of the training camp.
      * @      If no training camp was found.
      */
-    public void deleteTrainingCamp(Integer idTrainingCamp){
-        tkdService.removeTrainingCamp(idTrainingCamp);
-        System.out.println("Training camp with ID " + idTrainingCamp + " deleted");
+    public void deleteTrainingCamp(Integer idTrainingCamp) {
+        try {
+            tkdService.removeTrainingCamp(idTrainingCamp);
+            System.out.println("Training camp with ID " + idTrainingCamp + " deleted");
+        }catch (EntityNotFoundException | DatabaseException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 
     /**
@@ -139,9 +157,13 @@ public class TKDController {
      * @param idSession     The unique identifier of the session.
      * @  If no trainer or session was found.
      */
-    public void assignSessionToTrainer(Integer idSession, Integer idTrainer)  {
-        tkdService.assignGroupToTrainer(idTrainer, idSession);
-        System.out.println("Trainer with ID " + idTrainer + " assigned to session with ID " + idSession);
+    public void assignSessionToTrainer(Integer idSession, Integer idTrainer) {
+        try {
+            tkdService.assignGroupToTrainer(idTrainer, idSession);
+            System.out.println("Trainer with ID " + idTrainer + " assigned to session with ID " + idSession);
+        }catch (EntityNotFoundException | DatabaseException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 
     /**
@@ -150,9 +172,13 @@ public class TKDController {
      * @param idSession The unique identifier of the session.
      * @  If no student or session was found.
      */
-    public void changeStudentSession(Integer idStudent, Integer idSession)  {
-        tkdService.changeStudentGroup(idStudent, idSession);
-        System.out.println("Student with ID " + idStudent + " changed to session with ID " + idSession);
+    public void changeStudentSession(Integer idStudent, Integer idSession) {
+        try {
+            tkdService.changeStudentGroup(idStudent, idSession);
+            System.out.println("Student with ID " + idStudent + " changed to session with ID " + idSession);
+        }catch (EntityNotFoundException | DatabaseException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 
 //    public void changeBeltLevel(Integer idBeltLevel){
@@ -165,10 +191,14 @@ public class TKDController {
      * @param idStudent     The unique identifier of the student.
      * @  If no student was found.
      */
-    public void numberOfAttendances(Integer idStudent)  {
-        Map<String,Integer> attendencesAndAbsences = tkdService.numberOfAttendencesAndAbsences(idStudent);
-        System.out.println("Student with id " + idStudent + " has " + attendencesAndAbsences.get("Attendences") + " attendances "+
-                attendencesAndAbsences.get("Absences") + " absences");
+    public void numberOfAttendances(Integer idStudent) {
+        try {
+            Map<String, Integer> attendencesAndAbsences = tkdService.numberOfAttendencesAndAbsences(idStudent);
+            System.out.println("Student with id " + idStudent + " has " + attendencesAndAbsences.get("Attendences") + " attendances " +
+                    attendencesAndAbsences.get("Absences") + " absences");
+        }catch (EntityNotFoundException | DatabaseException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 
     /**
@@ -177,9 +207,13 @@ public class TKDController {
      * @param idStudent     The unique identifier of the student.
      * @  If no student or belt exam was found.
      */
-    public void addStudentToBeltExam(Integer idBeltExam, Integer idStudent){
-        tkdService.addStudentToBeltExam(idStudent, idBeltExam);
-        System.out.println("Student with id " + idStudent + " added to Belt Exam with ID " + idBeltExam);
+        public void addStudentToBeltExam(Integer idBeltExam, Integer idStudent) {
+        try {
+            tkdService.addStudentToBeltExam(idStudent, idBeltExam);
+            System.out.println("Student with id " + idStudent + " added to Belt Exam with ID " + idBeltExam);
+        }catch (EntityNotFoundException | DatabaseException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 
     /**
@@ -189,12 +223,16 @@ public class TKDController {
      * @param result        The result which is true(passed) or false(failed).
      * @  If no student or belt exam was found.
      */
-    public void addResultToBeltExam(Integer idBeltExam, Integer idStudent, Boolean result)  {
-        tkdService.addResultBeltExam(idStudent, idBeltExam, result);
-        if(result) {
-            System.out.println("Student with id " + idStudent + " has promoted Belt Exam with ID " + idBeltExam);
-        }else{
-            System.out.println("Student with id " + idStudent + " has not promoted Belt Exam with ID " + idBeltExam);
+    public void addResultToBeltExam(Integer idBeltExam, Integer idStudent, Boolean result) {
+        try {
+            tkdService.addResultBeltExam(idStudent, idBeltExam, result);
+            if (result) {
+                System.out.println("Student with id " + idStudent + " has promoted Belt Exam with ID " + idBeltExam);
+            } else {
+                System.out.println("Student with id " + idStudent + " has not promoted Belt Exam with ID " + idBeltExam);
+            }
+        }catch (EntityNotFoundException | DatabaseException e) {
+            System.out.println("Error: " + e.getMessage());
         }
     }
 
@@ -207,13 +245,16 @@ public class TKDController {
      * @param date          The date of the session.
      * @  If no student or session was found.
      */
-    public void addAttendance(Integer idStudent,Integer idSession, Boolean attendance, String weekDay, String date)  {
-        tkdService.addAttendance(idStudent, idSession, attendance, weekDay, date);
-        if(attendance) {
-            System.out.println("Student with id " + idStudent + " has attended the session with ID " + idSession + " on " + weekDay +" from "+date);
-        }
-        else{
-            System.out.println("Student with id " + idStudent + " has not attended the session with ID " + idSession + " on " + weekDay +" from "+date);
+    public void addAttendance(Integer idStudent,Integer idSession, Boolean attendance, String weekDay, String date){
+        try {
+            tkdService.addAttendance(idStudent, idSession, attendance, weekDay, date);
+            if (attendance) {
+                System.out.println("Student with id " + idStudent + " has attended the session with ID " + idSession + " on " + weekDay + " from " + date);
+            } else {
+                System.out.println("Student with id " + idStudent + " has not attended the session with ID " + idSession + " on " + weekDay + " from " + date);
+            }
+        }catch (DatabaseException | EntityNotFoundException e) {
+            System.out.println("Error: "+ e.getMessage());
         }
     }
 
@@ -223,9 +264,13 @@ public class TKDController {
      * @param idContest     The unique identifier of the contest.
      * @  If no student or contest was found.
      */
-    public void addStudentToContest(Integer idStudent, Integer idContest){
-        tkdService.addStudentToContest(idStudent, idContest);
-        System.out.println("Student with id " + idStudent + " has been added to contest with id " + idContest);
+    public void addStudentToContest(Integer idStudent, Integer idContest) {
+        try {
+            tkdService.addStudentToContest(idStudent, idContest);
+            System.out.println("Student with id " + idStudent + " has been added to contest with id " + idContest);
+        }catch (EntityNotFoundException | DatabaseException e) {
+            System.out.println("Error: "+ e.getMessage());
+        }
     }
 
     /**
@@ -234,16 +279,24 @@ public class TKDController {
      * @param idTrainingCamp    The unique identifier of the training camp.
      * @      If no student or training camp was found.
      */
-    public void addStudentToTrainingCamp(Integer idStudent, Integer idTrainingCamp){
-        tkdService.addStudentToTraining(idStudent, idTrainingCamp);
-        System.out.println("Student with id " + idStudent + " has been added to training camp with id " + idTrainingCamp);
+    public void addStudentToTrainingCamp(Integer idStudent, Integer idTrainingCamp) {
+        try {
+            tkdService.addStudentToTraining(idStudent, idTrainingCamp);
+            System.out.println("Student with id " + idStudent + " has been added to training camp with id " + idTrainingCamp);
+        }catch (EntityNotFoundException | DatabaseException e) {
+            System.out.println("Error: "+ e.getMessage());
+        }
     }
 
     /**
      * Displays all students from the session.
      */
     public void viewStudents(){
-        System.out.println("Here are all students with id, name and level: \n" + tkdService.viewAllStudents());
+        try{
+            System.out.println("Here are all students with id, name and level: \n" + tkdService.viewAllStudents());
+        }catch (EntityNotFoundException | DatabaseException e) {
+            System.out.println("Error: "+ e.getMessage());
+        }
 //        System.out.println();
     }
 
@@ -251,40 +304,60 @@ public class TKDController {
      * Displays all trainers from the session.
      */
     public void viewTrainers(){
-        System.out.println("Here are all trainers with id, name, belt color and level: ");
-        System.out.println(tkdService.viewAllTrainers());
+        try {
+            System.out.println("Here are all trainers with id, name, belt color and level: ");
+            System.out.println(tkdService.viewAllTrainers());
+        }catch (DatabaseException e) {
+            System.out.println("Error: "+ e.getMessage());
+        }
     }
 
     /**
      * Displays all contests.
      */
     public void viewContests(){
-        System.out.println("Here are all contests with id, name, start date, end date, price and list of students: ");
-        System.out.println(tkdService.viewAllContests());
+        try {
+            System.out.println("Here are all contests with id, name, start date, end date, price and list of students: ");
+            System.out.println(tkdService.viewAllContests());
+        }catch (DatabaseException e) {
+            System.out.println("Error: "+ e.getMessage());
+        }
     }
 
     /**
      * Displays all training camps.
      */
-    public void viewTrainingCamps(){
-        System.out.println("Here are all training camps with id, start date, end date, price, max number of participants and list of students: ");
-        System.out.println(tkdService.viewTrainingCamps());
+    public void viewTrainingCamps() {
+        try {
+            System.out.println("Here are all training camps with id, start date, end date, price, max number of participants and list of students: ");
+            System.out.println(tkdService.viewTrainingCamps());
+        }catch (DatabaseException e) {
+            System.out.println("Error: "+ e.getMessage());
+        }
     }
 
     /**
      * Displays all belt exams.
      */
-    public void viewBeltExams(){
-        System.out.println("Here are all belt exams with id, start date, end date, price, belt color and list of students: ");
-        System.out.println(tkdService.viewBeltExams());
+    public void viewBeltExams() {
+        try {
+            System.out.println("Here are all belt exams with id, start date, end date, price, belt color and list of students: ");
+            System.out.println(tkdService.viewBeltExams());
+        }catch (DatabaseException e) {
+            System.out.println("Error: "+ e.getMessage());
+        }
     }
 
     /**
      * Displays all parents.
      */
-    public void viewParents(){
-        System.out.println("Here are parents with id, name and their children: ");
-        System.out.println(tkdService.viewAllParents());
+    public void viewParents() {
+        try {
+            System.out.println("Here are parents with id, name and their children: ");
+            System.out.println(tkdService.viewAllParents());
+        }catch (DatabaseException e) {
+            System.out.println("Error: "+ e.getMessage());
+        }
     }
 
     /**
@@ -293,7 +366,12 @@ public class TKDController {
      * @param parent    The parent to be added.
      */
     public void addStudentToParent(Student student, Parent parent){
-        tkdService.addStudentToParent(student,parent);
+        try {
+            tkdService.addStudentToParent(student, parent);
+        }
+        catch (EntityNotFoundException | DatabaseException e) {
+            System.out.println("Error: "+ e.getMessage());
+        }
     }
 
     /**
@@ -302,8 +380,12 @@ public class TKDController {
      * @param month             The month for the invoice.
      * @      If no parent was found.
      */
-    public void generateInvoice(Integer parentID,String month)  {
-        System.out.println(tkdService.generateInvoice(parentID,month));
+    public void generateInvoice(Integer parentID,String month){
+        try {
+            System.out.println(tkdService.generateInvoice(parentID, month));
+        }catch (DatabaseException | EntityNotFoundException e) {
+            System.out.println("Error: "+ e.getMessage());
+        }
     }
 
     /**
@@ -311,9 +393,13 @@ public class TKDController {
      * @param idStudent   The unique identifier of a student.
      * @param idSession   The unique identifier of a session.
      */
-    public void addStudentToSession(Integer idSession, Integer idStudent){
-        tkdService.addStudentToSession(idSession, idStudent);
-        System.out.println("Student with id " + idStudent + " has been added to session with id " + idSession);
+    public void addStudentToSession(Integer idSession, Integer idStudent) {
+        try {
+            tkdService.addStudentToSession(idSession, idStudent);
+            System.out.println("Student with id " + idStudent + " has been added to session with id " + idSession);
+        }catch (EntityNotFoundException | DatabaseException e) {
+            System.out.println("Error: "+ e.getMessage());
+        }
     }
 
     /**
@@ -322,8 +408,13 @@ public class TKDController {
      * @return                  The trainer.
      * @      If no trainer was found.
      */
-    public Trainer getTrainerById(Integer idTrainer)  {
-        return tkdService.getTrainerById(idTrainer);
+    public Trainer getTrainerById(Integer idTrainer) throws EntityNotFoundException{
+        try {
+            return tkdService.getTrainerById(idTrainer);
+        }catch(DatabaseException e) {
+            System.out.println("Error: "+ e.getMessage());
+        }
+        return null;
     }
 
     /**
@@ -332,35 +423,43 @@ public class TKDController {
      * @return                  The session.
      * @      If no session was found.
      */
-    public Session getSessionById(Integer idSession)  {
-        return tkdService.getSessionById(idSession);
+    public Session getSessionById(Integer idSession) throws EntityNotFoundException {
+        try {
+            return tkdService.getSessionById(idSession);
+        }catch(DatabaseException e) {
+            System.out.println("Error: "+ e.getMessage());
+        }
+        return null;
     }
 
     /**
      * Shows every combination of events that a student can attend to for a given amount of money.
      * @param amountOfMoney The maximum value of a combination.
      */
-    public void eventsThatdontExceedAmountOfMoney(double amountOfMoney){
-        List<List<Integer>> results = null;
+    public void eventsThatdontExceedAmountOfMoney(double amountOfMoney) {
         try {
-            results = tkdService.eventsThatdontExceedAmountOfMoney(amountOfMoney);
-        } catch (DatabaseException e) {
-            throw new RuntimeException(e);
-        }
-        System.out.println("Events combinations that don t exceed the sum : " + amountOfMoney);
-        for (List<Integer> combination : results) {
-            System.out.println("ID-urile evenimentelor: ");
-            for(Integer c : combination) {
-                if(c > 100 && c < 200){ // id for Contests
-                    Contest cnt = tkdService.getContestById(c);
-                    System.out.println(cnt.toString2());
-                }
-                else if(c > 10 && c < 100){
-                    TrainingCamp tc = tkdService.getTrainingCampByIs(c);
-                    System.out.println(tc.toString2());
-                }
+            List<List<Integer>> results = null;
+            try {
+                results = tkdService.eventsThatdontExceedAmountOfMoney(amountOfMoney);
+            } catch (DatabaseException | EntityNotFoundException e) {
+                throw new RuntimeException(e);
             }
-            System.out.println('\n');
+            System.out.println("Events combinations that don t exceed the sum : " + amountOfMoney);
+            for (List<Integer> combination : results) {
+                System.out.println("ID-urile evenimentelor: ");
+                for (Integer c : combination) {
+                    if (c > 100 && c < 200) { // id for Contests
+                        Contest cnt = tkdService.getContestById(c);
+                        System.out.println(cnt.toString2());
+                    } else if (c > 10 && c < 100) {
+                        TrainingCamp tc = tkdService.getTrainingCampByIs(c);
+                        System.out.println(tc.toString2());
+                    }
+                }
+                System.out.println('\n');
+            }
+        }catch (DatabaseException | EntityNotFoundException e){
+            System.out.println("Error: " + e.getMessage());
         }
     }
 
@@ -369,9 +468,13 @@ public class TKDController {
      * prints a sorted list of contests based on their start date
      */
     public void sortedContests(){
-        for(Contest c1: tkdService.sortContestsByDates()){
-            System.out.println(c1.toString2());
-            System.out.println('\n');
+        try {
+            for (Contest c1 : tkdService.sortContestsByDates()) {
+                System.out.println(c1.toString2());
+                System.out.println('\n');
+            }
+        }catch(DatabaseException e) {
+            System.out.println("Error: "+ e.getMessage());
         }
     }
 
@@ -379,9 +482,14 @@ public class TKDController {
      * prints a sorted list of trainingCamps based on their starting date
      */
     public void sortedCampsByDates(){
-        for(TrainingCamp tc: tkdService.sortTrainingCampsByDates()){
-            System.out.println(tc.toString2());
-            System.out.println('\n');
+
+        try{
+            for(TrainingCamp tc: tkdService.sortTrainingCampsByDates()){
+                System.out.println(tc.toString2());
+                System.out.println('\n');
+            }
+        }catch (DatabaseException e) {
+            System.out.println("Error: "+ e.getMessage());
         }
     }
 
@@ -389,19 +497,27 @@ public class TKDController {
      * prints a sorted list of BeltExamns based on their starting dates
      */
     public void sortBeltExamnsByDates(){
-        for(BeltExam bt: tkdService.sortBeltExamnsByDates()){
-            System.out.println(bt.toString2());
-            System.out.println('\n');
+        try{
+            for(BeltExam bt: tkdService.sortBeltExamnsByDates()){
+                System.out.println(bt.toString2());
+                System.out.println('\n');
+            }
+        }catch(DatabaseException e) {
+            System.out.println("Error: "+ e.getMessage());
         }
     }
 
     /**
      * prints a sorted list of students based on their number of attendances
      */
-    public void sortedStudentsByAttend(){
-        for(Student s1 : tkdService.sortStudentsByNumberOfAttendences()){
-            System.out.println(s1.toString2());
-            System.out.println('\n');
+    public void sortedStudentsByAttend() throws EntityNotFoundException{
+        try{
+            for(Student s1 : tkdService.sortStudentsByNumberOfAttendences()){
+                System.out.println(s1.toString2());
+                System.out.println('\n');
+            }
+        }catch(DatabaseException e) {
+            System.out.println("Error: "+ e.getMessage());
         }
     }
 
@@ -409,10 +525,15 @@ public class TKDController {
      * prints a filtered list containing just students with the specified belt level
      * @param beltLevel The belt level that is used for filtering the students
      */
-    public void filteredStudentsByBeltLevel(String beltLevel){
-        for(Student s1 : tkdService.filterStudentsByBelt(beltLevel)){
-            System.out.println(s1.toString2());
-            System.out.println('\n');
+    public void filteredStudentsByBeltLevel(String beltLevel) {
+        try{
+            for(Student s1 : tkdService.filterStudentsByBelt(beltLevel)){
+                System.out.println(s1.toString2());
+                System.out.println('\n');
+            }
+        }
+        catch(DatabaseException e) {
+            System.out.println("Error: "+ e.getMessage());
         }
     }
 
@@ -443,20 +564,28 @@ public class TKDController {
     /**
      * prints a list of students ordered alphabetical
      */
-    public void sortStudentsAlphabetical(){
-        List<Student> students = tkdService.sortStudentsAlphabetical();
-        for(Student s : students){
-            System.out.println(s.toString2());
+    public void sortStudentsAlphabetical() {
+        try {
+            List<Student> students = tkdService.sortStudentsAlphabetical();
+            for (Student s : students) {
+                System.out.println(s.toString2());
+            }
+        }catch(DatabaseException e) {
+            System.out.println("Error: "+ e.getMessage());
         }
     }
 
     /**
      * prints a list of sessions ordered by number of participants
      */
-    public void sortSessionByNumberOfParticipants(){
-        List<Session> sessions = tkdService.sortSessionByNumberOfParticipants();
-        for(Session s : sessions){
-            System.out.println(s.toString2());
+    public void sortSessionByNumberOfParticipants() {
+        try {
+            List<Session> sessions = tkdService.sortSessionByNumberOfParticipants();
+            for (Session s : sessions) {
+                System.out.println(s.toString2());
+            }
+        }catch(DatabaseException e){
+            System.out.println("Error: " + e.getMessage());
         }
     }
 

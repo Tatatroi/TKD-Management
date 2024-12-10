@@ -1,6 +1,8 @@
 package org.example.Ui;
 
 import org.example.Controller.TKDController;
+import org.example.Exceptions.DatabaseException;
+import org.example.Exceptions.EntityNotFoundException;
 import org.example.Exceptions.ValidationException;
 import org.example.Model.*;
 
@@ -16,7 +18,7 @@ public class TKDUI {
 
     /**
      * Constructs a new UI with tha given TKD controller
-     * @param tkdController the controller that contains the bussines logic for the TKD management system
+     * @param tkdController the controller that contains the business logic for the TKD management system
      */
     public TKDUI(TKDController tkdController) {
         this.tkdController = tkdController;
@@ -74,7 +76,7 @@ public class TKDUI {
     /**
      * display all combinations that a parent can afford with a specific amount of money
      */
-    private void combinationsOfEvents() throws ValidationException {
+    private void combinationsOfEvents() throws ValidationException, EntityNotFoundException, DatabaseException {
         System.out.println("Enter the amount of money: ");
         int amountOfMoney;
         try {
@@ -379,7 +381,7 @@ public class TKDUI {
     /**
      * request all information that a student need.  If it catches an exception it calls the function again.
      */
-    private void addStudent() throws ValidationException, IOException {
+    private void addStudent() throws ValidationException, EntityNotFoundException {
         System.out.print("Enter student ID: ");
         int idStudent;
         try {
@@ -549,7 +551,7 @@ public class TKDUI {
     /**
      * request all information that a session needs.  If it catches an exception it calls the function again.
      */
-    private void addSession() throws ValidationException {
+    private void addSession() throws ValidationException, EntityNotFoundException {
         System.out.print("Enter Session ID: ");
         int id;
         try {
@@ -998,7 +1000,7 @@ public class TKDUI {
     /**
      * deletes a session base on ID. If it catches an exception it calls the function again.
      */
-    private void deleteSession() throws ValidationException {
+    private void deleteSession() throws ValidationException, EntityNotFoundException, DatabaseException {
         int id = readSessionId();
         tkdController.deleteSession(id);
         System.out.println("Session deleted successfully.");
@@ -1086,7 +1088,7 @@ public class TKDUI {
      * Adds an attendance to a student, by reading the session id, the student id, if he attended or not, the weekday and the date from the console.
      * If it catches an exception it calls the function again.
      */
-    private void addAttendance() throws ValidationException {
+    private void addAttendance() throws ValidationException, EntityNotFoundException, DatabaseException {
         int sessionId = readSessionId();
         int studentId = readStudentId();
 
@@ -1285,7 +1287,7 @@ public class TKDUI {
     /**
      * call the sortedStudentsByAttend function from Controller that prints out the students sorted by their number of attendances
      */
-    private void sortStudentsByAttend(){
+    private void sortStudentsByAttend() throws EntityNotFoundException {
         tkdController.sortedStudentsByAttend();
     }
 
