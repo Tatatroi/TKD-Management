@@ -394,27 +394,27 @@ public class TKDUI {
         System.out.print("Enter  student first name: ");
         String name = scanner.nextLine();
         if (name.isEmpty()) {
-            throw new ValidationException("student first name cannot be null or negative");
+            throw new ValidationException("student first name cannot be empty");
         }
 
 
         System.out.print("Enter  student last name: ");
         String lastName = scanner.nextLine();
         if (lastName.isEmpty()) {
-            throw new ValidationException("student last name cannot be null or negative");
+            throw new ValidationException("student last name cannot be empty");
         }
 
         System.out.print("Enter  student email: ");
         String email = scanner.nextLine();
         if (email.isEmpty()) {
-            throw new ValidationException("student email cannot be null or negative");
+            throw new ValidationException("student email cannot be empty");
         }
 
 
         System.out.print("Enter  student address: ");
         String address = scanner.nextLine();
         if (address.isEmpty()) {
-            throw new ValidationException("student address cannot be null or negative");
+            throw new ValidationException("student address cannot be empty");
         }
 
 
@@ -430,17 +430,17 @@ public class TKDUI {
             throw new ValidationException("student year of birth cannot be null or negative");
         }
 
-        System.out.print("Enter  student telephone number: ");
+        System.out.print("Enter student telephone number: ");
         String telNumber = scanner.nextLine();
         if (telNumber.isEmpty()) {
-            throw new ValidationException("student telephone number cannot be null or negative");
+            throw new ValidationException("student telephone number cannot be empty");
         }
 
 
-        System.out.print("Enter  student belt level: ");
+        System.out.print("Enter student belt level: ");
         String beltLevel = scanner.nextLine();
         if (beltLevel.isEmpty()) {
-            throw new ValidationException("student belt level cannot be null or negative");
+            throw new ValidationException("student belt level cannot be empty");
         }
 
 
@@ -507,22 +507,22 @@ public class TKDUI {
         System.out.print("Enter  parent first name: ");
         String name = scanner.nextLine();
         if(name.isEmpty()){
-            throw new ValidationException("parent first name cannot be null or negative");}
+            throw new ValidationException("parent first name cannot be empty");}
 
         System.out.print("Enter  parent last name: ");
         String lastName = scanner.nextLine();
         if(lastName.isEmpty()){
-            throw new ValidationException("parent last name cannot be null or negative");}
+            throw new ValidationException("parent last name cannot be empty");}
 
         System.out.print("Enter  parent email: ");
         String email = scanner.nextLine();
         if(email.isEmpty()){
-            throw new ValidationException("parent email cannot be null or negative");}
+            throw new ValidationException("parent email cannot be empty");}
 
         System.out.print("Enter  parent address: ");
         String address = scanner.nextLine();
         if(address.isEmpty()){
-            throw new ValidationException("parent address cannot be null or negative");}
+            throw new ValidationException("parent address cannot be empty");}
 
         System.out.print("Enter parent year of birth: ");
         int dateOfBirth;
@@ -539,7 +539,7 @@ public class TKDUI {
         System.out.print("Enter  parent number: ");
         String number = scanner.nextLine();
         if(number.isEmpty()){
-            throw new ValidationException("parent number cannot be null or negative");}
+            throw new ValidationException("parent number cannot be empty");}
 
         Parent newParent = new Parent(id, name, lastName, email, address, dateOfBirth,number);
 //        tkdController.addObject(newParent);
@@ -596,12 +596,7 @@ public class TKDUI {
         }
 
         Trainer trainer = null;
-        try {
-            trainer = tkdController.getTrainerById(trainerId);
-        } catch (IOException e) {
-            System.out.println("Error: " + e.getMessage());
-            addSession();
-        }
+        trainer = tkdController.getTrainerById(trainerId);
 //        if (trainer == null) {
 //            System.out.println("Trainer not found. Please check the trainer ID.");
 //            return;
@@ -612,12 +607,7 @@ public class TKDUI {
 
         // Crearea obiectului Session
         Session session = new Session(id, difficultyLevel, maximumParticipants, trainer.getId(), pricePerSession);
-        try {
-            tkdController.addObject(session);
-        } catch (IOException e) {
-            System.out.println("Error: " + e.getMessage());
-            addSession();
-        }
+        tkdController.addObject(session);
         System.out.println("Session added successfully.");
     }
 
@@ -640,22 +630,22 @@ public class TKDUI {
         System.out.print("Enter  Trainer First Name: ");
         String name = scanner.nextLine();
         if(name.isEmpty()){
-            throw new ValidationException("Trainer First Name cannot be null or negative");}
+            throw new ValidationException("Trainer First Name cannot be empty");}
 
         System.out.print("Enter  Trainer Last Name: ");
         String lastName = scanner.nextLine();
         if(lastName.isEmpty()){
-            throw new ValidationException("Trainer Last Name cannot be null or negative");}
+            throw new ValidationException("Trainer Last Name cannot be empty");}
 
         System.out.print("Enter  Trainer Email: ");
         String email = scanner.nextLine();
         if(email.isEmpty()){
-            throw new ValidationException("Trainer Email cannot be null or negative");}
+            throw new ValidationException("Trainer Email cannot be empty");}
 
         System.out.print("Enter  Trainer Address: ");
         String address = scanner.nextLine();
         if(address.isEmpty()){
-            throw new ValidationException("Trainer Address cannot be null or negative");}
+            throw new ValidationException("Trainer Address cannot be empty");}
 
         System.out.print("Enter Trainer Year of Birth: ");
         int dateOfBirth;
@@ -672,21 +662,16 @@ public class TKDUI {
         System.out.print("Enter  Trainer Telephone Number: ");
         String number = scanner.nextLine();
         if(number.isEmpty()){
-            throw new ValidationException("Trainer Telephone Number cannot be null or negative");}
+            throw new ValidationException("Trainer Telephone Number cannot be empty");}
 
         System.out.print("Enter  Trainer Belt Level: ");
         String beltLevel = scanner.nextLine();
         if(beltLevel.isEmpty()){
-            throw new ValidationException("Trainer Belt Level cannot be null or negative");}
+            throw new ValidationException("Trainer Belt Level cannot be empty");}
 
         Trainer newTrainer = new Trainer(id, name, lastName, email, address, dateOfBirth, number, beltLevel);
 
-        try {
-            tkdController.addObject(newTrainer);
-        } catch (IOException e) {
-            System.out.println("Error: "+ e.getMessage());
-            addTrainer();
-        }
+        tkdController.addObject(newTrainer);
         System.out.println("Trainer added successfully.");
     }
     /**
@@ -700,48 +685,46 @@ public class TKDUI {
         } catch (NumberFormatException e) {
             throw new ValidationException("id can't be empty");
         }
+        if(id == 0 || id < 0){
+            throw new ValidationException("Contest ID cannot be null or negative");
+        }
 
 
-        System.out.print("Enter   start date: ");
+        System.out.print("Enter start date: ");
         String startdate = scanner.nextLine();
         if(startdate.isEmpty()){
-            throw new ValidationException(" start date cannot be null or negative");}
+            throw new ValidationException(" start date cannot be empty");}
 
-        System.out.print("Enter   end date: ");
+        System.out.print("Enter end date: ");
         String enddate = scanner.nextLine();
         if(enddate.isEmpty()){
-            throw new ValidationException(" end date cannot be null or negative");}
+            throw new ValidationException(" end date cannot be empty");}
 
         System.out.println("Enter price: ");
         double price = Double.parseDouble(scanner.nextLine());
 
-        System.out.print("Enter   country: ");
+        System.out.print("Enter country: ");
         String country = scanner.nextLine();
         if(country.isEmpty()){
-            throw new ValidationException(" country cannot be null or negative");}
+            throw new ValidationException(" country cannot be empty");}
 
-        System.out.print("Enter   city: ");
+        System.out.print("Enter city: ");
         String city = scanner.nextLine();
         if(city.isEmpty()){
-            throw new ValidationException(" city cannot be null or negative");}
-        System.out.print("Enter   address: ");
+            throw new ValidationException(" city cannot be empty");}
+        System.out.print("Enter address: ");
         String address = scanner.nextLine();
 
         if(address.isEmpty()){
-            throw new ValidationException("address cannot be null or negative");}
+            throw new ValidationException("address cannot be empty");}
 
-        System.out.print("Enter   name: ");
+        System.out.print("Enter name: ");
         String name = scanner.nextLine();
         if(name.isEmpty()){
-            throw new ValidationException(" name cannot be null or negative");}
+            throw new ValidationException(" name cannot be empty");}
 
         Contest contest = new Contest(id,startdate,enddate,price, country, city, name,address);
-        try {
-            tkdController.addObject(contest);
-        } catch (IOException e) {
-            System.out.println("Error: "+ e.getMessage());
-            addContest();
-        }
+        tkdController.addObject(contest);
         System.out.println("Contest added successfully.");
     }
 
@@ -756,39 +739,42 @@ public class TKDUI {
         } catch (NumberFormatException e) {
             throw new ValidationException("id can't be empty");
         }
+        if(id == 0 || id < 0){
+            throw new ValidationException("Training camp ID cannot be null or negative");
+        }
 
 
-        System.out.print("Enter   start date: ");
+        System.out.print("Enter start date: ");
         String startdate = scanner.nextLine();
         if(startdate.isEmpty()){
-            throw new ValidationException(" start date cannot be null or negative");}
+            throw new ValidationException(" start date cannot be empty");}
 
 
-        System.out.print("Enter   end date: ");
+        System.out.print("Enter end date: ");
         String enddate = scanner.nextLine();
 
         if(enddate.isEmpty()){
-            throw new ValidationException("end date cannot be null or negative");}
+            throw new ValidationException("end date cannot be empty");}
 
         System.out.println("Enter price date: ");
         double price = Double.parseDouble(scanner.nextLine());
 
-        System.out.print("Enter   country: ");
+        System.out.print("Enter country: ");
         String country = scanner.nextLine();
         if(country.isEmpty()){
-            throw new ValidationException(" country cannot be null or negative");}
+            throw new ValidationException(" country cannot be empty");}
 
 
-        System.out.print("Enter   city: ");
+        System.out.print("Enter city: ");
         String city = scanner.nextLine();
         if(city.isEmpty()){
-            throw new ValidationException(" city cannot be null or negative");}
+            throw new ValidationException(" city cannot be empty");}
 
 
-        System.out.print("Enter   address: ");
+        System.out.print("Enter address: ");
         String address = scanner.nextLine();
         if(address.isEmpty()){
-            throw new ValidationException(" address cannot be null or negative");}
+            throw new ValidationException(" address cannot be empty");}
 
         System.out.println("Enter max number of students: ");
         int numberOfParticipants;
@@ -799,12 +785,7 @@ public class TKDUI {
         }
 
         TrainingCamp trainingCamp = new TrainingCamp(id,startdate,enddate,price, country, city, address, numberOfParticipants);
-        try {
-            tkdController.addObject(trainingCamp);
-        } catch (IOException e) {
-            System.out.println("Error: "+ e.getMessage());
-            addTrainingCamp();
-        }
+        tkdController.addObject(trainingCamp);
         System.out.println("Training camp added successfully.");
     }
 
@@ -819,51 +800,53 @@ public class TKDUI {
         } catch (NumberFormatException e) {
             throw new ValidationException("id can't be empty");
         }
+        if(id == 0 || id < 0){
+            throw new ValidationException("Belt exam ID cannot be null or negative");
+        }
 
-
-        System.out.print("Enter   start date: ");
+        System.out.print("Enter start date: ");
         String startdate = scanner.nextLine();
         if(startdate.isEmpty()){
-            throw new ValidationException(" start date cannot be null or negative");}
+            throw new ValidationException(" start date cannot be empty");}
 
-        System.out.print("Enter   end date: ");
+        System.out.print("Enter end date: ");
         String enddate = scanner.nextLine();
         if(enddate.isEmpty()){
-            throw new ValidationException(" end date cannot be null or negative");}
+            throw new ValidationException(" end date cannot be empty");}
 
 
         System.out.println("Enter price date: ");
-        double price = Double.parseDouble(scanner.nextLine());
+        double price;
+        try {
+            price = Double.parseDouble(scanner.nextLine());
+        }catch (NumberFormatException e){
+            throw new ValidationException("price can't be null or negative");
+        }
 
-        System.out.print("Enter   country: ");
+        System.out.print("Enter country: ");
         String country = scanner.nextLine();
         if(country.isEmpty()){
-            throw new ValidationException(" country cannot be null or negative");}
+            throw new ValidationException(" country cannot be empty");}
 
-        System.out.print("Enter   city: ");
+        System.out.print("Enter city: ");
         String city = scanner.nextLine();
         if(city.isEmpty()){
-            throw new ValidationException(" city cannot be null or negative");}
+            throw new ValidationException(" city cannot be empty");}
 
 
-        System.out.print("Enter   address: ");
+        System.out.print("Enter address: ");
         String address = scanner.nextLine();
         if(address.isEmpty()){
-            throw new ValidationException(" address cannot be null or negative");}
+            throw new ValidationException(" address cannot be empty");}
 
 
-        System.out.print("Enter   belt color: ");
+        System.out.print("Enter belt color: ");
         String beltColor = scanner.nextLine();
         if(beltColor.isEmpty()){
-            throw new ValidationException(" belt color cannot be null or negative");}
+            throw new ValidationException(" belt color cannot be empty");}
 
         BeltExam beltExam = new BeltExam(id,startdate,enddate,price, country, city, address, beltColor);
-        try {
-            tkdController.addObject(beltExam);
-        } catch (IOException e) {
-            System.out.println("Error: "+ e.getMessage());
-            addBeltExam();
-        }
+        tkdController.addObject(beltExam);
         System.out.println("Belt Exam added successfully.");
     }
 
@@ -879,7 +862,9 @@ public class TKDUI {
         } catch (NumberFormatException e) {
             throw new ValidationException("idBeltExam can't be empty");
         }
-
+        if(idBeltExam == 0 || idBeltExam < 0){
+            throw new ValidationException("Belt exam ID cannot be null or negative");
+        }
 
         System.out.println("Enter Student Id: ");
         int studentId;
@@ -888,14 +873,11 @@ public class TKDUI {
         } catch (NumberFormatException e) {
             throw new ValidationException("studentId can't be empty");
         }
-
-
-        try {
-            tkdController.addStudentToBeltExam(idBeltExam,studentId);
-        } catch (IOException e) {
-            System.out.println("Error: "+ e.getMessage());
-            addStudentToBeltExam();
+        if(studentId == 0 || studentId < 0){
+            throw new ValidationException("Student id ID cannot be null or negative");
         }
+
+        tkdController.addStudentToBeltExam(idBeltExam,studentId);
         System.out.println("Student added successfully.");
     }
 
@@ -910,7 +892,9 @@ public class TKDUI {
         } catch (NumberFormatException e) {
             throw new ValidationException("idContest can't be empty");
         }
-
+        if(idContest == 0 || idContest < 0){
+            throw new ValidationException("Contest ID cannot be null or negative");
+        }
 
         System.out.println("Enter Student Id: ");
         int studentId;
@@ -919,14 +903,11 @@ public class TKDUI {
         } catch (NumberFormatException e) {
             throw new ValidationException("studentId can't be empty");
         }
-
-
-        try {
-            tkdController.addStudentToContest(studentId,idContest);
-        } catch (IOException e) {
-            System.out.println("Error: "+ e.getMessage());
-            addStudentToContest();
+        if(studentId == 0 || studentId < 0){
+            throw new ValidationException("Student ID cannot be null or negative");
         }
+
+        tkdController.addStudentToContest(studentId,idContest);
         System.out.println("Student added successfully.");
     }
 
@@ -941,7 +922,9 @@ public class TKDUI {
         } catch (NumberFormatException e) {
             throw new ValidationException("idStudent can't be empty");
         }
-
+        if(idStudent == 0 || idStudent < 0){
+            throw new ValidationException("Student ID cannot be null or negative");
+        }
 
         System.out.println("Enter Training Camp Id: ");
         int idTrainingCamp;
@@ -950,14 +933,11 @@ public class TKDUI {
         } catch (NumberFormatException e) {
             throw new ValidationException("idTrainingCamp can't be empty");
         }
-
-
-        try {
-            tkdController.addStudentToTrainingCamp(idStudent,idTrainingCamp);
-        } catch (IOException e) {
-            System.out.println("Error: "+ e.getMessage());
-            addStudentToTrainingCamp();
+        if(idTrainingCamp == 0 || idTrainingCamp < 0){
+            throw new ValidationException("Training camp ID cannot be null or negative");
         }
+
+        tkdController.addStudentToTrainingCamp(idStudent,idTrainingCamp);
         System.out.println("Student added successfully.");
     }
 
@@ -973,105 +953,63 @@ public class TKDUI {
     /**
      * deletes a student base on ID. If it catches an exception it calls the function again.
      */
-    private void deleteStudent() {
+    private void deleteStudent() throws ValidationException {
         int id = readStudentId();
-        try {
-            tkdController.deleteStudent(id);
-        }
-        catch (IOException e){
-            System.out.println("Error: "+ e.getMessage());
-            deleteStudent();
-        }
+        tkdController.deleteStudent(id);
         System.out.println("Student deleted successfully.");
     }
 
     /**
      * deletes a belt exam base on ID. If it catches an exception it calls the function again.
      */
-    private void deleteBeltExam() {
+    private void deleteBeltExam() throws ValidationException {
         int id = readBeltExamId();
-        try{
-            tkdController.deleteBeltExam(id);
-        }
-        catch (IOException e){
-            System.out.println("Error: "+ e.getMessage());
-            deleteBeltExam();
-        }
+        tkdController.deleteBeltExam(id);
         System.out.println("Belt Exam deleted successfully.");
     }
 
     /**
      * deletes a training camp base on ID. If it catches an exception it calls the function again.
      */
-    private void deleteTrainingCamp() {
+    private void deleteTrainingCamp() throws ValidationException {
         int id = readTrainingCampId();
-        try {
-            tkdController.deleteTrainingCamp(id);
-        }
-        catch (IOException e){
-            System.out.println("Error: "+ e.getMessage());
-            deleteTrainingCamp();
-        }
+        tkdController.deleteTrainingCamp(id);
         System.out.println("Training camp deleted successfully.");
     }
 
     /**
      * deletes a parent base on ID. If it catches an exception it calls the function again.
      */
-    private void deleteParent(){
+    private void deleteParent() throws ValidationException {
         int id = readParentId();
-        try {
-            tkdController.deleteParent(id);
-        }
-        catch (IOException e){
-            System.out.println("Error: "+ e.getMessage());
-            deleteParent();
-        }
+        tkdController.deleteParent(id);
         System.out.println("Parent deleted successfully.");
     }
 
     /**
      * deletes a trainer base on ID. If it catches an exception it calls the function again.
      */
-    private void deleteTrainer() {
+    private void deleteTrainer() throws ValidationException {
         int id = readTrainerId();
-        try {
-            tkdController.deleteTrainer(id);
-        }
-        catch (IOException e){
-            System.out.println("Error: "+ e.getMessage());
-            deleteTrainer();
-        }
+        tkdController.deleteTrainer(id);
         System.out.println("Trainer deleted successfully.");
     }
 
     /**
      * deletes a session base on ID. If it catches an exception it calls the function again.
      */
-    private void deleteSession() {
+    private void deleteSession() throws ValidationException {
         int id = readSessionId();
-        try {
-            tkdController.deleteSession(id);
-        }
-        catch (IOException e){
-            System.out.println("Error: "+ e.getMessage());
-            deleteSession();
-        }
+        tkdController.deleteSession(id);
         System.out.println("Session deleted successfully.");
     }
 
     /**
      * deletes a contest base on ID. If it catches an exception it calls the function again.
      */
-    private void deleteContest() {
+    private void deleteContest() throws ValidationException {
         int id = readContestId();
-        try {
-            tkdController.deleteContest(id);
-        }
-        catch (IOException e){
-            System.out.println("Error: "+ e.getMessage());
-            deleteContest();
-        }
+        tkdController.deleteContest(id);
         System.out.println("Contest deleted successfully.");
     }
 
@@ -1126,16 +1064,10 @@ public class TKDUI {
     /**
      * displays a list of attendances for a student. If it catches an exception it calls the function again.
      */
-    private void viewAttendances(){
-        try {
-            int studentId = readStudentId();
-            System.out.println("=== List of attendances ===");
-            tkdController.numberOfAttendances(studentId);
-        }
-        catch (IOException e){
-            System.out.println("Error: "+ e.getMessage());
-            viewAttendances();
-        }
+    private void viewAttendances() throws ValidationException {
+        int studentId = readStudentId();
+        System.out.println("=== List of attendances ===");
+        tkdController.numberOfAttendances(studentId);
     }
 
 
@@ -1144,17 +1076,11 @@ public class TKDUI {
      * Changes the session of a trainer, by reading the new session id and the trainer id from the console, and displaying a successful message.
      * If it catches an exception it calls the function again.
      */
-    private void assignSessionToTrainer() throws IOException {
-        try {
-            int sessionId = readSessionId();
-            int trainerId = readTrainerId();
-            tkdController.assignSessionToTrainer(sessionId, trainerId);
-            System.out.println("Session assigned to trainer successfully.");
-        }
-        catch (IOException e){
-            System.out.println("Error: "+ e.getMessage());
-            assignSessionToTrainer();
-        }
+    private void assignSessionToTrainer() throws ValidationException {
+        int sessionId = readSessionId();
+        int trainerId = readTrainerId();
+        tkdController.assignSessionToTrainer(sessionId, trainerId);
+        System.out.println("Session assigned to trainer successfully.");
     }
     /**
      * Adds an attendance to a student, by reading the session id, the student id, if he attended or not, the weekday and the date from the console.
@@ -1167,56 +1093,39 @@ public class TKDUI {
         System.out.print("Enter attendance(true or false): ");
         boolean attendance = Boolean.parseBoolean(scanner.nextLine());
 
-        System.out.print("Enter  week day: ");
+        System.out.print("Enter week day: ");
         String weekday = scanner.nextLine();
         if(weekday.isEmpty()){
-            throw new ValidationException("week day cannot be null or negative");}
+            throw new ValidationException("week day cannot be empty");}
 
-        System.out.print("Enter  date: ");
+        System.out.print("Enter date: ");
         String date = scanner.nextLine();
         if(date.isEmpty()){
-            throw new ValidationException("date cannot be null or negative");}
-        try {
-            tkdController.addAttendance(studentId,sessionId, attendance, weekday, date);
-        } catch (IOException e) {
-            System.out.println("Error: "+ e.getMessage());
-            addAttendance();
-        }
+            throw new ValidationException("date cannot be empty");}
+        tkdController.addAttendance(studentId,sessionId, attendance, weekday, date);
     }
 
     /**
      * Changes the session of a student, by reading the new session id and the student id from the console, and displaying a successful message.
      * If it catches an exception it calls the function again.
      */
-    private void changeStudentSession() {
-        try {
-            int studentId = readStudentId();
-            int sessionId = readSessionId();
-            tkdController.changeStudentSession(studentId, sessionId);
-            System.out.println("Student session changed successfully.");
-        }
-        catch (IOException e){
-            System.out.println("Error: "+ e.getMessage());
-            changeStudentSession();
-        }
+    private void changeStudentSession() throws ValidationException {
+        int studentId = readStudentId();
+        int sessionId = readSessionId();
+        tkdController.changeStudentSession(studentId, sessionId);
+        System.out.println("Student session changed successfully.");
     }
 
     /**
      * Adds result for a student from the belt exam, by reading the student id, belt exam id and the result from the console and displaying it.
      * If it catches an exception it calls the function again.
      */
-    private void addResultToBeltExam(){
-        try {
-            int studentId = readStudentId();
-            int beltExamId = readBeltExamId();
-            System.out.println("Result(true/false): ");
-            boolean promoted = Boolean.parseBoolean(scanner.nextLine());
-            tkdController.addResultToBeltExam(studentId, beltExamId, promoted);
-        }
-        catch (IOException e){
-            System.out.println("Error: "+ e.getMessage());
-            addResultToBeltExam();
-        }
+    private void addResultToBeltExam() throws ValidationException {
+        int studentId = readStudentId();
+        int beltExamId = readBeltExamId();
+        System.out.println("Result(true/false): ");
+        boolean promoted = Boolean.parseBoolean(scanner.nextLine());
+        tkdController.addResultToBeltExam(studentId, beltExamId, promoted);
     }
 
     /**
@@ -1228,78 +1137,142 @@ public class TKDUI {
         System.out.print("Enter   the month for the invoice: ");
         String month = scanner.nextLine();
         if(month.isEmpty()){
-            throw new ValidationException(" the month for the invoice cannot be null or negative");}
+            throw new ValidationException(" the month for the invoice cannot be empty");}
 
-        try {
-            tkdController.generateInvoice(parentId, month);
-        }
-        catch (IOException e){
-            System.out.println("Error: "+ e.getMessage());
-            generateBill();
-        }
+        tkdController.generateInvoice(parentId, month);
     }
 
     /**
      * Reads an id for a student from the console.
      * @return The id of the student.
      */
-    private int readStudentId() {
+    private int readStudentId() throws ValidationException {
         System.out.print("Enter student ID: ");
-        return Integer.parseInt(scanner.nextLine());
+        int id;
+        try{
+           id = Integer.parseInt(scanner.nextLine());
+        }
+        catch (NumberFormatException e){
+            throw new ValidationException("studentId can't be empty");
+        }
+        if(id == 0 || id < 0){
+            throw new ValidationException("Student ID cannot be null or negative");
+        }
+        return id;
     }
 
     /**
      * Reads an id for a parent from the console.
      * @return The id of the parent.
      */
-    private int readParentId(){
+    private int readParentId() throws ValidationException {
         System.out.print("Enter parent ID: ");
-        return Integer.parseInt(scanner.nextLine());
+        int id;
+        try{
+            id = Integer.parseInt(scanner.nextLine());
+        }
+        catch (NumberFormatException e){
+            throw new ValidationException("Parent id can't be empty");
+        }
+        if(id == 0 || id < 0){
+            throw new ValidationException("Parent ID cannot be null or negative");
+        }
+        return id;
     }
 
     /**
      * Reads an id for a trainer from the console.
      * @return The id of the trainer.
      */
-    private int readTrainerId() {
+    private int readTrainerId() throws ValidationException {
         System.out.print("Enter trainer ID: ");
-        return Integer.parseInt(scanner.nextLine());
+        int id;
+        try{
+            id = Integer.parseInt(scanner.nextLine());
+        }
+        catch (NumberFormatException e){
+            throw new ValidationException("Trainer id can't be empty");
+        }
+        if(id == 0 || id < 0){
+            throw new ValidationException("Trainer ID cannot be null or negative");
+        }
+        return id;
     }
 
     /**
      * Reads an id for a session from the console.
      * @return The id of the session.
      */
-    private int readSessionId() {
+    private int readSessionId() throws ValidationException {
         System.out.print("Enter session ID: ");
-        return Integer.parseInt(scanner.nextLine());
+        int id;
+        try{
+            id = Integer.parseInt(scanner.nextLine());
+        }
+        catch (NumberFormatException e){
+            throw new ValidationException("Session id can't be empty");
+        }
+        if(id == 0 || id < 0){
+            throw new ValidationException("Session ID cannot be null or negative");
+        }
+        return id;
     }
 
     /**
      * Reads an id for a contest from the console.
      * @return The id of the contest.
      */
-    private int readContestId() {
+    private int readContestId() throws ValidationException {
         System.out.print("Enter contest ID: ");
-        return Integer.parseInt(scanner.nextLine());
+        int id;
+        try{
+            id = Integer.parseInt(scanner.nextLine());
+        }
+        catch (NumberFormatException e){
+            throw new ValidationException("Contest id can't be empty");
+        }
+        if(id == 0 || id < 0){
+            throw new ValidationException("Contest ID cannot be null or negative");
+        }
+        return id;
     }
 
     /**
      * Reads an id for a training camp from the console.
      * @return The id of the training camp.
      */
-    private int readTrainingCampId() {
+    private int readTrainingCampId() throws ValidationException {
         System.out.print("Enter training camp ID: ");
-        return Integer.parseInt(scanner.nextLine());
+        int id;
+        try{
+            id = Integer.parseInt(scanner.nextLine());
+        }
+        catch (NumberFormatException e){
+            throw new ValidationException("Training camp id can't be empty");
+        }
+        if(id == 0 || id < 0){
+            throw new ValidationException("Training camp ID cannot be null or negative");
+        }
+        return id;
     }
 
     /**
      * Reads an id for a belt exam from the console.
      * @return The id of the belt exam.
      */
-    private int readBeltExamId() {
+    private int readBeltExamId() throws ValidationException {
         System.out.print("Enter belt exam ID: ");
-        return Integer.parseInt(scanner.nextLine());
+        int id;
+        try{
+            id = Integer.parseInt(scanner.nextLine());
+        }
+        catch (NumberFormatException e){
+            throw new ValidationException("Belt exam id can't be empty");
+        }
+        if(id == 0 || id < 0){
+            throw new ValidationException("Belt exam ID cannot be null or negative");
+        }
+        return id;
     }
 
     /**
@@ -1323,7 +1296,7 @@ public class TKDUI {
         System.out.print("Enter   the belt level for filtering: ");
         String beltLevel = scanner.nextLine();
         if(beltLevel.isEmpty()){
-            throw new ValidationException(" the belt level for filtering cannot be null or negative");}
+            throw new ValidationException(" the belt level for filtering cannot be empty");}
 
         tkdController.filteredStudentsByBeltLevel(beltLevel);
     }
@@ -1332,17 +1305,18 @@ public class TKDUI {
      * call the filter parents function from Controller that prints out the parents filtered by a number of children read from the console.
      * If it catches an exception it calls the function again.
      */
-    private void filterParentsByNumberOfChildren(){
+    private void filterParentsByNumberOfChildren() throws ValidationException {
         System.out.println("Enter the number of children for filtering: ");
-        Integer numberOfChildren = scanner.nextInt();
-
-        try{
-            tkdController.filterParentsByNumberOfChildren(numberOfChildren);
+        int numberOfChildren;
+        try {
+            numberOfChildren = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            throw new ValidationException("Number of children can't be empty");
         }
-        catch (IOException e){
-            System.out.println("Error: "+ e.getMessage());
-            filterParentsByNumberOfChildren();
+        if (numberOfChildren == 0 || numberOfChildren < 0) {
+            throw new ValidationException("Number of children cannot be null or negative");
         }
+        tkdController.filterParentsByNumberOfChildren(numberOfChildren);
     }
 
     /**
@@ -1377,14 +1351,8 @@ public class TKDUI {
      * Reads a session id and gives it as parameter to the getDateWithMostStudentsForSession function from controller.
      * If it catches an exception it calls the function again.
      */
-    public void getDateWithMostStudentsForSession(){
+    public void getDateWithMostStudentsForSession() throws ValidationException {
         int sessionId = readSessionId();
-        try {
             tkdController.getDateWithMostStudentsForSession(sessionId);
-        }
-        catch (IOException e){
-            System.out.println("Error: "+ e.getMessage());
-            getDateWithMostStudentsForSession();
-        }
     }
 }

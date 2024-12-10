@@ -1300,6 +1300,7 @@ public class TKD_Service {
         } catch (DatabaseException e) {
             throw e;
         }
+        try{
         sorted.sort((s1, s2) -> {
             try {
                 return Integer.compare(
@@ -1307,9 +1308,19 @@ public class TKD_Service {
                         numberOfAttendencesAndAbsences(s2.getId()).get("Attendences")
                 );
             } catch (DatabaseException | EntityNotFoundException e) {
-                throw e; // Rearuncă excepția mai departe
+                throw new RuntimeException(e); // Directly rethrow the exception
             }
         });
+    } catch (RuntimeException e) {
+        // Unwrap and rethrow the original checked exceptions
+        if (e.getCause() instanceof DatabaseException) {
+            throw (DatabaseException) e.getCause();
+        } else if (e.getCause() instanceof EntityNotFoundException) {
+            throw (EntityNotFoundException) e.getCause();
+        } else {
+            throw e; // Rethrow as RuntimeException if cause is unknown
+        }
+    }
         return sorted;
     }
 
@@ -1335,10 +1346,7 @@ public class TKD_Service {
      * @return                  a list of parents that have noOfChildren as number of children
      * @      If noOfChildren is negative.
      */
-    public List<Parent> filterParentsNumberOfChildren(int noOfChildren) throws DatabaseException, EntityNotFoundException {
-        if(noOfChildren<0){
-            throw new EntityNotFoundException("Children number can't be negative");
-        }
+    public List<Parent> filterParentsNumberOfChildren(int noOfChildren) throws DatabaseException{
         try {
             return parents.getAll().stream()  // Obținem stream-ul de la lista de părinți
                     .filter(p -> p.getChildren().size() == noOfChildren)  // Filtrăm părinții care au exact numărul de copii dorit
@@ -1363,42 +1371,44 @@ public class TKD_Service {
 
         } catch (DatabaseException e) {
             throw e;
-        }        Session session = null;
+        }
+//        Session session = null;
+//        try {
+//            session = sessions.get(sessionId);
+//            if(session == null){
+//                throw new EntityNotFoundException("Invalid session ID");
+//            }
+//        } catch (DatabaseException e) {
+//            throw e;
+//        }
+        Map<String,Double> freqWeekdays = new HashMap<>();
         try {
-            session = sessions.get(sessionId);
-            if(session == null){
-                throw new EntityNotFoundException("Invalid session ID");
-            }
-        } catch (DatabaseException e) {
-            throw e;
-        }        Map<String,Double> freqWeekdays = new HashMap<>();
-                try {
-                    for(Student st: students.getAll()){
-                        if(st.session == sessionId){
-                            for(SessionDate sd: st.getSessionDateList()) {
-                                if(sd.isAttended()) {
-                                    if (freqWeekdays.containsKey(sd.getDate())){
-                                        freqWeekdays.replace(sd.getDate(),freqWeekdays.get(sd.getDate())+sessions.get(sessionId).getPricePerSession());
-                                    }
-                                    else{
-                                        freqWeekdays.put(sd.getDate(),sessions.get(sessionId).getPricePerSession());
-                                    }
-                                }
+            for(Student st: students.getAll()){
+                if(st.session == sessionId){
+                    for(SessionDate sd: st.getSessionDateList()) {
+                        if(sd.isAttended()) {
+                            if (freqWeekdays.containsKey(sd.getDate())){
+                                freqWeekdays.replace(sd.getDate(),freqWeekdays.get(sd.getDate())+sessions.get(sessionId).getPricePerSession());
+                            }
+                            else{
+                                freqWeekdays.put(sd.getDate(),sessions.get(sessionId).getPricePerSession());
                             }
                         }
                     }
-                } catch (DatabaseException e) {
-                    throw e;
                 }
-                double max = 0;
-                String date = "";
-                for(String d: freqWeekdays.keySet()){
-                    if(freqWeekdays.get(d)>max){
-                        max = freqWeekdays.get(d);
-                        date = d;
-                    }
-                }
-                return new AbstractMap.SimpleEntry<String,Double>(date,max);
+            }
+        } catch (DatabaseException e) {
+            throw e;
+        }
+        double max = 0;
+        String date = "";
+        for(String d: freqWeekdays.keySet()){
+            if(freqWeekdays.get(d)>max){
+                max = freqWeekdays.get(d);
+                date = d;
+            }
+        }
+        return new AbstractMap.SimpleEntry<String,Double>(date,max);
     }
 
 }
