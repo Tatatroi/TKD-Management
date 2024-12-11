@@ -1,5 +1,6 @@
 package org.example.Controller;
 
+import org.example.Exceptions.BusinessLogicException;
 import org.example.Exceptions.DatabaseException;
 import org.example.Exceptions.EntityNotFoundException;
 import org.example.Model.*;
@@ -383,7 +384,7 @@ public class TKDController {
     public void generateInvoice(Integer parentID,String month){
         try {
             System.out.println(tkdService.generateInvoice(parentID, month));
-        }catch (DatabaseException | EntityNotFoundException e) {
+        }catch (DatabaseException | EntityNotFoundException | BusinessLogicException e) {
             System.out.println("Error: "+ e.getMessage());
         }
     }
@@ -458,7 +459,7 @@ public class TKDController {
                 }
                 System.out.println('\n');
             }
-        }catch (DatabaseException | EntityNotFoundException e){
+        }catch (DatabaseException | EntityNotFoundException | BusinessLogicException e){
             System.out.println("Error: " + e.getMessage());
         }
     }
@@ -594,10 +595,14 @@ public class TKDController {
      * @param sessionId         The unique identifier of the session.
      * @      If no session was found.
      */
-    public void getDateWithMostStudentsForSession(int sessionId)  {
-        //String date = tkdService.getMostProfitableDateForSession(sessionId).getKey();
-        //double max = tkdService.getMostProfitableDateForSession(sessionId).getValue();
-        //System.out.println("The date with most students at the session with id " + sessionId + " is " + date + " and made " + max + " RON.");
+    public void getMostProfitableDateForSession(int sessionId) {
+        try {
+            String date = tkdService.getMostProfitableDateForSession(sessionId).getKey();
+            double max = tkdService.getMostProfitableDateForSession(sessionId).getValue();
+            System.out.println("The date with most students at the session with id " + sessionId + " is " + date + " and made " + max + " RON.");
+        }catch (DatabaseException | EntityNotFoundException | BusinessLogicException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 
 }

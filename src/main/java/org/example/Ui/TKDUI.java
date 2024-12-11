@@ -186,7 +186,7 @@ public class TKDUI {
                     case "4" -> assignSessionToTrainer();
                     case "5" -> addAttendance();
                     case "6" -> sortSessionByNumberOfParticipants();
-                    case "7" -> getDateWithMostStudentsForSession();
+                    case "7" -> getMostProfitableDateForSession();
                     default -> System.out.println("Invalid option. Please try again.");
                 }
             } catch (Exception e) {
@@ -1353,8 +1353,8 @@ public class TKDUI {
      * Reads a session id and gives it as parameter to the getDateWithMostStudentsForSession function from controller.
      * If it catches an exception it calls the function again.
      */
-    public void getDateWithMostStudentsForSession() throws ValidationException {
+    public void getMostProfitableDateForSession() throws ValidationException {
         int sessionId = readSessionId();
-            tkdController.getDateWithMostStudentsForSession(sessionId);
+            tkdController.getMostProfitableDateForSession(sessionId);
     }
 }

@@ -1,9 +1,11 @@
 package org.example.Service;
 
+import org.example.Exceptions.BusinessLogicException;
 import org.example.Exceptions.DatabaseException;
 import org.example.Exceptions.EntityNotFoundException;
 import org.example.Model.*;
 import org.example.Repository.DatabaseRepo;
+import org.example.Repository.IRepo;
 import org.example.Repository.InMemoryRepo;
 import org.example.Repository.InMemoryRepo;
 
@@ -18,26 +20,20 @@ import java.util.stream.Collectors;
  * A service class that provides the business logic for the TKD-Management system.
  */
 public class TKD_Service {
-    private InMemoryRepo<Student> studentsRepo = new InMemoryRepo<>();
-    private InMemoryRepo<Parent> parentsRepo = new InMemoryRepo<>();
-    private InMemoryRepo<Trainer> trainersRepo = new InMemoryRepo<>();
-    private InMemoryRepo<Session> sessionsRepo = new InMemoryRepo<>();
-    private InMemoryRepo<Contest> contestsRepo = new InMemoryRepo<>();
-    private InMemoryRepo<TrainingCamp> trainingCampsRepo = new InMemoryRepo<>();
-    private InMemoryRepo<BeltExam> beltExamsRepo = new InMemoryRepo<>();
-    private DatabaseRepo<Student> students;
 
-    private DatabaseRepo<Trainer> trainers;
+    private IRepo<Student> students;
 
-    private DatabaseRepo<Parent> parents;
+    private IRepo<Trainer> trainers;
 
-    private DatabaseRepo<Session> sessions;
+    private IRepo<Parent> parents;
 
-    private DatabaseRepo<Contest> contests;
+    private IRepo<Session> sessions;
 
-    private DatabaseRepo<TrainingCamp> trainingCamps;
+    private IRepo<Contest> contests;
 
-    private DatabaseRepo<BeltExam> beltExams;
+    private IRepo<TrainingCamp> trainingCamps;
+
+    private IRepo<BeltExam> beltExams;
 
     /**
      * Constructs a new TKD_Service with the given repositories.
@@ -49,7 +45,7 @@ public class TKD_Service {
      * @param trainingCamps     The repository for training camps.
      * @param beltExams         The repository for belt exams.
      */
-    public TKD_Service(DatabaseRepo<Student> students, DatabaseRepo<Trainer> trainers, DatabaseRepo<Parent> parent, DatabaseRepo<Session> sessions, DatabaseRepo<Contest> contests, DatabaseRepo<TrainingCamp> trainingCamps, DatabaseRepo<BeltExam> beltExams) {
+    public TKD_Service(IRepo<Student> students, IRepo<Trainer> trainers, IRepo<Parent> parent, IRepo<Session> sessions, IRepo<Contest> contests, IRepo<TrainingCamp> trainingCamps, IRepo<BeltExam> beltExams) {
         this.students = students;
         this.trainers = trainers;
         this.parents = parent;
@@ -59,15 +55,6 @@ public class TKD_Service {
         this.beltExams = beltExams;
     }
 
-    public TKD_Service(InMemoryRepo<Student> studentsRepo, InMemoryRepo<Parent> parentsRepo, InMemoryRepo<Trainer> trainersRepo, InMemoryRepo<Session> sessionsRepo, InMemoryRepo<Contest> contestsRepo, InMemoryRepo<TrainingCamp> trainingCampsRepo, InMemoryRepo<BeltExam> beltExamsRepo) {
-        this.studentsRepo = studentsRepo;
-        this.parentsRepo = parentsRepo;
-        this.trainersRepo = trainersRepo;
-        this.sessionsRepo = sessionsRepo;
-        this.contestsRepo = contestsRepo;
-        this.trainingCampsRepo = trainingCampsRepo;
-        this.beltExamsRepo = beltExamsRepo;
-    }
 
     /**
      * Change the trainer of a session.
@@ -271,28 +258,38 @@ public class TKD_Service {
      * @param amountOfMoney     the range that it's forbidden to be exceeded
      * @return                  a list of lists with all possible combinations
      */
-    public List<List<Integer>> eventsThatdontExceedAmountOfMoney(double amountOfMoney) throws DatabaseException, EntityNotFoundException {
+    public List<List<Integer>> eventsThatdontExceedAmountOfMoney(double amountOfMoney) throws DatabaseException, EntityNotFoundException, BusinessLogicException {
         try{
             List<Map.Entry<Integer, Double>> eventPairs = new ArrayList<>();
-
+            boolean flag1 = false;
             for (int i = 0; i < contests.getAll().size(); i++) {
                 Contest ct = contests.getAll().get(i);
+                if(ct.price <= amountOfMoney){
+                    flag1 = true;
+                }
                 if(ct == null){
                     throw new EntityNotFoundException("No contest with this ID found");
                 }
                 eventPairs.add(new AbstractMap.SimpleEntry<>(ct.getId(), ct.price));
             }
+
             for (int i = 0; i < trainingCamps.getAll().size(); i++) {
                 TrainingCamp ct = trainingCamps.getAll().get(i);
+                if(ct.price <= amountOfMoney){
+                    flag1 = true;
+                }
                 if(ct == null){
                     throw new EntityNotFoundException("No training camp with this ID found");
                 }
                 eventPairs.add(new AbstractMap.SimpleEntry<>(ct.getId(), ct.price));
             }
-
-            List<List<Integer>> results = new ArrayList<>();
-            findCombinations(eventPairs, amountOfMoney, 0, new ArrayList<>(), results);
-            return results;
+            if(flag1 == true) {
+                List<List<Integer>> results = new ArrayList<>();
+                findCombinations(eventPairs, amountOfMoney, 0, new ArrayList<>(), results);
+                return results;
+            }else{
+                throw new BusinessLogicException("No event that has at least" + amountOfMoney + " money was found");
+            }
 
         }catch (DatabaseException e){
             throw e;
@@ -680,10 +677,10 @@ public class TKD_Service {
      * @      If no parent was found.
      */
 
-    public String generateInvoice(Integer parentID,String month) throws DatabaseException, EntityNotFoundException{
+    public String generateInvoice(Integer parentID,String month) throws DatabaseException, EntityNotFoundException, BusinessLogicException {
         try {
-    if(parents.getAll().stream().noneMatch(pt -> pt.getId() == parentID)){
-            throw new EntityNotFoundException("Invalid parent ID");
+            if(parents.getAll().stream().noneMatch(pt -> pt.getId() == parentID)){
+                throw new EntityNotFoundException("Invalid parent ID");
         }
 
         } catch (DatabaseException e) {
@@ -709,7 +706,8 @@ public class TKD_Service {
                 }
             } catch (DatabaseException e) {
                 throw e;
-            }            int presences=0;
+            }
+            int presences = 0;
             double individualTotal = 0;
             for(SessionDate sd: student.getSessionDateList()){
                 if(sd.isAttended() && sd.getDate().substring(5, 7).equals(month)){
@@ -723,6 +721,9 @@ public class TKD_Service {
             }
             total+= individualTotal;
             invoice += "Student name: " + student.getLastName() + " " + student.getName() + "\n Total for student: " + individualTotal + "\n";
+        }
+        if(total == 0){
+            throw new BusinessLogicException("None of the children/s of the parent has been present to class in the " + month);
         }
         invoice += "Total: " + total +"\n";
         return invoice;
@@ -1380,7 +1381,7 @@ public class TKD_Service {
      * @return                  A simple entry containing the most attended date and the number of students.
      * @      If no session was found.
      */
-    public AbstractMap.SimpleEntry<String, Double> getMostProfitableDateForSession(int sessionId) throws DatabaseException, EntityNotFoundException {
+    public AbstractMap.SimpleEntry<String, Double> getMostProfitableDateForSession(int sessionId) throws DatabaseException, EntityNotFoundException, BusinessLogicException {
         try {
             if(sessions.getAll().stream().noneMatch(ss -> ss.getId() == sessionId)){
                 throw new EntityNotFoundException("Invalid session ID");
@@ -1389,15 +1390,7 @@ public class TKD_Service {
         } catch (DatabaseException e) {
             throw e;
         }
-//        Session session = null;
-//        try {
-//            session = sessions.get(sessionId);
-//            if(session == null){
-//                throw new EntityNotFoundException("Invalid session ID");
-//            }
-//        } catch (DatabaseException e) {
-//            throw e;
-//        }
+
         Map<String,Double> freqWeekdays = new HashMap<>();
         try {
             for(Student st: students.getAll()){
@@ -1425,7 +1418,12 @@ public class TKD_Service {
                 date = d;
             }
         }
-        return new AbstractMap.SimpleEntry<String,Double>(date,max);
+        if(max == 0){
+            throw new BusinessLogicException("No session is profitable");
+        }
+        else {
+            return new AbstractMap.SimpleEntry<String, Double>(date, max);
+        }
     }
 
 }
