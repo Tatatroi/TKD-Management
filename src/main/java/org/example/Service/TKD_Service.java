@@ -291,7 +291,7 @@ public class TKD_Service {
                 findCombinations(eventPairs, amountOfMoney, 0, new ArrayList<>(), results);
                 return results;
             }else{
-                throw new BusinessLogicException("No event that has at least" + amountOfMoney + " money was found");
+                throw new BusinessLogicException("No event that has at least " + amountOfMoney + " money was found");
             }
 
         }catch (DatabaseException e){

@@ -442,7 +442,7 @@ public class TKDController {
             List<List<Integer>> results = null;
             try {
                 results = tkdService.eventsThatdontExceedAmountOfMoney(amountOfMoney);
-            } catch (DatabaseException | EntityNotFoundException e) {
+            } catch (DatabaseException | EntityNotFoundException | BusinessLogicException e) {
                 throw new RuntimeException(e);
             }
             System.out.println("Events combinations that don t exceed the sum : " + amountOfMoney);
@@ -459,7 +459,7 @@ public class TKDController {
                 }
                 System.out.println('\n');
             }
-        }catch (DatabaseException | EntityNotFoundException | BusinessLogicException e){
+        }catch (DatabaseException | EntityNotFoundException e){
             System.out.println("Error: " + e.getMessage());
         }
     }

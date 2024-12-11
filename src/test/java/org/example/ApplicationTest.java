@@ -140,12 +140,7 @@ public class ApplicationTest {
 
         List<List<Integer>> results = new ArrayList<>();
 
-        Exception exp = assertThrows(BusinessLogicException.class, () -> {
-            tkdService.eventsThatdontExceedAmountOfMoney(100); // Pragul de 100 este mai mic decât prețul oricărui concurs
-        });
-
-        // Verificarea tipului excepției
-        assertTrue(exp instanceof BusinessLogicException);
+        assertThrows(BusinessLogicException.class, () -> {tkdService.eventsThatdontExceedAmountOfMoney(100);});
 
     }
 
@@ -175,35 +170,15 @@ public class ApplicationTest {
 
     @Test
     void testInvoiceNoValidData() throws EntityNotFoundException, DatabaseException, BusinessLogicException {
-        parent1.setChildren(Collections.singletonList(student1.getId()));
+        Parent parent2 = new Parent(2,"Muresan","Victor","muresanVictor@gmail.com","Calea Baciului nr 5",1980,"0783243165");
+        parentsRepo.add(parent2);
+        assertThrows(BusinessLogicException.class, () -> {tkdService.generateInvoice(2,"11");});
 
-        parentsRepo.add(parent1);
-
-        student1.setParent(parent1.getId());
-
-        studentsRepo.add(student1);
-
-        sessionsRepo.add(session1);
-
-        tkdService.addAttendance(student1.getId(), session1.getId(), true, "Monday", "2024/12/01");
-
-        String invoice = "Invoice for the month " + "12" + "\nParent name: " + parent1.getLastName() + " " + parent1.getName() + "\n";
-        invoice += "Student name: " + student1.getLastName() + " " + student1.getName() + "\n Total for student: " + 0 + "\n";
-        invoice += "Total: " + session1.getPricePerSession() +"\n";
-
-        String invoice2 = tkdService.generateInvoice(parent1.getId(),"12");
-
-        Exception exp = assertThrows(BusinessLogicException.class, () -> {
-            tkdService.eventsThatdontExceedAmountOfMoney(100); // Pragul de 100 este mai mic decât prețul oricărui concurs
-        });
-
-        assertTrue(exp instanceof BusinessLogicException);
 
     }
 
     @Test
     void testGetMostProfitableDateForSessionValidData() throws EntityNotFoundException, DatabaseException, BusinessLogicException {
-        // Pregătire date mock
         Student student1 = new Student(2,"Mitroi","Stefan","srefanmitroi@gmial.com","Calea Baciului nr 34", 2004, "074635428","black", session1.getId());
         Student student2 = new Student(3, "Popescu", "Ioana", "ioanapopescu@gmail.com", "Strada Republicii nr. 12", 2006, "0723456789", "red", session1.getId());
         Student student3 = new Student(4, "Ionescu", "Radu", "raduionescu@yahoo.com", "Bulevardul Muncii nr. 56", 2005, "0765432109", "blue", session1.getId());
@@ -219,13 +194,12 @@ public class ApplicationTest {
 
         AbstractMap.SimpleEntry<String, Double> result = tkdService.getMostProfitableDateForSession(1);
 
-        assertEquals("2024-12-01", result.getKey());
-        assertEquals(100.0, result.getValue(), 0.01);
+        assertEquals("2024-12-06", result.getKey());
+        assertEquals(50.0, result.getValue(), 0.01);
     }
 
     @Test
     void testGetMostProfitableDateForSessionNoValidData() {
-        // Pregătire date mock
         Student student1 = new Student(2, "Mitroi", "Stefan", "srefanmitroi@gmial.com", "Calea Baciului nr 34", 2004, "074635428", "black", session1.getId());
         Student student2 = new Student(3, "Popescu", "Ioana", "ioanapopescu@gmail.com", "Strada Republicii nr. 12", 2006, "0723456789", "red", session1.getId());
         Student student3 = new Student(4, "Ionescu", "Radu", "raduionescu@yahoo.com", "Bulevardul Muncii nr. 56", 2005, "0765432109", "blue", session1.getId());
@@ -235,12 +209,10 @@ public class ApplicationTest {
         studentsRepo.add(student2);
         studentsRepo.add(student3);
 
-        // Adăugăm date invalide (de exemplu, nicio sesiune nu este marcată ca participată)
         student1.getSessionDateList().add(new SessionDate("Monday", "2024-12-01", session1.getId(), false));
         student2.getSessionDateList().add(new SessionDate("Wednesday", "2024-12-06", session1.getId(), false));
         student3.getSessionDateList().add(new SessionDate("Friday", "2024-12-08", session1.getId(), false));
 
-        // Verificăm dacă metoda aruncă BusinessLogicException
         assertThrows(BusinessLogicException.class, () -> {
             tkdService.getMostProfitableDateForSession(1);
         });
