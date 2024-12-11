@@ -76,7 +76,7 @@ public class TKDUI {
     /**
      * display all combinations that a parent can afford with a specific amount of money
      */
-    private void combinationsOfEvents() throws ValidationException, EntityNotFoundException, DatabaseException {
+    private void combinationsOfEvents() throws ValidationException{
         System.out.println("Enter the amount of money: ");
         int amountOfMoney;
         try {
@@ -381,7 +381,7 @@ public class TKDUI {
     /**
      * request all information that a student need.  If it catches an exception it calls the function again.
      */
-    private void addStudent() throws ValidationException, EntityNotFoundException {
+    private void addStudent() throws ValidationException{
         System.out.print("Enter student ID: ");
         int idStudent;
         try {
@@ -551,7 +551,7 @@ public class TKDUI {
     /**
      * request all information that a session needs.  If it catches an exception it calls the function again.
      */
-    private void addSession() throws ValidationException, EntityNotFoundException {
+    private void addSession() throws ValidationException{
         System.out.print("Enter Session ID: ");
         int id;
         try {
@@ -1000,7 +1000,7 @@ public class TKDUI {
     /**
      * deletes a session base on ID. If it catches an exception it calls the function again.
      */
-    private void deleteSession() throws ValidationException, EntityNotFoundException, DatabaseException {
+    private void deleteSession() throws ValidationException{
         int id = readSessionId();
         tkdController.deleteSession(id);
         System.out.println("Session deleted successfully.");
@@ -1088,7 +1088,7 @@ public class TKDUI {
      * Adds an attendance to a student, by reading the session id, the student id, if he attended or not, the weekday and the date from the console.
      * If it catches an exception it calls the function again.
      */
-    private void addAttendance() throws ValidationException, EntityNotFoundException, DatabaseException {
+    private void addAttendance() throws ValidationException{
         int sessionId = readSessionId();
         int studentId = readStudentId();
 
@@ -1287,7 +1287,7 @@ public class TKDUI {
     /**
      * call the sortedStudentsByAttend function from Controller that prints out the students sorted by their number of attendances
      */
-    private void sortStudentsByAttend() throws EntityNotFoundException {
+    private void sortStudentsByAttend(){
         tkdController.sortedStudentsByAttend();
     }
 

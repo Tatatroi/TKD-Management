@@ -31,7 +31,7 @@ public class ApplicationTest {
     TrainingCamp trainingCamp1 = new TrainingCamp(11, "2025-06-15", "2025-06-20", 500, "Romania", "Brasov", "Complexul Olimpic", 25);
     BeltExam beltExam1 = new BeltExam(1, "2025-05-05", "2025-05-06", 150, "Romania", "Cluj-Napoca", "Sala Sporturilor", "yellow");
 
-    TKD_Service tkdService = new TKD_Service(studentsRepo,trainersRepo,parentsRepo,sessionsRepo,contestsRepo,trainingCampsRepo,beltExamsRepo);
+    TKD_Service tkdService = new TKD_Service(studentsRepo, parentsRepo, trainersRepo,sessionsRepo,contestsRepo,trainingCampsRepo,beltExamsRepo);
     TKDController tkdController = new TKDController(tkdService);
     TKDUI newUi = new TKDUI(tkdController);
 
@@ -122,7 +122,7 @@ public class ApplicationTest {
 
         List<List<Integer>> results = new ArrayList<>();
 
-        assertEquals(Arrays.asList(Arrays.asList(200,300), results);
+        assertEquals(Arrays.asList(Arrays.asList(200,300)), results);
 
 
     }

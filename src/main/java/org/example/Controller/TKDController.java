@@ -408,10 +408,10 @@ public class TKDController {
      * @return                  The trainer.
      * @      If no trainer was found.
      */
-    public Trainer getTrainerById(Integer idTrainer) throws EntityNotFoundException{
+    public Trainer getTrainerById(Integer idTrainer){
         try {
             return tkdService.getTrainerById(idTrainer);
-        }catch(DatabaseException e) {
+        }catch(EntityNotFoundException | DatabaseException e) {
             System.out.println("Error: "+ e.getMessage());
         }
         return null;
@@ -423,10 +423,10 @@ public class TKDController {
      * @return                  The session.
      * @      If no session was found.
      */
-    public Session getSessionById(Integer idSession) throws EntityNotFoundException {
+    public Session getSessionById(Integer idSession){
         try {
             return tkdService.getSessionById(idSession);
-        }catch(DatabaseException e) {
+        }catch(EntityNotFoundException | DatabaseException e) {
             System.out.println("Error: "+ e.getMessage());
         }
         return null;
@@ -510,13 +510,13 @@ public class TKDController {
     /**
      * prints a sorted list of students based on their number of attendances
      */
-    public void sortedStudentsByAttend() throws EntityNotFoundException{
+    public void sortedStudentsByAttend(){
         try{
             for(Student s1 : tkdService.sortStudentsByNumberOfAttendences()){
                 System.out.println(s1.toString2());
                 System.out.println('\n');
             }
-        }catch(DatabaseException e) {
+        }catch(EntityNotFoundException |DatabaseException e) {
             System.out.println("Error: "+ e.getMessage());
         }
     }

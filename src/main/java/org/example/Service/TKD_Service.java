@@ -18,6 +18,13 @@ import java.util.stream.Collectors;
  * A service class that provides the business logic for the TKD-Management system.
  */
 public class TKD_Service {
+    private InMemoryRepo<Student> studentsRepo = new InMemoryRepo<>();
+    private InMemoryRepo<Parent> parentsRepo = new InMemoryRepo<>();
+    private InMemoryRepo<Trainer> trainersRepo = new InMemoryRepo<>();
+    private InMemoryRepo<Session> sessionsRepo = new InMemoryRepo<>();
+    private InMemoryRepo<Contest> contestsRepo = new InMemoryRepo<>();
+    private InMemoryRepo<TrainingCamp> trainingCampsRepo = new InMemoryRepo<>();
+    private InMemoryRepo<BeltExam> beltExamsRepo = new InMemoryRepo<>();
     private DatabaseRepo<Student> students;
 
     private DatabaseRepo<Trainer> trainers;
@@ -50,6 +57,16 @@ public class TKD_Service {
         this.contests = contests;
         this.trainingCamps = trainingCamps;
         this.beltExams = beltExams;
+    }
+
+    public TKD_Service(InMemoryRepo<Student> studentsRepo, InMemoryRepo<Parent> parentsRepo, InMemoryRepo<Trainer> trainersRepo, InMemoryRepo<Session> sessionsRepo, InMemoryRepo<Contest> contestsRepo, InMemoryRepo<TrainingCamp> trainingCampsRepo, InMemoryRepo<BeltExam> beltExamsRepo) {
+        this.studentsRepo = studentsRepo;
+        this.parentsRepo = parentsRepo;
+        this.trainersRepo = trainersRepo;
+        this.sessionsRepo = sessionsRepo;
+        this.contestsRepo = contestsRepo;
+        this.trainingCampsRepo = trainingCampsRepo;
+        this.beltExamsRepo = beltExamsRepo;
     }
 
     /**
