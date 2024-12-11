@@ -177,7 +177,7 @@ public class TKDController {
         try {
             tkdService.changeStudentGroup(idStudent, idSession);
             System.out.println("Student with ID " + idStudent + " changed to session with ID " + idSession);
-        }catch (EntityNotFoundException | DatabaseException e) {
+        }catch (EntityNotFoundException | DatabaseException | BusinessLogicException e) {
             System.out.println("Error: " + e.getMessage());
         }
     }
@@ -284,7 +284,7 @@ public class TKDController {
         try {
             tkdService.addStudentToTraining(idStudent, idTrainingCamp);
             System.out.println("Student with id " + idStudent + " has been added to training camp with id " + idTrainingCamp);
-        }catch (EntityNotFoundException | DatabaseException e) {
+        }catch (EntityNotFoundException | DatabaseException | BusinessLogicException e) {
             System.out.println("Error: "+ e.getMessage());
         }
     }
@@ -398,7 +398,7 @@ public class TKDController {
         try {
             tkdService.addStudentToSession(idSession, idStudent);
             System.out.println("Student with id " + idStudent + " has been added to session with id " + idSession);
-        }catch (EntityNotFoundException | DatabaseException e) {
+        }catch (EntityNotFoundException | DatabaseException | BusinessLogicException e) {
             System.out.println("Error: "+ e.getMessage());
         }
     }

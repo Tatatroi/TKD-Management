@@ -11,11 +11,25 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A repository implementation that interacts with the database to manage session entities.
+ */
 public class DatabaseSession extends DatabaseRepo<Session> {
-    public DatabaseSession(String dbUrl) {
+    /**
+     * Constructs a new DatabaseSession with the specified database URL.
+     *
+     * @param dbUrl The URL of the database to connect to.
+     */
+    public DatabaseSession(String dbUrl) throws DatabaseException {
         super(dbUrl);
     }
 
+    /**
+     * Adds a new session object to the database.
+     *
+     * @param session The session object to be added.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
     @Override
     public void add(Session session) throws DatabaseException {
         String sql = "INSERT INTO Sessions (id, difficultyLevel,maximumParticipants,trainerId,pricePerSession) VALUES (?, ?, ?, ?, ?)";
@@ -31,6 +45,12 @@ public class DatabaseSession extends DatabaseRepo<Session> {
         }
     }
 
+    /**
+     * Removes a session object from the database by its ID.
+     *
+     * @param RemoveId The ID of the session to remove.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
     @Override
     public void remove(Integer RemoveId) throws DatabaseException {
         String removeFromSession = "DELETE FROM Sessions WHERE ID=?";
@@ -51,6 +71,12 @@ public class DatabaseSession extends DatabaseRepo<Session> {
         }
     }
 
+    /**
+     * Updates an existing session object in the database.
+     *
+     * @param session The session object to update.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
     @Override
     public void update(Session session)  throws DatabaseException {
         String sql = "UPDATE Sessions SET difficultyLevel=?, maximumParticipants=?, trainerId=?,pricePerSession=?  WHERE id=?";
@@ -66,6 +92,13 @@ public class DatabaseSession extends DatabaseRepo<Session> {
         }
     }
 
+    /**
+     * Retrieves a session object from the database by its ID.
+     *
+     * @param getId The ID of the session to retrieve.
+     * @return The session object, or null if not found.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
     @Override
     public Session get(Integer getId) throws DatabaseException{
         String sql = "SELECT * FROM Sessions WHERE ID=?";
@@ -86,6 +119,12 @@ public class DatabaseSession extends DatabaseRepo<Session> {
         }
     }
 
+    /**
+     * Retrieves all session objects from the database.
+     *
+     * @return A list of all session objects.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
     @Override
     public List<Session> getAll() throws DatabaseException {
         String sql = "SELECT * FROM Sessions";
@@ -105,6 +144,14 @@ public class DatabaseSession extends DatabaseRepo<Session> {
             throw new DatabaseException("DataBase Exception Error");
         }
     }
+    /**
+     * Extracts a session object from the given ResultSet.
+     *
+     * @param resultSet       The ResultSet containing the session data.
+     * @param students The list of student IDs associated with the session.
+     * @return The extracted session object.
+     * @throws DatabaseException If there is an error processing the ResultSet.
+     */
     public static Session extractFromResultSet(ResultSet resultSet,List<Integer> students) throws DatabaseException {
         try {
             Session session = new Session(resultSet.getInt("id"),DifficultyLevel.valueOf(resultSet.getString("difficultyLevel")),resultSet.getInt("maximumParticipants"),
@@ -116,6 +163,13 @@ public class DatabaseSession extends DatabaseRepo<Session> {
         }
     }
 
+    /**
+     * Retrieves the list of students associated with a specific session by its ID.
+     *
+     * @param sessionId The ID of the session.
+     * @return A list of student IDs associated with the session.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
     public List<Integer> getSessionStudents(int sessionId) throws DatabaseException {
         String sql = "SELECT * FROM SessionStudents WHERE sessionId=?";
         List<Integer> studentList = new ArrayList<>();

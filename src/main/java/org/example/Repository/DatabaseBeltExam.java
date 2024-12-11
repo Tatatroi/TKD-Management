@@ -13,11 +13,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A repository implementation that interacts with the database to manage belt exams entities.
+ */
 public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
-    public DatabaseBeltExam(String dbUrl) {
+
+    /**
+     * Constructs a new DatabaseBeltExam with the specified database URL.
+     *
+     * @param dbUrl The URL of the database to connect to.
+     * @throws DatabaseException If there is an error connecting to the database.
+     */
+    public DatabaseBeltExam(String dbUrl) throws DatabaseException {
         super(dbUrl);
     }
 
+    /**
+     * Adds a new belt exam object in the database.
+     *
+     * @param beltExam The belt exam object to be created.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
     @Override
     public void add(BeltExam beltExam) throws DatabaseException {
         String sql = "INSERT INTO BeltExams (id, startDate,endDate,price,country,city,address,beltColor) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -36,6 +52,12 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
         }
     }
 
+/**
+ * Removes a belt exam object from the database by its ID.
+ *
+ * @param RemoveId The ID of the belt exam to remove.
+ * @throws DatabaseException If there is an error executing the SQL query.
+ **/
     @Override
     public void remove(Integer RemoveId) throws DatabaseException {
         String removeFromResultsBeltExams = "DELETE FROM ResultsBeltExams WHERE idBeltExam=?";
@@ -57,6 +79,12 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
 
     }
 
+    /**
+     * Updates an existing belt exam object in the database.
+     *
+     * @param beltExam The belt exam object to update.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
     @Override
     public void update(BeltExam beltExam) throws DatabaseException {
         String sql = "UPDATE BeltExams SET startDate=?, endDate=?, price=?,country=?,city=?,address=?,beltColor=?  WHERE ID=?";
@@ -95,6 +123,13 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
         }
     }
 
+/**
+ * Retrieves a belt exam object from the database by its ID.
+ *
+ * @param getId The ID of the belt exam to retrieve.
+ * @return The belt exam object, or null if not found.
+ * @throws DatabaseException If there is an error executing the SQL query.
+ **/
     @Override
     public BeltExam get(Integer getId) throws DatabaseException{
         String sql = "SELECT * FROM BeltExams WHERE id=?";
@@ -115,6 +150,12 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
         }
     }
 
+    /**
+     * Retrieves all belt exams objects from the database.
+     *
+     * @return A list of all belt exams objects.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
     @Override
     public List<BeltExam> getAll() throws DatabaseException {
         String sql = "SELECT * FROM BeltExams";
@@ -135,6 +176,13 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
         }
     }
 
+    /**
+     * Extracts a belt exam object from the given ResultSet.
+     *
+     * @param resultSet The ResultSet containing the belt exam data.
+     * @return The extracted belt exam object.
+     * @throws DatabaseException If there is an error retrieving related entities.
+     */
     public static BeltExam extractFromResultSet(ResultSet resultSet,Map<Integer,Integer> results) throws DatabaseException {
         BeltExam beltExam = null;
         try {
@@ -147,11 +195,17 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
         return beltExam;
     }
 
-    public Map<Integer,Integer> getResultListFromBeltExam(int trainingCampId)  throws DatabaseException {
+    /**
+     * Gets the list of students from a belt exam by its id.
+     * @param beltExamId            The id of the belt exam to get.
+     * @return                      The list of students of the belt exam
+     * @throws DatabaseException    If there is an error retrieving related entities.
+     */
+    public Map<Integer,Integer> getResultListFromBeltExam(int beltExamId)  throws DatabaseException {
         String sql = "SELECT * FROM ResultsBeltExams WHERE idBeltExam=?";
         Map<Integer,Integer> results= new HashMap<>();
         try(PreparedStatement statement = connection.prepareStatement(sql)){
-            statement.setInt(1,trainingCampId);
+            statement.setInt(1,beltExamId);
             ResultSet resultSet = statement.executeQuery();
 
             while(resultSet.next()){

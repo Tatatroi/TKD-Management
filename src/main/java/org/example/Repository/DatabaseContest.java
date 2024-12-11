@@ -11,11 +11,27 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * A repository implementation that interacts with the database to manage contest entities.
+ */
 public class DatabaseContest extends DatabaseRepo<org.example.Model.Contest>{
-    public DatabaseContest(String dbUrl) {
+    /**
+     * Constructs a new DatabaseContest with the specified database URL.
+     *
+     * @param dbUrl The URL of the database to connect to.
+     * @throws DatabaseException If there is an error connecting to the database.
+     */
+    public DatabaseContest(String dbUrl) throws DatabaseException {
         super(dbUrl);
     }
 
+    /**
+     * Adds a new contest object to the database.
+     *
+     * @param obj The contest object to be added.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
     @Override
     public void add(Contest obj) throws DatabaseException {
         String sql = "INSERT INTO dbo.Contest(id,startDate, endDate, price, country, city, name, address) values(?,?,?,?,?,?,?,?)";
@@ -34,6 +50,12 @@ public class DatabaseContest extends DatabaseRepo<org.example.Model.Contest>{
         }
     }
 
+    /**
+     * Removes a contest object from the database by its ID.
+     *
+     * @param RemoveId The ID of the contest to remove.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
     @Override
     public void remove(Integer RemoveId) throws DatabaseException {
 
@@ -55,6 +77,12 @@ public class DatabaseContest extends DatabaseRepo<org.example.Model.Contest>{
         }
     }
 
+    /**
+     * Updates an existing contest object in the database.
+     *
+     * @param obj The contest object to update.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
     @Override
     public void update(Contest obj) throws DatabaseException {
         String sql = "UPDATE dbo.Contest SET startDate = ?, endDate = ?, price = ?, country = ?, city = ?, name = ?, address = ? WHERE id = ?";
@@ -98,6 +126,13 @@ public class DatabaseContest extends DatabaseRepo<org.example.Model.Contest>{
 
     }
 
+    /**
+     * Retrieves a contest object from the database by its ID.
+     *
+     * @param getId The ID of the contest to retrieve.
+     * @return The contest object, or null if not found.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
     @Override
     public Contest get(Integer getId) throws DatabaseException {
         String sql = "SELECT * FROM Contest WHERE id = ?";
@@ -117,6 +152,12 @@ public class DatabaseContest extends DatabaseRepo<org.example.Model.Contest>{
     }
 
 
+    /**
+     * Retrieves all contest objects from the database.
+     *
+     * @return A list of all contest objects.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
     @Override
     public List<Contest> getAll() throws DatabaseException {
         String sql = "SELECT * FROM Contest";
@@ -134,6 +175,13 @@ public class DatabaseContest extends DatabaseRepo<org.example.Model.Contest>{
         return contests;
     }
 
+    /**
+     * Retrieves the list of students associated with a specific contest by its ID.
+     *
+     * @param ContestId The ID of the contest.
+     * @return A list of student IDs participating in the contest.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
     public List<Integer> getContestsStudents(int ContestId) throws DatabaseException{
         String sql = "SELECT * FROM StudentsContests WHERE idContest = ?";
         List<Integer> students = new ArrayList<>();
@@ -150,6 +198,14 @@ public class DatabaseContest extends DatabaseRepo<org.example.Model.Contest>{
         return students;
     }
 
+    /**
+     * Extracts a contest object from the given ResultSet.
+     *
+     * @param rs       The ResultSet containing the contest data.
+     * @param students The list of student IDs associated with the contest.
+     * @return The extracted contest object.
+     * @throws DatabaseException If there is an error processing the ResultSet.
+     */
     public static Contest extractContest(ResultSet rs, List<Integer> students) throws DatabaseException{
         Contest contest = null;
         try {

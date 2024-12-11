@@ -7,11 +7,27 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A repository implementation that interacts with the database to manage parent entities.
+ */
 public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
-    public DatabaseParent(String dbUrl) {
+
+    /**
+     * Constructs a new DatabaseParent with the specified database URL.
+     *
+     * @param dbUrl The URL of the database to connect to.
+     */
+
+    public DatabaseParent(String dbUrl) throws DatabaseException {
         super(dbUrl);
     }
 
+    /**
+     * Adds a new parent object to the database.
+     *
+     * @param obj The parent object to be added.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
     @Override
     public void add(Parent obj) throws DatabaseException {
         String sql = "INSERT INTO PARENT (id,name,lastName, email, address, dateOfBirth, number) VALUES (?,?,?,?,?,?,?)";
@@ -29,6 +45,12 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
         }
     }
 
+    /**
+     * Removes a parent object from the database by its ID.
+     *
+     * @param RemoveId The ID of the parent to remove.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
     @Override
     public void remove(Integer RemoveId) throws DatabaseException {
         String removeChildrenFromParents = "DELETE FROM ParentsStudents WHERE idParent = ?";
@@ -47,6 +69,12 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
         }
     }
 
+    /**
+     * Updates an existing parent object in the database.
+     *
+     * @param obj The parent object to update.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
     @Override
     public void update(Parent obj) throws DatabaseException {
         String sql = "UPDATE dbo.Parent SET name = ?, lastName = ?, email = ?, address = ?, dateOfBirth = ?, number=? WHERE id = ?";
@@ -86,6 +114,13 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
 
     }
 
+    /**
+     * Retrieves a parent object from the database by its ID.
+     *
+     * @param getId The ID of the parent to retrieve.
+     * @return The parent object, or null if not found.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
     @Override
     public Parent get(Integer getId) throws DatabaseException {
         String sql =  "SELECT * FROM dbo.Parent WHERE id = ?";
@@ -108,7 +143,12 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
     }
 
 
-
+    /**
+     * Retrieves all parent objects from the database.
+     *
+     * @return A list of all parent objects.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
     @Override
     public List<Parent> getAll() throws DatabaseException {
         String sql =  "SELECT * FROM dbo.Parent";
@@ -130,6 +170,13 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
         return parents;
     }
 
+    /**
+     * Retrieves the list of children associated with a specific parent by its ID.
+     *
+     * @param ParentId The ID of the parent.
+     * @return A list of child IDs associated with the parent.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
     public List<Integer> getParentChildren(int ParentId) throws DatabaseException {
         String sql = "SELECT * FROM ParentsStudents WHERE idParent = ?";
         List<Integer> children = new ArrayList<>();
@@ -146,6 +193,14 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
         return children;
     }
 
+    /**
+     * Extracts a parent object from the given ResultSet.
+     *
+     * @param rs       The ResultSet containing the parent data.
+     * @param students The list of child IDs associated with the parent.
+     * @return The extracted parent object.
+     * @throws DatabaseException If there is an error processing the ResultSet.
+     */
     public static Parent extractParent(ResultSet rs, List<Integer> students) throws DatabaseException{
         Parent parent = null;
         try {

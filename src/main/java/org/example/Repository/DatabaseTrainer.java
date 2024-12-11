@@ -11,11 +11,27 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A repository implementation for managing `Trainer` entities in the database.
+ */
 public class DatabaseTrainer extends DatabaseRepo<org.example.Model.Trainer>{
-    public DatabaseTrainer(String dbUrl) {
+
+    /**
+     * Constructs a new `DatabaseTrainer` with the specified database URL.
+     *
+     * @param dbUrl The URL of the database to connect to.
+     * @throws DatabaseException If there is an error connecting to the database.
+     */
+    public DatabaseTrainer(String dbUrl) throws DatabaseException {
         super(dbUrl);
     }
 
+    /**
+     * Adds a new `Trainer` object to the database.
+     *
+     * @param obj The `Trainer` object to be added.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
     @Override
     public void add(Trainer obj) throws DatabaseException {
         String sql =  "INSERT INTO dbo.Trainer (id,name,lastName, email, address, dateOfBirth, number, beltLevel) Values (?,?,?,?,?,?,?,?)";
@@ -34,11 +50,17 @@ public class DatabaseTrainer extends DatabaseRepo<org.example.Model.Trainer>{
         }
     }
 
+    /**
+     * Removes a `Trainer` object from the database by its ID.
+     *
+     * @param removeId The ID of the trainer to be removed.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
     @Override
-    public void remove(Integer RemoveId) throws DatabaseException {
+    public void remove(Integer removeId) throws DatabaseException {
         String sql =  "DELETE FROM dbo.Trainer WHERE id = ?";
         try(PreparedStatement stmt = connection.prepareStatement(sql)){
-            stmt.setInt(1, RemoveId);
+            stmt.setInt(1, removeId);
             stmt.executeUpdate();
         }
         catch(Exception e){
@@ -46,6 +68,12 @@ public class DatabaseTrainer extends DatabaseRepo<org.example.Model.Trainer>{
         }
     }
 
+    /**
+     * Updates an existing `Trainer` object in the database.
+     *
+     * @param obj The `Trainer` object to update.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
     @Override
     public void update(Trainer obj) throws DatabaseException{
         String sql = "UPDATE dbo.Trainer SET name = ?, lastName = ?, email = ?, address = ?, " +
@@ -65,6 +93,13 @@ public class DatabaseTrainer extends DatabaseRepo<org.example.Model.Trainer>{
         }
     }
 
+    /**
+     * Retrieves a `Trainer` object from the database by its ID.
+     *
+     * @param getId The ID of the trainer to retrieve.
+     * @return The `Trainer` object, or null if not found.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
     @Override
     public Trainer get(Integer getId) throws DatabaseException {
         String sql =  "SELECT * FROM dbo.Trainer WHERE id = ?";
@@ -94,6 +129,13 @@ public class DatabaseTrainer extends DatabaseRepo<org.example.Model.Trainer>{
         return null;
     }
 
+
+    /**
+     * Retrieves all `Trainer` objects from the database.
+     *
+     * @return A list of all `Trainer` objects.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
     @Override
     public List<Trainer> getAll() throws DatabaseException {
         String sql =  "SELECT * FROM dbo.Trainer";

@@ -57,7 +57,7 @@ public class Main {
      *
      * @param args Command-line arguments (not used).
      */
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException, DatabaseException {
 
         DatabaseRepo<Student> studentRepo = new DatabaseStudent("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
         DatabaseRepo<Parent> parentRepo = new DatabaseParent("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");

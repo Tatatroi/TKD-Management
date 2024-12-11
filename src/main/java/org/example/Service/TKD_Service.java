@@ -112,7 +112,7 @@ public class TKD_Service {
      * @  If no student or session was found.
      * throws EntityNoFound or DataBaseException
      */
-    public void changeStudentGroup(int studentId,int sessionId) throws EntityNotFoundException, DatabaseException {
+    public void changeStudentGroup(int studentId,int sessionId) throws EntityNotFoundException, DatabaseException, BusinessLogicException {
 //        if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
 //            throw new IOException("Invalid student ID");
 //        }
@@ -136,6 +136,9 @@ public class TKD_Service {
             }
         } catch (DatabaseException e) {
             throw e;
+        }
+        if(new_ss.getSessionStudents().size()+1==new_ss.getMaximumParticipants()){
+            throw new BusinessLogicException("The session is already full");
         }
         Session old_ss = null;
         try {
@@ -493,7 +496,7 @@ public class TKD_Service {
      * @param trainingCampId    The unique identifier of a training camp.
      * @      If no student or training camp was found.
      */
-    public void addStudentToTraining(int studentId,int trainingCampId) throws EntityNotFoundException, DatabaseException {
+    public void addStudentToTraining(int studentId,int trainingCampId) throws EntityNotFoundException, DatabaseException, BusinessLogicException {
         try {
     if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
             throw new EntityNotFoundException("Invalid student ID");
@@ -526,7 +529,9 @@ public class TKD_Service {
     } catch (DatabaseException e) {
         throw e;
     }
-
+    if(tc.getStudents().size() + 1 == tc.getNumberOfParticipants()){
+        throw new BusinessLogicException("The training camp is already full");
+    }
     tc.getStudents().add(st.getId());
     st.getTrainingCampList().add(tc.getId());
 
@@ -935,7 +940,7 @@ public class TKD_Service {
      * @param idSession the id of the session
      * @param studentID the id of the Student
      */
-    public void addStudentToSession(Integer idSession, Integer studentID) throws EntityNotFoundException, DatabaseException {
+    public void addStudentToSession(Integer idSession, Integer studentID) throws EntityNotFoundException, DatabaseException, BusinessLogicException {
 
         Session ss = null;
         try {
@@ -945,6 +950,9 @@ public class TKD_Service {
             }
         } catch (DatabaseException e) {
             throw e;
+        }
+        if(ss.getSessionStudents().size() + 1 == ss.getMaximumParticipants()){
+            throw new BusinessLogicException("Session is already full");
         }
         Student st = null;
         try {
