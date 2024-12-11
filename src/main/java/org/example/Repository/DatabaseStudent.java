@@ -8,10 +8,25 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A repository implementation that interacts with the database to manage Student entities.
+ */
+
 public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
-    public DatabaseStudent(String dbUrl) {
+    /**
+     * Constructs a new DatabaseStudent with the specified database URL.
+     * @param dbUrl
+     */
+    public DatabaseStudent(String dbUrl) throws DatabaseException {
         super(dbUrl);
     }
+
+    /**
+     * Adds a new student object in the database.
+     *
+     * @param student The belt exam object to be created.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
 
     @Override
     public void add(Student student) throws DatabaseException {
@@ -40,6 +55,13 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
             throw new DatabaseException("DataBase Exception Error");
         }
     }
+
+
+    /**
+     * Removes a student object from the database by its ID.
+     * @param RemoveId The ID of the belt exam to remove.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     **/
 
     @Override
     public void remove(Integer RemoveId) throws DatabaseException {
@@ -103,6 +125,14 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
 
     }
 
+
+    /**
+     * Updates an existing student exam object in the database.
+     *
+     * @param obj The student object to update.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
+
     @Override
     public void update(Student obj) throws DatabaseException{
         String updateStudent = "UPDATE Students SET name=?, lastName=?,email=?,address=?,dateOfBirth=?,number=?, beltLevel=?, session=? WHERE id=?";
@@ -147,6 +177,15 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
         }
     }
 
+
+    /**
+     * Retrieves a student object from the database by its ID.
+     *
+     * @param getId The ID of the student to retrieve.
+     * @return The student object, or null if not found.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     **/
+
     @Override
     public Student get(Integer getId) throws DatabaseException{
         String sql = "SELECT * FROM Students WHERE id=?";
@@ -170,6 +209,14 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
         }
     }
 
+
+    /**
+     * Retrieves all students objects from the database.
+     *
+     * @return A list of all Stduent objects.
+     * @throws DatabaseException If there is an error executing the SQL query.
+     */
+
     @Override
     public List<Student> getAll() throws DatabaseException{
         String sql = "SELECT * FROM Students";
@@ -192,6 +239,15 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
             throw new DatabaseException("DataBase Exception Error");
         }
     }
+
+    /**
+     * Extracts a student object from the given ResultSet.
+     *
+     * @param resultSet The ResultSet containing the student data.
+     * @return The extracted student object.
+     * @throws DatabaseException If there is an error retrieving related entities.
+     */
+
     public static Student extractFromResultSet(ResultSet resultSet,List<SessionDate> sessionDateList, List<Integer> trainingCamps,List<Integer> contests, int parentId) throws SQLException {
         Student student = new Student(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getString("lastName"),resultSet.getString("email"),
                 resultSet.getString("address"),resultSet.getInt("dateOfBirth"),resultSet.getString("number"),resultSet.getString("beltLevel"),
@@ -203,6 +259,9 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
         return student;
     }
 
+
+
+
     public static SessionDate extractFromSessionDate(ResultSet resultSet) throws DatabaseException {
         try {
             return new SessionDate(resultSet.getString("weekday"),String.valueOf(resultSet.getDate("date")),resultSet.getInt("sessionId"),resultSet.getBoolean("attended"));
@@ -211,6 +270,12 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
         }
     }
 
+    /**
+     * Gets the list of students from a student by its id.
+     * @param studentId            The id of the student to get.
+     * @return                      The list of students of the belt exam
+     * @throws DatabaseException    If there is an error retrieving related entities.
+     */
     public List<SessionDate> getSessionDateStudent(int studentId) throws DatabaseException{
         String sql = "SELECT * FROM SessionDates WHERE studentId=?";
         List<SessionDate> sessionDateList = new ArrayList<>();
@@ -228,6 +293,12 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
         return sessionDateList;
     }
 
+    /**
+     * return a list with Students ID's that participate at that TrainingCamp
+     * @param studentId the id of the student
+     * @return a list with Students ID's that participate at that TrainingCamp
+     * @throws DatabaseException If there is an error retrieving related entities.
+     */
     public List<Integer> getTrainingCampsStudent(int studentId) throws DatabaseException{
         String sql = "SELECT * FROM StudentsTrainingCamp WHERE idStud=?";
         List<Integer> trainingCampList = new ArrayList<>();
@@ -243,6 +314,13 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
         return trainingCampList;
     }
 
+    /**
+     * Retrieves a list of contest IDs associated with a specific student.
+     *
+     * @param studentId the ID of the student whose contests are to be retrieved
+     * @return a list of contest IDs in which the student is registered
+     * @throws DatabaseException if an error occurs while accessing the database
+     */
     public List<Integer> getContestsStudent(int studentId) throws DatabaseException{
         String sql = "SELECT * FROM StudentsContests WHERE idStud=?";
         List<Integer> contestList = new ArrayList<>();
@@ -258,6 +336,13 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
         return contestList;
     }
 
+    /**
+     * Retrieves the parent ID associated with a specific student.
+     *
+     * @param studentId the ID of the student whose parent ID is to be retrieved
+     * @return the parent ID associated with the student, or 0 if no parent is found
+     * @throws DatabaseException if an error occurs while accessing the database
+     */
     public int getIdParentfromStudent(int studentId) throws DatabaseException{
         String sql = "SELECT * FROM ParentsStudents WHERE idStudent = ?";
         try(PreparedStatement stmt = connection.prepareStatement(sql)){
