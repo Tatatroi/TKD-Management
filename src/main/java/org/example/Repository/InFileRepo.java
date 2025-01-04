@@ -1,74 +1,30 @@
 package org.example.Repository;
 
-import org.example.Model.HasID;
-import com.fasterxml.jackson.core.exc.StreamReadException;
-import com.fasterxml.jackson.core.exc.StreamWriteException;
-import com.fasterxml.jackson.databind.DatabindException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.core.type.TypeReference;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
+import org.example.Model.*;
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
- * A repository implementation that stores data in json files.
+ * A repository implementation that stores main.java.data in a file.
+ *
  * @param <T> The type of objects stored in the repository, which must implement HasId.
  */
-public class InFileRepo <T extends  HasID> implements IRepo<T>{
+public class InFileRepo<T extends HasID> implements IRepo<T> {
     private final String filePath;
-    private final  ObjectMapper objectMapper;
-    private final TypeReference<List<T>> typeReference;
-
-    private Map<Integer,T> data;
-
+    private Function<String, T> fromCSV;
+    // primește un singur argument de tipul String și returnează un rezultat de tipul generic T care extend HasId.
     /**
-     * Constructs a new inFileRepo with the specified file path, type reference and creates a new object mapper,which helps to write and
-     * read objects from json files. It initializes a new map and reads from file, thus populating the map with data from creation.
-     * @param filePath          The name of the json file, where data will be stored.
-     * @param typeReference     The type of the data to be stored.
+     * Constructs a new FileRepository with the specified file path.
+     *
+     * @param filePath The path to the file where main.java.data will be stored.
      */
-    public InFileRepo(String filePath,TypeReference<List<T>> typeReference) {
+    public InFileRepo(String filePath, Function<String, T> fromCSV) {
         this.filePath = filePath;
-        this.objectMapper = new ObjectMapper();
-        this.typeReference = typeReference;
-        this.data = new HashMap<>();
-        readFromFile();
-    }
-
-    /**
-     * Tries to read from the json file and transforming the returned list in a map of type (object id, object) and if
-     * the file is empty or doesn't exist it assigns an empty map.
-     */
-    private void readFromFile() {
-        try{
-            File file = new File(filePath);
-            if(!file.exists()){
-                data = new HashMap<>();
-            }
-            List<T> objects = objectMapper.readValue(file,typeReference);
-            data = objects.stream().collect(Collectors.toMap(HasID::getId, obj->obj));
-
-        }
-        catch (IOException e) {
-            data = new HashMap<>();
-        }
-    }
-
-    /**
-     * Tries to write to the file, the list of objects of type T that is specified and throws an exception if it can't.
-     * @param objects       The list of objects of type T that will be written to the file, overwriting the previous contents of the file.
-     */
-    private void writeToFile(List<T> objects) {
-        try {
-            objectMapper.writeValue(new File(filePath) ,objects);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        this.fromCSV=fromCSV;
     }
 
     /**
@@ -76,17 +32,15 @@ public class InFileRepo <T extends  HasID> implements IRepo<T>{
      */
     @Override
     public void add(T obj) {
-        data.put(obj.getId(),obj);
-        writeToFile(new ArrayList<>(data.values()));
+        doInFile(data -> data.putIfAbsent(obj.getId(), obj));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void remove(Integer removeId) {
-        data.remove(removeId);
-        writeToFile(new ArrayList<>(data.values()));
+    public T get(Integer id) {
+        return readDataFromFile().get(id);
     }
 
     /**
@@ -94,16 +48,15 @@ public class InFileRepo <T extends  HasID> implements IRepo<T>{
      */
     @Override
     public void update(T obj) {
-        data.put(obj.getId(),obj);
-        writeToFile(new ArrayList<>(data.values()));
+        doInFile(data -> data.replace(obj.getId(), obj));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public T get(Integer getId) {
-        return data.get(getId);
+    public void remove(Integer id) {
+        doInFile(data -> data.remove(id));
     }
 
     /**
@@ -111,6 +64,58 @@ public class InFileRepo <T extends  HasID> implements IRepo<T>{
      */
     @Override
     public List<T> getAll() {
-        return new ArrayList<>(data.values());
+        return readDataFromFile().values().stream().toList();
     }
+
+    /**
+     * Performs an operation on the main.java.data stored in the file.
+     *
+     * @param function The function to apply to the main.java.data.
+     */
+    private void doInFile(Consumer<Map<Integer, T>> function) {
+        Map<Integer, T> objects = readDataFromFile();
+        function.accept(objects);
+        writeDataToFile(objects);
+    }
+
+    /**
+     * Reads the main.java.data from the file.
+     *
+     * @return The main.java.data stored in the file, or an empty map if the file is empty or does not exist.
+     */
+    private Map<Integer, T> readDataFromFile() {
+        Map<Integer, T> objects = new HashMap<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line = reader.readLine();
+            while ((line = reader.readLine()) != null) {
+                T obj = fromCSV.apply(line);
+                objects.put(obj.getId(), obj);
+            }
+            return objects;
+        } catch (IOException e) {
+            return new HashMap<>();
+        }
+    }
+
+    /**
+     * Writes the main.java.data to the file.
+     *
+     * @param objects The main.java.data to write to the file.
+     */
+    private void writeDataToFile(Map<Integer, T> objects) {
+        if(objects.isEmpty()) return;
+
+        try (FileWriter writer = new FileWriter(filePath)) {
+            writer.write(String.join(",", objects.get(1).getHeader()) + "\n");
+
+            for(Map.Entry<Integer, T> entry : objects.entrySet()){
+                writer.write(entry.getValue().toCSV() + "\n");
+            }
+        } catch (IOException e) {
+            System.err.println("Error while writing to file: " + e.getMessage());
+        }
+    }
+
 }
+
