@@ -4,6 +4,7 @@ import org.example.Exceptions.BusinessLogicException;
 import org.example.Exceptions.DatabaseException;
 import org.example.Exceptions.EntityNotFoundException;
 import org.example.Model.*;
+import org.example.Repository.IRepo;
 import org.example.Service.TKD_Service;
 
 import java.io.IOException;
@@ -603,6 +604,69 @@ public class TKDController {
         }catch (DatabaseException | EntityNotFoundException | BusinessLogicException e) {
             System.out.println("Error: " + e.getMessage());
         }
+    }
+    public int getStudentId(){
+        int id = 0;
+        try {
+            id = tkdService.getStudentId();
+        } catch (DatabaseException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return id;
+    }
+    public int getSessionId(){
+        int id = 0;
+        try {
+            id = tkdService.getSessionId();
+        } catch (DatabaseException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return id;
+    }
+    public int getTrainerId(){
+        int id = 0;
+        try {
+            id = tkdService.getTrainerId();
+        } catch (DatabaseException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return id;
+    }
+    public int getParentId(){
+        int id = 0;
+        try {
+            id = tkdService.getParentId();
+        } catch (DatabaseException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return id;
+    }
+    public int getContestId(){
+        int id = 0;
+        try {
+            id = tkdService.getContestId();
+        } catch (DatabaseException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return id;
+    }
+    public int getTrainingCampId(){
+        int id = 0;
+        try {
+            id = tkdService.getTrainingCampId();
+        } catch (DatabaseException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return id;
+    }
+    public int getBeltExamId(){
+        int id = 0;
+        try {
+            id = tkdService.getBeltExamId();
+        } catch (DatabaseException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return id;
     }
 
 }

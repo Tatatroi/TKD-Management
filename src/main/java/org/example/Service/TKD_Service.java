@@ -1433,6 +1433,26 @@ public class TKD_Service {
             return new AbstractMap.SimpleEntry<String, Double>(date, max);
         }
     }
-
+    public int getStudentId() throws DatabaseException {
+        return students.getAll().size()+1;
+    }
+    public int getSessionId() throws DatabaseException {
+        return sessions.getAll().size()+1;
+    }
+    public int getTrainerId() throws DatabaseException {
+        return trainers.getAll().size()+1;
+    }
+    public int getParentId() throws DatabaseException {
+        return parents.getAll().size()+1;
+    }
+    public int getContestId() throws DatabaseException {
+        return contests.getAll().size()+1;
+    }
+    public int getTrainingCampId() throws DatabaseException {
+        return trainingCamps.getAll().size()+1;
+    }
+    public int getBeltExamId() throws DatabaseException {
+        return beltExams.getAll().size()+1;
+    }
 }
 
