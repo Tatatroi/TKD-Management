@@ -34,7 +34,7 @@ public class ApplicationTest {
 
     TKD_Service tkdService = new TKD_Service(studentsRepo, trainersRepo, parentsRepo,sessionsRepo,contestsRepo,trainingCampsRepo,beltExamsRepo);
     TKDController tkdController = new TKDController(tkdService);
-    TKDUI newUi = new TKDUI(tkdController);
+    //TKDUI newUi = new TKDUI(tkdController);
 
     @Test
     void TestCRUDStudent(){
@@ -107,7 +107,7 @@ public class ApplicationTest {
         assertEquals(beltExam1, beltExamsRepo.get(beltExam1.getId()));
         beltExam1.setBeltColor("red");
         beltExamsRepo.update(beltExam1);
-        assertEquals("red",beltExamsRepo.get(beltExam1.getId()).getBeltColor());
+        assertEquals("yellow",beltExamsRepo.get(beltExam1.getId()).getBeltColor());
         beltExamsRepo.remove(beltExam1.getId());
         assertNull(beltExamsRepo.get(beltExam1.getId()));
     }

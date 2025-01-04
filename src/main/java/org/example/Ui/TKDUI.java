@@ -5,8 +5,13 @@ import org.example.Exceptions.DatabaseException;
 import org.example.Exceptions.EntityNotFoundException;
 import org.example.Exceptions.ValidationException;
 import org.example.Model.*;
+import org.example.Repository.*;
+import org.example.Service.TKD_Service;
 
 import java.io.IOException;
+import java.security.Provider;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Scanner;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -16,21 +21,203 @@ import java.time.format.DateTimeParseException;
  * The main UI class that provides a command line interface for interacting with tha TKD management system
  */
 public class TKDUI {
-    private final TKDController tkdController;
+    //private final TKDController tkdController;
+    public TKDController tkdController;
     private final Scanner scanner;
+
+    IRepo<Student> studentRepo;
+    IRepo<Parent> parentRepo;
+    IRepo<Session> sessionRepo;
+    IRepo<Trainer> trainerRepo;
+    IRepo<Contest> contestRepo;
+    IRepo<TrainingCamp> trainingCampRepo;
+    IRepo<BeltExam> beltExamRepo;
 
     /**
      * Constructs a new UI with tha given TKD controller
      * @param tkdController the controller that contains the business logic for the TKD management system
      */
-    public TKDUI(TKDController tkdController) {
+//    public TKDUI(TKDController tkdController) {
+//        this.tkdController = tkdController;
+//        this.scanner = new Scanner(System.in);
+//    }
+    public TKDUI(){
+          this.scanner = new Scanner(System.in);
+    }
+
+    public void setTkdController(TKDController tkdController) {
         this.tkdController = tkdController;
-        this.scanner = new Scanner(System.in);
+    }
+
+    /**
+     * Start Repo where user can choose between the repos
+     */
+    public TKD_Service startRepo() throws DatabaseException {
+        boolean continueLoop = true;
+
+        while(continueLoop){
+            printRepo();
+            String option = scanner.nextLine();
+            switch (option){
+                case "memory" -> {
+                    continueLoop = false;
+                    return inMemoryRepo();
+                }
+                case "file" -> {
+                    continueLoop = false;
+                    return inFileRepo();
+                }
+                case "database" -> {
+                    continueLoop = false;
+                    return databaseRepo();
+                }
+                default -> System.out.println("Invalid option. Please try again.");
+            }
+        }
+
+        return null;
+    }
+
+
+    //////// ADD OBJECTS /////////
+
+    /**
+     * Adds a student to a parent, session and adds the objects to the repos.
+     * @param session       The session, where the student is added.
+     * @param student       The session, where the student is added.
+     * @param parent        The parent, where the student is added.
+     * @param parentRepo    The parent repo, where the parent is added.
+     * @param studentRepo   The student repo, where the parent is added.
+     * @param sessionRepo   The session repo, where the parent is added.
+     */
+    public static void parentChild(Session session, Student student, Parent parent, DatabaseRepo<Parent> parentRepo, DatabaseRepo<Student> studentRepo, DatabaseRepo<Session> sessionRepo) {
+        //System.out.println(student);
+        session.getSessionStudents().add(student.getId());
+        try {
+            sessionRepo.update(session);
+        } catch (DatabaseException e) {
+            throw new RuntimeException(e);
+        }
+        parent.getChildren().add(student.getId());
+        student.setParent(parent.getId());
+
+        try {
+            if(parentRepo.get(parent.getId()) == null) {
+                parentRepo.add(parent);
+            }
+        } catch (DatabaseException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            studentRepo.add(student);
+            studentRepo.update(student);
+            parentRepo.update(parent);
+        }
+        catch (DatabaseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
+    //////// DATABASE REPOSITORY /////////
+
+    private TKD_Service databaseRepo() throws DatabaseException {
+        DatabaseRepo<Student> studentRepo = new DatabaseStudent("jdbc:sqlserver://localhost:1433;database=TKD Management;integratedSecurity=true;trustServerCertificate=true;");
+        DatabaseRepo<Parent> parentRepo = new DatabaseParent("jdbc:sqlserver://localhost:1433;database=TKD Management;integratedSecurity=true;trustServerCertificate=true;");
+        DatabaseRepo<Session> sessionRepo = new DatabaseSession("jdbc:sqlserver://localhost:1433;database=TKD Management;integratedSecurity=true;trustServerCertificate=true;");
+        DatabaseRepo<Contest> contestRepo = new DatabaseContest("jdbc:sqlserver://localhost:1433;database=TKD Management;integratedSecurity=true;trustServerCertificate=true;");
+        DatabaseRepo<Trainer> trainerRepo = new DatabaseTrainer("jdbc:sqlserver://localhost:1433;database=TKD Management;integratedSecurity=true;trustServerCertificate=true;");
+        DatabaseRepo<BeltExam> beltExamRepo = new DatabaseBeltExam("jdbc:sqlserver://localhost:1433;database=TKD Management;integratedSecurity=true;trustServerCertificate=true;");
+        DatabaseRepo<TrainingCamp> trainingCampRepo = new DatabaseTrainingCamp("jdbc:sqlserver://localhost:1433;database=TKD Management;integratedSecurity=true;trustServerCertificate=true;");
+
+
+        try {
+            DriverManager.getConnection("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return new TKD_Service(studentRepo,trainerRepo,parentRepo,sessionRepo,contestRepo,trainingCampRepo,beltExamRepo);
+
+    }
+
+    //////// IN MEMORY REPOSITORY /////////
+
+    private TKD_Service inMemoryRepo(){
+        InMemoryRepo<Student> studentRepo = new InMemoryRepo<>();
+        InMemoryRepo<Parent> parentRepo = new InMemoryRepo<>();
+        InMemoryRepo<Session> sessionRepo = new InMemoryRepo<>();
+        InMemoryRepo<Trainer> trainerRepo = new InMemoryRepo<>();
+        InMemoryRepo<Contest> contestRepo = new InMemoryRepo<>();
+        InMemoryRepo<TrainingCamp> trainingCampRepo = new InMemoryRepo<>();
+        InMemoryRepo<BeltExam> beltExamRepo = new InMemoryRepo<>();
+
+        return new TKD_Service(studentRepo,trainerRepo,parentRepo,sessionRepo,contestRepo,trainingCampRepo,beltExamRepo);
+    }
+
+    //////// IN FILE REPOSITORY /////////
+    private TKD_Service inFileRepo(){
+        InFileRepo<Student> studentRepo = new InFileRepo<>("D:\\Anul 2\\TKD Management\\src\\main\\java\\org\\example\\Data\\students.csv",Student::fromCSV);
+        InFileRepo<Parent> parentRepo = new InFileRepo<>("D:\\Anul 2\\TKD Management\\src\\main\\java\\org\\example\\Data\\parents.csv",Parent::fromCSV);
+        InFileRepo<Session> sessionRepo = new InFileRepo<>("D:\\Anul 2\\TKD Management\\src\\main\\java\\org\\example\\Data\\sessions.csv",Session::fromCSV);
+        InFileRepo<Trainer> trainerRepo = new InFileRepo<>("D:\\Anul 2\\TKD Management\\src\\main\\java\\org\\example\\Data\\trainers.csv",Trainer::fromCSV);
+        InFileRepo<Contest> contestRepo = new InFileRepo<>("D:\\Anul 2\\TKD Management\\src\\main\\java\\org\\example\\Data\\contests.csv",Contest::fromCSV);
+        InFileRepo<TrainingCamp> trainingCampRepo = new InFileRepo<>("D:\\Anul 2\\TKD Management\\src\\main\\java\\org\\example\\Data\\trainingCamps.csv",TrainingCamp::fromCSV);
+        InFileRepo<BeltExam> beltExamRepo = new InFileRepo<>("D:\\Anul 2\\TKD Management\\src\\main\\java\\org\\example\\Data\\beltExams.csv",BeltExam::fromCSV);
+
+        return new TKD_Service(studentRepo,trainerRepo,parentRepo,sessionRepo,contestRepo,trainingCampRepo,beltExamRepo);
     }
 
     /**
      * Starts the UI application displaing a menu and handiling user input
      */
+//    public void start() {
+//
+//        boolean continueLoop = true;
+//
+//        while (continueLoop) {
+//            printMenu();
+//            String option = scanner.nextLine();
+//
+//            try {
+//                switch (option) {
+//                    case "0" -> continueLoop = false;
+////                    case "1" -> startStudent();
+////                    case "2" -> startTrainer();
+////                    case "3" -> startSession();
+////                    case "4" -> startContest();
+////                    case "5" -> startTrainingCamp();
+////                    case "6" -> startBeltExam();
+////                    case "7" -> generateBill();
+////                    case "8" -> startParent();
+////                    case "9" -> combinationsOfEvents();
+//                    case "1" -> {
+//                        displayPeople();
+//                        boolean contLoop1 = true;
+//
+//                        while(contLoop1) {
+//                            String option1 = scanner.nextLine();
+//                            switch (option1) {
+//                                case "a" -> startStudent();
+//                                case "b" -> startParent();
+//                                case "c" -> startTrainer();
+//                                case "d" -> contLoop1 = false;
+//                                default -> System.out.println("Invalid option. Please try again.");
+//                            }
+//                        }
+//                    }
+//                    case "2" ->{
+//                        displayEvents();
+//                    }
+//                    default -> System.out.println("Invalid option. Please try again.");
+//                }
+//            } catch (Exception e) {
+//                System.out.println("An error occurred: " + e.getMessage());
+//            }
+//        }
+//    }
+
     public void start() {
         boolean continueLoop = true;
 
@@ -41,15 +228,9 @@ public class TKDUI {
             try {
                 switch (option) {
                     case "0" -> continueLoop = false;
-                    case "1" -> startStudent();
-                    case "2" -> startTrainer();
-                    case "3" -> startSession();
-                    case "4" -> startContest();
-                    case "5" -> startTrainingCamp();
-                    case "6" -> startBeltExam();
-                    case "7" -> generateBill();
-                    case "8" -> startParent();
-                    case "9" -> combinationsOfEvents();
+                    case "1" -> startPeopleMenu();
+                    case "2" -> startEventsMenu();
+                    case "3" -> generateBill();
                     default -> System.out.println("Invalid option. Please try again.");
                 }
             } catch (Exception e) {
@@ -58,23 +239,95 @@ public class TKDUI {
         }
     }
 
+    private void startPeopleMenu() {
+        boolean contLoop1 = true;
+        while (contLoop1) {
+            displayPeople();
+            String option1 = scanner.nextLine();
+
+            switch (option1) {
+                case "a" -> startStudent();
+                case "b" -> startParent();
+                case "c" -> startTrainer();
+                case "d" -> contLoop1 = false;
+                default -> System.out.println("Invalid option. Please try again.");
+            }
+        }
+    }
+
+    private void startEventsMenu() throws ValidationException {
+        boolean contLoop2 = true;
+
+        while (contLoop2) {
+            displayEvents();
+            String option2 = scanner.nextLine();
+
+            switch (option2) {
+                case "a" -> startSession();
+                case "b" -> startContest();
+                case "c" -> startTrainingCamp();
+                case "d" -> startBeltExam();
+                case "e" -> combinationsOfEvents();
+                case "f" -> contLoop2 = false;
+                default -> System.out.println("Invalid option. Please try again.");
+            }
+        }
+    }
+
+    private static void printRepo(){
+        System.out.println("\n==== TKD Management Console ====");
+        System.out.println("\n Select Repo you want to use: ");
+        System.out.println("\n 1. InMemoryRepo (type 'memory')");
+        System.out.println("\n 2. InFileRepo (type 'file')");
+        System.out.println("\n 3. DatabaseRepo (type 'database')");
+        System.out.println("\n Select an option: ");
+    }
+
     /**
      * display an interactive menu
      */
     private void printMenu() {
         System.out.println("\n==== TKD Management Console ====");
-        System.out.println("1 - Students");
-        System.out.println("2 - Trainers");
-        System.out.println("3 - Sessions");
-        System.out.println("4 - Contests");
-        System.out.println("5 - Training camps");
-        System.out.println("6 - Belt exams");
-        System.out.println("7 - Bill");
-        System.out.println("8 - Parents");
-        System.out.println("9 - Event combinations");
-        System.out.println("0 - Exit");
+        /*
+//        System.out.println("1 - Students");
+//        System.out.println("2 - Trainers");
+//        System.out.println("3 - Sessions");
+//        System.out.println("4 - Contests");
+//        System.out.println("5 - Training camps");
+//        System.out.println("6 - Belt exams");
+//        System.out.println("7 - Bill");
+//        System.out.println("8 - Parents");
+//        System.out.println("9 - Event combinations");
+//        System.out.println("0 - Exit");
+
+         */
+
+        System.out.println("1 - Manage People");
+        System.out.println("2 - Manage Sessions and Events");
+        System.out.println("3 - Billing");
+        System.out.println("4 - Exit");
         System.out.print("Select an option: ");
     }
+
+    private void displayPeople(){
+        System.out.println("\ta. Students");
+        System.out.println("\tb. Parents");
+        System.out.println("\tc. Trainers");
+        System.out.println("\td. Exit");
+        System.out.print("Select an option: ");
+    }
+
+    private void displayEvents(){
+        System.out.println("\ta. Sessions");
+        System.out.println("\tb. Contests");
+        System.out.println("\tc. Training Camps");
+        System.out.println("\td. Belt Exams");
+        System.out.println("\te. Affordable events");
+        System.out.println("\tf. Exit");
+        System.out.print("Select an option: ");
+    }
+
+
 
     /**
      * display all combinations that a parent can afford with a specific amount of money

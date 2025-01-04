@@ -59,32 +59,17 @@ public class Main {
      */
     public static void main(String[] args) throws SQLException, DatabaseException {
 
-//        DatabaseRepo<Student> studentRepo = new DatabaseStudent("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
-//        DatabaseRepo<Parent> parentRepo = new DatabaseParent("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
-//        DatabaseRepo<Session> sessionRepo = new DatabaseSession("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
-//        DatabaseRepo<Contest> contestRepo = new DatabaseContest("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
-//        DatabaseRepo<Trainer> trainerRepo = new DatabaseTrainer("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
-//        DatabaseRepo<BeltExam> beltExamRepo = new DatabaseBeltExam("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
-//        DatabaseRepo<TrainingCamp> trainingCampRepo = new DatabaseTrainingCamp("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
-        InFileRepo<Student> studentRepo = new InFileRepo<>("C:\\Users\\raulm\\Documents\\Sem 3\\TKD-Management\\src\\main\\java\\org\\example\\Data\\students.csv",Student::fromCSV);
-        InFileRepo<Parent> parentRepo = new InFileRepo<>("C:\\Users\\raulm\\Documents\\Sem 3\\TKD-Management\\src\\main\\java\\org\\example\\Data\\parents.csv",Parent::fromCSV);
-        InFileRepo<Session> sessionRepo = new InFileRepo<>("C:\\Users\\raulm\\Documents\\Sem 3\\TKD-Management\\src\\main\\java\\org\\example\\Data\\sessions.csv",Session::fromCSV);
-        InFileRepo<Trainer> trainerRepo = new InFileRepo<>("C:\\Users\\raulm\\Documents\\Sem 3\\TKD-Management\\src\\main\\java\\org\\example\\Data\\trainers.csv",Trainer::fromCSV);
-        InFileRepo<Contest> contestRepo = new InFileRepo<>("C:\\Users\\raulm\\Documents\\Sem 3\\TKD-Management\\src\\main\\java\\org\\example\\Data\\contests.csv",Contest::fromCSV);
-        InFileRepo<TrainingCamp> trainingCampRepo = new InFileRepo<>("C:\\Users\\raulm\\Documents\\Sem 3\\TKD-Management\\src\\main\\java\\org\\example\\Data\\trainingCamps.csv",TrainingCamp::fromCSV);
-        InFileRepo<BeltExam> beltExamRepo = new InFileRepo<>("C:\\Users\\raulm\\Documents\\Sem 3\\TKD-Management\\src\\main\\java\\org\\example\\Data\\beltExams.csv",BeltExam::fromCSV);
-
         Trainer t1 = new Trainer(1,"Mitroi","Stefan","srefanmitroi@gmail.com","Calea Floresti nr 58B",2004,"0761969675","black");
-        trainerRepo.add(t1);
+//        trainerRepo.add(t1);
 //
         Trainer t2 = new Trainer(2, "Popescu", "Andrei", "andrei.popescu@gmail.com", "Strada Mihai Viteazu nr 15", 1990, "0755123456", "red");
-        trainerRepo.add(t2);
+//        trainerRepo.add(t2);
 //
         Trainer t3 = new Trainer(3, "Ionescu", "Maria", "maria.ionescu@yahoo.com", "Bulevardul Eroilor nr 45", 1985, "0725987654", "blue");
-        trainerRepo.add(t3);
+//        trainerRepo.add(t3);
 //
         Trainer t4 = new Trainer(4, "Vasilescu", "Radu", "radu.vasilescu@outlook.com", "Strada Zorilor nr 23", 1992, "0744123456", "green");
-        trainerRepo.add(t4);
+//        trainerRepo.add(t4);
 //        InMemoryRepo<Trainer> trainerInMemoryRepo = new InMemoryRepo<>("trainers.json", new TypeReference<List<Trainer>>() {});
         //trainerInMemoryRepo.add(t4);
 //       trainerInMemoryRepo.remove(4);
@@ -210,13 +195,17 @@ public class Main {
 //        students2.add(student1);
 //        students2.update(student1);
 //        System.out.println(students2.getAll());
-        TKD_Service tkdService = new TKD_Service(studentRepo,trainerRepo,parentRepo,sessionRepo,contestRepo,trainingCampRepo,beltExamRepo);
+
+        TKDUI newUi = new TKDUI();
+        TKD_Service tkdService = newUi.startRepo();
         TKDController tkdController = new TKDController(tkdService);
-        TKDUI newUi = new TKDUI(tkdController);
+        newUi.setTkdController(tkdController);
+        newUi.start();
+
 //        System.out.println(tkdService.filterStudentsByBelt("white"));
 //        System.out.println(parentRepo.getAll());
 //        System.out.println(studentRepo.get(1));
-        newUi.start();
+        newUi.startRepo();
 
 
     }
