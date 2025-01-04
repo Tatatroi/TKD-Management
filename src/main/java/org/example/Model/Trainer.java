@@ -58,4 +58,19 @@ public class Trainer extends Person{
                 ANSI_YELLOW + "  Belt Level: " + ANSI_RESET + beltLevel;
     }
 
+    @Override
+    public String[] getHeader() {
+        return new String[]{"id","name","lastName","email","address","dateOfBirth","number","beltLevel"};
+    }
+
+    @Override
+    public String toCSV() {
+        return String.join(",",String.valueOf(this.getId()),this.getName(),this.getLastName(),this.getEmail(),this.getAddress(),
+                String.valueOf(this.getDateOfBirth()),this.getNumber(),this.getBeltLevel());
+    }
+
+    public static Trainer fromCSV(String csv) {
+        String[] values = csv.split(",");
+        return new Trainer(Integer.parseInt(values[0]),values[1],values[2],values[3],values[4],Integer.parseInt(values[5]),values[6],values[7]);
+    }
 }

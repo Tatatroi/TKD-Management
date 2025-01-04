@@ -99,11 +99,7 @@ public class SessionDate {
      */
     @Override
     public String toString() {
-        return "SessionDate{" +
-                "weekDay='" + weekDay + '\'' +
-                ", date='" + date + '\'' +
-                ", session=" + session +
-                '}';
+        return weekDay + ":" + date + ":" + session + ":" + attended;
     }
 
     /**
@@ -121,5 +117,13 @@ public class SessionDate {
                 ANSI_GREEN + "  Weekday: " + ANSI_RESET + weekDay + "\n" +
                 ANSI_YELLOW + "  Date: " + ANSI_RESET + date + "\n" +
                 ANSI_CYAN + "  Session: " + ANSI_RESET + session;
+    }
+    public static SessionDate fromString(String data) {
+        String[] parts = data.split(":");
+        String weekDay = parts[0];
+        String date = parts[1];
+        int session = Integer.parseInt(parts[2]);
+        boolean attended = Boolean.parseBoolean(parts[3]);
+        return new SessionDate(weekDay, date, session, attended);
     }
 }

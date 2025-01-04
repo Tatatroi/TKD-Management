@@ -1,7 +1,10 @@
 package org.example.Model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Represents a parent in the TKD management system
@@ -69,4 +72,22 @@ public class Parent extends Person{
                 ANSI_GREEN + "  Address: " + ANSI_RESET + address + "\n";
     }
 
+    @Override
+    public String[] getHeader() {
+        return new String[]{"id", "name", "lastName", "email", "address", "dateOfBirth", "number","children"};
+    }
+
+    @Override
+    public String toCSV() {
+        String childrenToCSV = this.getChildren().stream().map(String::valueOf).collect(Collectors.joining(";"));
+        return String.join(",",String.valueOf(this.getId()),this.getName(),this.getLastName(),this.getEmail(),this.getAddress(),String.valueOf(this.getDateOfBirth()),this.getNumber(),childrenToCSV);
+    }
+
+    public static Parent fromCSV(String csv) {
+        String[] parts = csv.split(",");
+        Parent p = new Parent(Integer.parseInt(parts[0]),parts[1],parts[2],parts[3],parts[4], Integer.parseInt(parts[5]),parts[6]);
+        List<Integer> childrenList =  parts[7].isEmpty() ? List.of() : Arrays.stream(parts[7].split(";")).map(Integer::parseInt).collect(Collectors.toList());
+        p.setChildren(childrenList);
+        return p;
+    }
 }

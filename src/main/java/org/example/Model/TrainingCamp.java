@@ -1,7 +1,9 @@
 package org.example.Model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Represents a training camp in the TKD management system
@@ -93,4 +95,23 @@ public class TrainingCamp extends Event{
     }
 
 
+    @Override
+    public String[] getHeader() {
+        return new String[]{"id","startDate","endDate","price","country","city","address","numberOfParticipants","students"};
+    }
+
+    @Override
+    public String toCSV() {
+        String studentsToCSV = this.getStudents().stream().map(String::valueOf).collect(Collectors.joining(";"));
+        return String.join(",",String.valueOf(this.getId()),this.getStartDate(),this.getEndDate(),String.valueOf(this.getPrice()),
+                this.country,this.city,this.address,String.valueOf(this.numberOfParticipants),studentsToCSV);
+    }
+
+    public static TrainingCamp fromCSV(String csv) {
+        String[] parts = csv.split(",");
+        TrainingCamp trainingCamp = new TrainingCamp(Integer.parseInt(parts[0]),parts[1],parts[2],Double.parseDouble(parts[3]),parts[4],parts[5],parts[6],Integer.parseInt(parts[7]));
+        List<Integer> students = parts[8].isEmpty() ? List.of() : Arrays.stream(parts[8].split(";")).map(Integer::parseInt).collect(Collectors.toList());
+        trainingCamp.setStudents(students);
+        return trainingCamp;
+    }
 }

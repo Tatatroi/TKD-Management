@@ -1,7 +1,9 @@
 package org.example.Model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Represents a contest in the TKD management system
@@ -97,4 +99,22 @@ public class Contest extends Event{
                 "Starting date: " + startDate;
     }
 
+    @Override
+    public String[] getHeader() {
+        return new String[]{"id", "startDate", "endDate", "price", "country", "city","name", "address","students"};
+    }
+
+    @Override
+    public String toCSV() {
+        String studentsToCSV = this.students.stream().map(String::valueOf).collect(Collectors.joining(";"));
+        return String.join(",", String.valueOf(this.getId()),this.getStartDate(),this.getEndDate(),String.valueOf(this.getPrice()),this.getCountry(),this.getCity(),this.getName(),this.getAddress(),studentsToCSV);
+    }
+
+    public static Contest fromCSV(String csv) {
+        String[] values = csv.split(",");
+        Contest contest = new Contest(Integer.valueOf(values[0]),values[1],values[2],Double.parseDouble(values[3]),values[4],values[5],values[6],values[7]);
+        List<Integer> students = values[8].isEmpty() ? List.of() : Arrays.stream(values[8].split(";")).map(Integer::parseInt).collect(Collectors.toList());
+        contest.setStudents(students);
+        return contest;
+    }
 }

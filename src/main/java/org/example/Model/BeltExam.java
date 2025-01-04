@@ -2,6 +2,7 @@ package org.example.Model;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Represents a belt exam in the TKD management system
@@ -9,7 +10,7 @@ import java.util.Map;
 public class BeltExam extends Event{
 
     public Map< Integer,Integer> listOfResults = new HashMap<>();// 1: passed, 0: failed, -1: absent
-    public String BeltColor;
+    public String beltColor;
 
     /**
      * Constructs a new belt exam with the specified ID, start date, end date, price, country, city, address and belt color.
@@ -20,11 +21,11 @@ public class BeltExam extends Event{
      * @param country       The country where the event takes place.
      * @param city          The city where the event takes place.
      * @param address       The address where the event takes place.
-     * @param BeltColor     The belt color for which the exam is taken.
+     * @param beltColor     The belt color for which the exam is taken.
      */
-    public BeltExam(int id,String startDate, String endDate, double price, String country, String city, String address, String BeltColor) {
+    public BeltExam(int id,String startDate, String endDate, double price, String country, String city, String address, String beltColor) {
         super(id,startDate, endDate, price, country, city, address);
-        this.BeltColor = BeltColor;
+        this.beltColor = beltColor;
     }
 
     public BeltExam(){}
@@ -51,7 +52,7 @@ public class BeltExam extends Event{
      * @return The belt color from the exam.
      */
     public String getBeltColor() {
-        return BeltColor;
+        return beltColor;
     }
 
     /**
@@ -59,14 +60,14 @@ public class BeltExam extends Event{
      * @param beltColor  The belt color from the exam to set.
      */
     public void setBeltColor(String beltColor) {
-        BeltColor = beltColor;
+        beltColor = beltColor;
     }
 
     @Override
     public String toString() {
         return "BeltExam{" +
                 "listOfResults=" + listOfResults +
-                ", BeltColor='" + BeltColor + '\'' +
+                ", BeltColor='" + beltColor + '\'' +
                 ", startDate='" + startDate + '\'' +
                 ", endDate='" + endDate + '\'' +
                 ", price=" + price +
@@ -94,4 +95,34 @@ public class BeltExam extends Event{
     }
 
 
+    @Override
+    public String[] getHeader() {
+        return new String[]{"id", "startDate", "endDate", "price", "country", "city", "address", "beltColor","listOfResults"};
+    }
+
+    @Override
+    public String toCSV() {
+        String listOfResultsToCSV = this.getListOfResults().entrySet().stream()
+                .map(entry -> entry.getKey() + ":" + entry.getValue())
+                .collect(Collectors.joining(";"));
+        return String.join(",",String.valueOf(this.getId()),this.getStartDate(),this.getEndDate(),String.valueOf(this.getPrice()),
+                this.getCountry(),this.getCity(),this.getAddress(), this.getBeltColor(),listOfResultsToCSV);
+    }
+
+    public static BeltExam fromCSV(String csv) {
+        String[] values = csv.split(",");
+        BeltExam beltExam = new BeltExam(Integer.parseInt(values[0]),values[1],values[2],Double.parseDouble(values[3]),values[4],values[5],values[6],values[7]);
+        Map<Integer, Integer> listOfResults = new HashMap<>();
+        if (!values[8].isEmpty()) {
+            String[] entries = values[8].split(";");
+            for (String entry : entries) {
+                String[] keyValue = entry.split(":");
+                Integer key = Integer.parseInt(keyValue[0]);
+                Integer value = Integer.parseInt(keyValue[1]);
+                listOfResults.put(key, value);
+            }
+        }
+        beltExam.setListOfResults(listOfResults);
+        return beltExam;
+    }
 }

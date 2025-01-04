@@ -1,7 +1,9 @@
 package org.example.Model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Represents a session in the TKD management system
@@ -49,6 +51,25 @@ public class Session implements HasID{
         return id;
     }
 
+    @Override
+    public String[] getHeader() {
+        return new String[]{"id", "difficultyLevel", "maximumParticipants", "trainer", "pricePerSession", "sessionStudents"};
+    }
+
+    @Override
+    public String toCSV() {
+        String sessionStudentsToCSV = this.getSessionStudents().stream().map(String::valueOf).collect(Collectors.joining(";"));
+        return String.join(",", String.valueOf(this.getId()),String.valueOf(this.getDifficultyLevel()),String.valueOf(this.getMaximumParticipants()),
+                String.valueOf(this.getTrainer()),String.valueOf(this.getPricePerSession()),sessionStudentsToCSV);
+    }
+
+    public static Session fromCSV(String csv) {
+        String[] parts = csv.split(";");
+        Session s = new Session(Integer.parseInt(parts[0]),DifficultyLevel.valueOf(parts[1]),Integer.parseInt(parts[2]),Integer.parseInt(parts[3]),Double.parseDouble(parts[4]));
+        List<Integer> sessionStudentsList =  parts[5].isEmpty() ? List.of() : Arrays.stream(parts[5].split(";")).map(Integer::parseInt).collect(Collectors.toList());
+        s.setSessionStudents(sessionStudentsList);
+        return s;
+    }
 
     /**
      * Sets the id of the session.

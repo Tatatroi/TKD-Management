@@ -1,8 +1,10 @@
 package org.example.Model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Represents a student in the TKD management system
@@ -169,4 +171,39 @@ public class Student extends Person{
         return ANSI_GREEN + "  Id: " + ANSI_RESET + getId() + ANSI_CYAN +"  Name: "  + name + " " + lastName + ANSI_RESET + "\n";
     }
 
+    @Override
+    public String[] getHeader() {
+        return new String[]{"id", "name","lastName", "email", "address", "dateOfBirth", "number", "beltLevel","session","parent","contestList","trainingCampList","sessionDateList"};
+    }
+
+    @Override
+    public String toCSV() {
+        String contestToCSV = this.getContestList().stream().map(String::valueOf).collect(Collectors.joining(";"));
+        String trainingCampToCSV = this.getTrainingCampList().stream().map(String::valueOf).collect(Collectors.joining(";"));
+        String sessionDateToCSV = this.getSessionDateList().stream()
+                .map(SessionDate::toString)
+                .collect(Collectors.joining(";"));
+        return String.join(",",String.valueOf(this.getId()),this.getName(),this.getLastName(),this.getEmail(),this.getAddress(),
+                String.valueOf(this.getDateOfBirth()),this.getNumber(),this.getBeltLevel(),String.valueOf(this.getSession()),String.valueOf(this.getParent()),
+                contestToCSV,trainingCampToCSV,sessionDateToCSV
+        );
+    }
+
+    public static Student fromCSV(String csv) {
+        String[] values = csv.split(",");
+        Student student = new Student(Integer.parseInt(values[0]),values[1],values[2],values[3],values[4],Integer.parseInt(values[5]),
+                values[6],values[7], Integer.parseInt(values[8]));
+
+        student.setParent(Integer.parseInt(values[9]));
+
+        List<Integer> contestList =  values[10].isEmpty() ? List.of() : Arrays.stream(values[10].split(";")).map(Integer::parseInt).collect(Collectors.toList());
+        List<Integer> trainingCampList =  values[11].isEmpty() ? List.of() : Arrays.stream(values[10].split(";")).map(Integer::parseInt).collect(Collectors.toList());
+        List<SessionDate> sessionDateList = values[12].isEmpty() ? List.of() : Arrays.stream(values[12].split(";")).map(SessionDate::fromString).collect(Collectors.toList());
+
+        student.setContestList(contestList);
+        student.setTrainingCampList(trainingCampList);
+        student.setSessionDateList(sessionDateList);
+
+        return student;
+    }
 }
