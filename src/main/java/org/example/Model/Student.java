@@ -190,7 +190,7 @@ public class Student extends Person{
     }
 
     public static Student fromCSV(String csv) {
-        String[] values = csv.split(",");
+        String[] values = csv.split(",",-1);
         Student student = new Student(Integer.parseInt(values[0]),values[1],values[2],values[3],values[4],Integer.parseInt(values[5]),
                 values[6],values[7], Integer.parseInt(values[8]));
 

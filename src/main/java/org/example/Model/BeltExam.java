@@ -110,7 +110,7 @@ public class BeltExam extends Event{
     }
 
     public static BeltExam fromCSV(String csv) {
-        String[] values = csv.split(",");
+        String[] values = csv.split(",",-1);
         BeltExam beltExam = new BeltExam(Integer.parseInt(values[0]),values[1],values[2],Double.parseDouble(values[3]),values[4],values[5],values[6],values[7]);
         Map<Integer, Integer> listOfResults = new HashMap<>();
         if (!values[8].isEmpty()) {

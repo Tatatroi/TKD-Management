@@ -107,7 +107,7 @@ public class InFileRepo<T extends HasID> implements IRepo<T> {
         if(objects.isEmpty()) return;
 
         try (FileWriter writer = new FileWriter(filePath)) {
-            writer.write(String.join(",", objects.get(1).getHeader()) + "\n");
+            writer.write(String.join(",", objects.entrySet().iterator().next().getValue().getHeader()) + "\n");
 
             for(Map.Entry<Integer, T> entry : objects.entrySet()){
                 writer.write(entry.getValue().toCSV() + "\n");

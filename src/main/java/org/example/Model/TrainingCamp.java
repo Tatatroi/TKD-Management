@@ -108,7 +108,7 @@ public class TrainingCamp extends Event{
     }
 
     public static TrainingCamp fromCSV(String csv) {
-        String[] parts = csv.split(",");
+        String[] parts = csv.split(",",-1);
         TrainingCamp trainingCamp = new TrainingCamp(Integer.parseInt(parts[0]),parts[1],parts[2],Double.parseDouble(parts[3]),parts[4],parts[5],parts[6],Integer.parseInt(parts[7]));
         List<Integer> students = parts[8].isEmpty() ? List.of() : Arrays.stream(parts[8].split(";")).map(Integer::parseInt).collect(Collectors.toList());
         trainingCamp.setStudents(students);

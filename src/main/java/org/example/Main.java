@@ -23,33 +23,33 @@ public class Main {
      * @param studentRepo   The student repo, where the parent is added.
      * @param sessionRepo   The session repo, where the parent is added.
      */
-//    public static void parentChild(Session session, Student student, Parent parent, DatabaseRepo<Parent> parentRepo, DatabaseRepo<Student> studentRepo, DatabaseRepo<Session> sessionRepo) throws SQLException {
-//        //System.out.println(student);
-//        session.getSessionStudents().add(student.getId());
-//        try {
-//            sessionRepo.update(session);
-//        } catch (DatabaseException e) {
-//            throw new RuntimeException(e);
-//        }
-//        parent.getChildren().add(student.getId());
-//        student.setParent(parent.getId());
-//
-//        try {
-//            if(parentRepo.get(parent.getId()) == null) {
-//                parentRepo.add(parent);
-//            }
-//        } catch (DatabaseException e) {
-//            throw new RuntimeException(e);
-//        }
-//        try {
-//            studentRepo.add(student);
-//            studentRepo.update(student);
-//            parentRepo.update(parent);
-//        }
-//        catch (DatabaseException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+    public static void parentChild(Session session, Student student, Parent parent, IRepo<Parent> parentRepo, IRepo<Student> studentRepo, IRepo<Session> sessionRepo) throws SQLException {
+        //System.out.println(student);
+        session.getSessionStudents().add(student.getId());
+        try {
+            sessionRepo.update(session);
+        } catch (DatabaseException e) {
+            throw new RuntimeException(e);
+        }
+        parent.getChildren().add(student.getId());
+        student.setParent(parent.getId());
+
+        try {
+            if(parentRepo.get(parent.getId()) == null) {
+                parentRepo.add(parent);
+            }
+        } catch (DatabaseException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            studentRepo.add(student);
+            studentRepo.update(student);
+            parentRepo.update(parent);
+        }
+        catch (DatabaseException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
     /**
@@ -59,33 +59,39 @@ public class Main {
      */
     public static void main(String[] args) throws SQLException, DatabaseException {
 
-        DatabaseRepo<Student> studentRepo = new DatabaseStudent("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
-        DatabaseRepo<Parent> parentRepo = new DatabaseParent("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
-        DatabaseRepo<Session> sessionRepo = new DatabaseSession("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
-        DatabaseRepo<Contest> contestRepo = new DatabaseContest("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
-        DatabaseRepo<Trainer> trainerRepo = new DatabaseTrainer("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
-        DatabaseRepo<BeltExam> beltExamRepo = new DatabaseBeltExam("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
-        DatabaseRepo<TrainingCamp> trainingCampRepo = new DatabaseTrainingCamp("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
+//        DatabaseRepo<Student> studentRepo = new DatabaseStudent("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
+//        DatabaseRepo<Parent> parentRepo = new DatabaseParent("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
+//        DatabaseRepo<Session> sessionRepo = new DatabaseSession("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
+//        DatabaseRepo<Contest> contestRepo = new DatabaseContest("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
+//        DatabaseRepo<Trainer> trainerRepo = new DatabaseTrainer("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
+//        DatabaseRepo<BeltExam> beltExamRepo = new DatabaseBeltExam("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
+//        DatabaseRepo<TrainingCamp> trainingCampRepo = new DatabaseTrainingCamp("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
+        InFileRepo<Student> studentRepo = new InFileRepo<>("C:\\Users\\raulm\\Documents\\Sem 3\\TKD-Management\\src\\main\\java\\org\\example\\Data\\students.csv",Student::fromCSV);
+        InFileRepo<Parent> parentRepo = new InFileRepo<>("C:\\Users\\raulm\\Documents\\Sem 3\\TKD-Management\\src\\main\\java\\org\\example\\Data\\parents.csv",Parent::fromCSV);
+        InFileRepo<Session> sessionRepo = new InFileRepo<>("C:\\Users\\raulm\\Documents\\Sem 3\\TKD-Management\\src\\main\\java\\org\\example\\Data\\sessions.csv",Session::fromCSV);
+        InFileRepo<Trainer> trainerRepo = new InFileRepo<>("C:\\Users\\raulm\\Documents\\Sem 3\\TKD-Management\\src\\main\\java\\org\\example\\Data\\trainers.csv",Trainer::fromCSV);
+        InFileRepo<Contest> contestRepo = new InFileRepo<>("C:\\Users\\raulm\\Documents\\Sem 3\\TKD-Management\\src\\main\\java\\org\\example\\Data\\contests.csv",Contest::fromCSV);
+        InFileRepo<TrainingCamp> trainingCampRepo = new InFileRepo<>("C:\\Users\\raulm\\Documents\\Sem 3\\TKD-Management\\src\\main\\java\\org\\example\\Data\\trainingCamps.csv",TrainingCamp::fromCSV);
+        InFileRepo<BeltExam> beltExamRepo = new InFileRepo<>("C:\\Users\\raulm\\Documents\\Sem 3\\TKD-Management\\src\\main\\java\\org\\example\\Data\\beltExams.csv",BeltExam::fromCSV);
 
-
-//        Trainer t1 = new Trainer(1,"Mitroi","Stefan","srefanmitroi@gmail.com","Calea Floresti nr 58B",2004,"0761969675","black");
-//        trainerRepo.add(t1);
-////
-//        Trainer t2 = new Trainer(2, "Popescu", "Andrei", "andrei.popescu@gmail.com", "Strada Mihai Viteazu nr 15", 1990, "0755123456", "red");
-//        trainerRepo.add(t2);
-////
-//        Trainer t3 = new Trainer(3, "Ionescu", "Maria", "maria.ionescu@yahoo.com", "Bulevardul Eroilor nr 45", 1985, "0725987654", "blue");
-//        trainerRepo.add(t3);
-////
-//        Trainer t4 = new Trainer(4, "Vasilescu", "Radu", "radu.vasilescu@outlook.com", "Strada Zorilor nr 23", 1992, "0744123456", "green");
-//        trainerRepo.add(t4);
-////        InMemoryRepo<Trainer> trainerInMemoryRepo = new InMemoryRepo<>("trainers.json", new TypeReference<List<Trainer>>() {});
-//        //trainerInMemoryRepo.add(t4);
-////       trainerInMemoryRepo.remove(4);
-////        List<Trainer> allTrainers = trainerRepo.getAll();
-////        trainerInMemoryRepo.get(4);
-////        System.out.println("All trainers: " + allTrainers);
+        Trainer t1 = new Trainer(1,"Mitroi","Stefan","srefanmitroi@gmail.com","Calea Floresti nr 58B",2004,"0761969675","black");
+        trainerRepo.add(t1);
 //
+        Trainer t2 = new Trainer(2, "Popescu", "Andrei", "andrei.popescu@gmail.com", "Strada Mihai Viteazu nr 15", 1990, "0755123456", "red");
+        trainerRepo.add(t2);
+//
+        Trainer t3 = new Trainer(3, "Ionescu", "Maria", "maria.ionescu@yahoo.com", "Bulevardul Eroilor nr 45", 1985, "0725987654", "blue");
+        trainerRepo.add(t3);
+//
+        Trainer t4 = new Trainer(4, "Vasilescu", "Radu", "radu.vasilescu@outlook.com", "Strada Zorilor nr 23", 1992, "0744123456", "green");
+        trainerRepo.add(t4);
+//        InMemoryRepo<Trainer> trainerInMemoryRepo = new InMemoryRepo<>("trainers.json", new TypeReference<List<Trainer>>() {});
+        //trainerInMemoryRepo.add(t4);
+//       trainerInMemoryRepo.remove(4);
+//        List<Trainer> allTrainers = trainerRepo.getAll();
+//        trainerInMemoryRepo.get(4);
+//        System.out.println("All trainers: " + allTrainers);
+
 //        Session session1 = new Session(1,DifficultyLevel.beginner,23,t1.getId(),50);
 //        sessionRepo.add(session1);
 //
@@ -156,13 +162,13 @@ public class Main {
 //        parentChild(session1, student9, parent4, parentRepo, studentRepo, sessionRepo);
 //        parentChild(session2, student10, parent5, parentRepo, studentRepo, sessionRepo);
 //        parentChild(session3, student11, parent6, parentRepo, studentRepo, sessionRepo);
-////
-////
-////// Actualizare sesiunii pentru studenții fără părinți
-////        sessionRepo.update(session1);
-////        sessionRepo.update(session2);
-////        sessionRepo.update(session3);
 //
+//
+//// Actualizare sesiunii pentru studenții fără părinți
+//        sessionRepo.update(session1);
+//        sessionRepo.update(session2);
+//        sessionRepo.update(session3);
+
 //        Contest contest1 = new Contest(101, "2024-11-28", "2024-11-30", 300, "Romania", "Cluj-Napoca", "Campionatul International", "Sala Sporturilor");
 //        contestRepo.add(contest1);
 //
