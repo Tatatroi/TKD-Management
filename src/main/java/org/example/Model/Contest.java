@@ -113,7 +113,7 @@ public class Contest extends Event{
     public static Contest fromCSV(String csv) {
         String[] values = csv.split(",",-1);
         Contest contest = new Contest(Integer.valueOf(values[0]),values[1],values[2],Double.parseDouble(values[3]),values[4],values[5],values[6],values[7]);
-        List<Integer> students = values[8].isEmpty() ? List.of() : Arrays.stream(values[8].split(";")).map(Integer::parseInt).collect(Collectors.toList());
+        List<Integer> students = values[8].isEmpty() ? new ArrayList<>() : Arrays.stream(values[8].split(";")).map(Integer::parseInt).collect(Collectors.toList());
         contest.setStudents(students);
         return contest;
     }

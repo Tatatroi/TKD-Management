@@ -33,10 +33,10 @@ public class TKDUI {
     IRepo<TrainingCamp> trainingCampRepo;
     IRepo<BeltExam> beltExamRepo;
 
-    /**
-     * Constructs a new UI with tha given TKD controller
-     * @param tkdController the controller that contains the business logic for the TKD management system
-     */
+//    /**
+//     * Constructs a new UI with tha given TKD controller
+//     * @param tkdController the controller that contains the business logic for the TKD management system
+//     */
 //    public TKDUI(TKDController tkdController) {
 //        this.tkdController = tkdController;
 //        this.scanner = new Scanner(System.in);
@@ -123,13 +123,13 @@ public class TKDUI {
     //////// DATABASE REPOSITORY /////////
 
     private TKD_Service databaseRepo() throws DatabaseException {
-        DatabaseRepo<Student> studentRepo = new DatabaseStudent("jdbc:sqlserver://localhost:1433;database=TKD Management;integratedSecurity=true;trustServerCertificate=true;");
-        DatabaseRepo<Parent> parentRepo = new DatabaseParent("jdbc:sqlserver://localhost:1433;database=TKD Management;integratedSecurity=true;trustServerCertificate=true;");
-        DatabaseRepo<Session> sessionRepo = new DatabaseSession("jdbc:sqlserver://localhost:1433;database=TKD Management;integratedSecurity=true;trustServerCertificate=true;");
-        DatabaseRepo<Contest> contestRepo = new DatabaseContest("jdbc:sqlserver://localhost:1433;database=TKD Management;integratedSecurity=true;trustServerCertificate=true;");
-        DatabaseRepo<Trainer> trainerRepo = new DatabaseTrainer("jdbc:sqlserver://localhost:1433;database=TKD Management;integratedSecurity=true;trustServerCertificate=true;");
-        DatabaseRepo<BeltExam> beltExamRepo = new DatabaseBeltExam("jdbc:sqlserver://localhost:1433;database=TKD Management;integratedSecurity=true;trustServerCertificate=true;");
-        DatabaseRepo<TrainingCamp> trainingCampRepo = new DatabaseTrainingCamp("jdbc:sqlserver://localhost:1433;database=TKD Management;integratedSecurity=true;trustServerCertificate=true;");
+        DatabaseRepo<Student> studentRepo = new DatabaseStudent("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
+        DatabaseRepo<Parent> parentRepo = new DatabaseParent("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
+        DatabaseRepo<Session> sessionRepo = new DatabaseSession("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
+        DatabaseRepo<Contest> contestRepo = new DatabaseContest("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
+        DatabaseRepo<Trainer> trainerRepo = new DatabaseTrainer("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
+        DatabaseRepo<BeltExam> beltExamRepo = new DatabaseBeltExam("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
+        DatabaseRepo<TrainingCamp> trainingCampRepo = new DatabaseTrainingCamp("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
 
 
         try {
@@ -158,13 +158,13 @@ public class TKDUI {
 
     //////// IN FILE REPOSITORY /////////
     private TKD_Service inFileRepo(){
-        InFileRepo<Student> studentRepo = new InFileRepo<>("D:\\Anul 2\\TKD Management\\src\\main\\java\\org\\example\\Data\\students.csv",Student::fromCSV);
-        InFileRepo<Parent> parentRepo = new InFileRepo<>("D:\\Anul 2\\TKD Management\\src\\main\\java\\org\\example\\Data\\parents.csv",Parent::fromCSV);
-        InFileRepo<Session> sessionRepo = new InFileRepo<>("D:\\Anul 2\\TKD Management\\src\\main\\java\\org\\example\\Data\\sessions.csv",Session::fromCSV);
-        InFileRepo<Trainer> trainerRepo = new InFileRepo<>("D:\\Anul 2\\TKD Management\\src\\main\\java\\org\\example\\Data\\trainers.csv",Trainer::fromCSV);
-        InFileRepo<Contest> contestRepo = new InFileRepo<>("D:\\Anul 2\\TKD Management\\src\\main\\java\\org\\example\\Data\\contests.csv",Contest::fromCSV);
-        InFileRepo<TrainingCamp> trainingCampRepo = new InFileRepo<>("D:\\Anul 2\\TKD Management\\src\\main\\java\\org\\example\\Data\\trainingCamps.csv",TrainingCamp::fromCSV);
-        InFileRepo<BeltExam> beltExamRepo = new InFileRepo<>("D:\\Anul 2\\TKD Management\\src\\main\\java\\org\\example\\Data\\beltExams.csv",BeltExam::fromCSV);
+        InFileRepo<Student> studentRepo = new InFileRepo<>("src/main/java/org/example/Data/students.csv",Student::fromCSV);
+        InFileRepo<Parent> parentRepo = new InFileRepo<>("src/main/java/org/example/Data/parents.csv",Parent::fromCSV);
+        InFileRepo<Session> sessionRepo = new InFileRepo<>("src/main/java/org/example/Data/sessions.csv",Session::fromCSV);
+        InFileRepo<Trainer> trainerRepo = new InFileRepo<>("src/main/java/org/example/Data/trainers.csv",Trainer::fromCSV);
+        InFileRepo<Contest> contestRepo = new InFileRepo<>("src/main/java/org/example/Data/contests.csv",Contest::fromCSV);
+        InFileRepo<TrainingCamp> trainingCampRepo = new InFileRepo<>("src/main/java/org/example/Data/trainingCamps.csv",TrainingCamp::fromCSV);
+        InFileRepo<BeltExam> beltExamRepo = new InFileRepo<>("src/main/java/org/example/Data/beltExams.csv",BeltExam::fromCSV);
 
         return new TKD_Service(studentRepo,trainerRepo,parentRepo,sessionRepo,contestRepo,trainingCampRepo,beltExamRepo);
     }
@@ -231,6 +231,7 @@ public class TKDUI {
                     case "1" -> startPeopleMenu();
                     case "2" -> startEventsMenu();
                     case "3" -> generateBill();
+                    case "4" -> continueLoop=false;
                     default -> System.out.println("Invalid option. Please try again.");
                 }
             } catch (Exception e) {
@@ -1743,7 +1744,7 @@ public class TKDUI {
         if(beltLevel.isEmpty()){
             throw new ValidationException(" the belt level for filtering cannot be empty");
         }
-        if(beltLevel.matches("^[a-zA-Z]+$")){
+        if(!beltLevel.matches("^[a-zA-Z]+$")){
             throw new ValidationException("The belt level isn't valid");
         }
 

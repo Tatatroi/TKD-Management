@@ -16,13 +16,21 @@ import java.util.Map;
  * A controller class that handles the business logic for the TKD-Management system.
  */
 public class TKDController {
-    private final TKD_Service tkdService;
+    private TKD_Service tkdService;
 
-    /**
-     * Constructs a new UniversityController with the given UniversityService.
-     *
-     * @param tkdService The service that provides the business logic for the TKD-Management system.
-     */
+    public TKD_Service getTkdService() {
+        return tkdService;
+    }
+
+    public void setTkdService(TKD_Service tkdService) {
+        this.tkdService = tkdService;
+    }
+
+//    /**
+//     * Constructs a new UniversityController with the given UniversityService.
+//     *
+//     * @param tkdService The service that provides the business logic for the TKD-Management system.
+//     */
     public TKDController(TKD_Service tkdService) {
         this.tkdService = tkdService;
     }

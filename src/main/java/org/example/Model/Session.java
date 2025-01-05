@@ -66,7 +66,7 @@ public class Session implements HasID{
     public static Session fromCSV(String csv) {
         String[] parts = csv.split(",",-1);
         Session s = new Session(Integer.parseInt(parts[0]),DifficultyLevel.valueOf(parts[1]),Integer.parseInt(parts[2]),Integer.parseInt(parts[3]),Double.parseDouble(parts[4]));
-        List<Integer> sessionStudentsList =  parts[5].isEmpty() ? List.of() : Arrays.stream(parts[5].split(";")).map(Integer::parseInt).collect(Collectors.toList());
+        List<Integer> sessionStudentsList =  parts[5].isEmpty() ? new ArrayList<>() : Arrays.stream(parts[5].split(";")).map(Integer::parseInt).collect(Collectors.toList());
         s.setSessionStudents(sessionStudentsList);
         return s;
     }

@@ -86,7 +86,7 @@ public class Parent extends Person{
     public static Parent fromCSV(String csv) {
         String[] parts = csv.split(",");
         Parent p = new Parent(Integer.parseInt(parts[0]),parts[1],parts[2],parts[3],parts[4], Integer.parseInt(parts[5]),parts[6]);
-        List<Integer> childrenList =  parts[7].isEmpty() ? List.of() : Arrays.stream(parts[7].split(";")).map(Integer::parseInt).collect(Collectors.toList());
+        List<Integer> childrenList =  parts[7].isEmpty() ? new ArrayList<>() : Arrays.stream(parts[7].split(";")).map(Integer::parseInt).collect(Collectors.toList());
         p.setChildren(childrenList);
         return p;
     }

@@ -205,7 +205,7 @@ public class Main {
 //        System.out.println(tkdService.filterStudentsByBelt("white"));
 //        System.out.println(parentRepo.getAll());
 //        System.out.println(studentRepo.get(1));
-        newUi.startRepo();
+//        newUi.startRepo();
 
 
     }

@@ -175,18 +175,21 @@ public class TKD_Service {
      * @param beltExamID  The unique identifier of a belt exam.
      * throws EntityNoFound or DataBaseException
      */
-    public void changeBeltlevel(Integer beltExamID) throws EntityNotFoundException, DatabaseException {
+    public void changeBeltlevel(Integer beltExamID,Integer studentID) throws EntityNotFoundException, DatabaseException {
         try {
             BeltExam beltExam = beltExams.get(beltExamID);
             if(beltExam == null){
                 throw new EntityNotFoundException("No belt exam with this ID found");
             }
-            for(int stId: beltExams.get(beltExamID).getListOfResults().keySet()){
-                if(beltExams.get(beltExamID).getListOfResults().get(stId)==1){
-                    students.get(stId).setBeltLevel(beltExams.get(beltExamID).getBeltColor());
-                    students.update(students.get(stId));
-                }
-            }
+//            for(int stId: beltExams.get(beltExamID).getListOfResults().keySet()){
+//                if(beltExams.get(beltExamID).getListOfResults().get(stId)==1){
+//                    students.get(stId).setBeltLevel(beltExams.get(beltExamID).getBeltColor());
+//                    students.update(students.get(stId));
+//                }
+//            }
+            Student st = students.get(studentID);
+            st.setBeltLevel(beltExam.getBeltColor());
+            students.update(st);
         } catch (DatabaseException e) {
             throw e;
         }
@@ -347,51 +350,36 @@ public class TKD_Service {
      * @  If no student or belt exam was found.
      */
     public void addResultBeltExam(int idStudent, int idBeltExam, boolean promoted) throws EntityNotFoundException, DatabaseException {
-        try {
-    if(students.getAll().stream().noneMatch(st -> st.getId() == idStudent)){
-            throw new EntityNotFoundException("Invalid student id");
-        }
-
-    } catch (DatabaseException e) {
-        throw e;
-    }
-    try {
-        if(beltExams.getAll().stream().noneMatch(bt -> bt.getId() == idBeltExam)){
-            throw new EntityNotFoundException("Invalid belt exam ID");
-        }
-
-    } catch (DatabaseException e) {
-        throw e;
-    }
         Student s = null;
-    try {
-        s = students.get(idStudent);
-        if(s == null){
-            throw new EntityNotFoundException("No student with this ID found");
-        }
-    } catch (DatabaseException e) {
-        throw e;
-    }
-    BeltExam belt = null;
-    try {
-        belt = beltExams.get(idBeltExam);
-        if(belt == null){
-            throw new EntityNotFoundException("No belt exam with this ID found");
-        }
-    } catch (DatabaseException e) {
-        throw e;
-    }        if(promoted){
-                belt.getListOfResults().put(s.getId(),1); // promoted
-                changeBeltlevel(idBeltExam);
+        try {
+            s = students.get(idStudent);
+            if(s == null){
+                throw new EntityNotFoundException("No student with this ID found");
             }
-            else{
-                belt.getListOfResults().put(s.getId(),0); // failed
+        } catch (DatabaseException e) {
+            throw e;
+        }
+        BeltExam belt = null;
+        try {
+            belt = beltExams.get(idBeltExam);
+            if(belt == null){
+                throw new EntityNotFoundException("No belt exam with this ID found");
             }
-            try {
-        beltExams.update(belt);
-    } catch (DatabaseException e) {
-        throw e;
-    }
+        } catch (DatabaseException e) {
+            throw e;
+        }
+        if(promoted){
+            belt.getListOfResults().put(s.getId(),1); // promoted
+            changeBeltlevel(idBeltExam,idStudent);
+        }
+        else{
+            belt.getListOfResults().put(s.getId(),0); // failed
+        }
+        try {
+            beltExams.update(belt);
+        } catch (DatabaseException e) {
+            throw e;
+        }
     }
 
     /**
@@ -404,21 +392,7 @@ public class TKD_Service {
      * @  If no student or session was found.
      */
     public void addAttendance(int studentId,int sessionId,boolean attendance,String weekday,String date) throws EntityNotFoundException, DatabaseException {
-        try {
-            if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
-                throw new EntityNotFoundException("Invalid student ID");
-            }
-
-        } catch (DatabaseException e) {
-            throw e;
-        }        try {
-            if(sessions.getAll().stream().noneMatch(ss -> ss.getId() == sessionId)){
-                    throw new EntityNotFoundException("Invalid session ID");
-                }
-
-        } catch (DatabaseException e) {
-            throw e;
-        }        Student s = null;
+        Student s = null;
         try {
             s = students.get(studentId);
             if(s == null){
@@ -443,23 +417,7 @@ public class TKD_Service {
      * @  If no student or contest was found.
      */
     public void addStudentToContest(int studentId,int contestId) throws EntityNotFoundException, DatabaseException {
-        try {
-    if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
-            throw new EntityNotFoundException("Invalid student ID");
-        }
-
-    } catch (DatabaseException e) {
-        throw e;
-    }
-
-    try {
-        if(contests.getAll().stream().noneMatch(ct -> ct.getId() == contestId)){
-            throw new EntityNotFoundException("Invalid contest ID");
-        }
-
-        } catch (DatabaseException e) {
-            throw e;
-        }        Student st = null;
+        Student st = null;
         try {
             st = students.get(studentId);
             if(st == null){
@@ -467,7 +425,8 @@ public class TKD_Service {
             }
         } catch (DatabaseException e) {
             throw e;
-        }        Contest ct = null;
+        }
+        Contest ct = null;
         try {
             ct = contests.get(contestId);
             if(ct == null){
@@ -497,55 +456,41 @@ public class TKD_Service {
      * @      If no student or training camp was found.
      */
     public void addStudentToTraining(int studentId,int trainingCampId) throws EntityNotFoundException, DatabaseException, BusinessLogicException {
+        Student st = null;
         try {
-    if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
-            throw new EntityNotFoundException("Invalid student ID");
-        }
-
-    } catch (DatabaseException e) {
-        throw e;
-    }        try {
-        if(trainingCamps.getAll().stream().noneMatch(tc -> tc.getId() == trainingCampId)){
-                throw new EntityNotFoundException("Invalid training camp ID");
+            st = students.get(studentId);
+            if(st == null){
+                throw new EntityNotFoundException("No student with this ID found");
             }
+        } catch (DatabaseException e) {
+            throw e;
+        }
+        TrainingCamp tc = null;
+        try {
+            tc = trainingCamps.get(trainingCampId);
+            if(tc == null){
+                throw new EntityNotFoundException("No training camp with this ID found");
+            }
+        } catch (DatabaseException e) {
+            throw e;
+        }
+        if(tc.getStudents().size() + 1 == tc.getNumberOfParticipants()){
+            throw new BusinessLogicException("The training camp is already full");
+        }
+        tc.getStudents().add(st.getId());
+        st.getTrainingCampList().add(tc.getId());
 
-    } catch (DatabaseException e) {
-        throw e;
-    }        Student st = null;
-    try {
-        st = students.get(studentId);
-        if(st == null){
-            throw new EntityNotFoundException("No student with this ID found");
+        try {
+            trainingCamps.update(tc);
+        } catch (DatabaseException e) {
+            throw e;
         }
-    } catch (DatabaseException e) {
-        throw e;
-    }
-    TrainingCamp tc = null;
-    try {
-        tc = trainingCamps.get(trainingCampId);
-        if(tc == null){
-            throw new EntityNotFoundException("No training camp with this ID found");
+        try {
+            students.update(st);
+        } catch (DatabaseException e) {
+            throw e;
         }
-    } catch (DatabaseException e) {
-        throw e;
     }
-    if(tc.getStudents().size() + 1 == tc.getNumberOfParticipants()){
-        throw new BusinessLogicException("The training camp is already full");
-    }
-    tc.getStudents().add(st.getId());
-    st.getTrainingCampList().add(tc.getId());
-
-    try {
-        trainingCamps.update(tc);
-    } catch (DatabaseException e) {
-        throw e;
-    }
-    try {
-        students.update(st);
-    } catch (DatabaseException e) {
-        throw e;
-    }
-        }
 
     /**
      * Adds a student to a parent, by searching the for the parent by email to see if it needs to be added to the repo.
@@ -683,14 +628,6 @@ public class TKD_Service {
      */
 
     public String generateInvoice(Integer parentID,String month) throws DatabaseException, EntityNotFoundException, BusinessLogicException {
-        try {
-            if(parents.getAll().stream().noneMatch(pt -> pt.getId() == parentID)){
-                throw new EntityNotFoundException("Invalid parent ID");
-        }
-
-        } catch (DatabaseException e) {
-            throw e;
-        }
         Parent parent = null;
         try {
             parent = parents.get(parentID);

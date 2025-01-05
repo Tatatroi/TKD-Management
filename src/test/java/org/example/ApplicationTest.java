@@ -33,8 +33,6 @@ public class ApplicationTest {
     BeltExam beltExam1 = new BeltExam(1, "2025-05-05", "2025-05-06", 150, "Romania", "Cluj-Napoca", "Sala Sporturilor", "yellow");
 
     TKD_Service tkdService = new TKD_Service(studentsRepo, trainersRepo, parentsRepo,sessionsRepo,contestsRepo,trainingCampsRepo,beltExamsRepo);
-    TKDController tkdController = new TKDController(tkdService);
-    //TKDUI newUi = new TKDUI(tkdController);
 
     @Test
     void TestCRUDStudent(){

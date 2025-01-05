@@ -1,5 +1,5 @@
 id,name,lastName,email,address,dateOfBirth,number,beltLevel,session,parent,contestList,trainingCampList,sessionDateList
-1,Muresan,Alex,alex@gmail.com,Calea Baciului nr 5,2010,0754635543,white,1,1,,,monday:2024-11-11:1:true;wednesday:2024-11-13:1:true;friday:2024-11-15:1:true
+1,Muresan,Alex,alex@gmail.com,Calea Baciului nr 5,2010,0754635543,yellow,1,1,101,,monday:2024-11-11:1:true;wednesday:2024-11-13:1:true;friday:2024-11-15:1:true
 2,Pop,Ana,ana.pop@gmail.com,Strada Republicii nr 12,2012,0751234567,yellow,2,2,,,friday:2024-11-15:2:true;monday:2024-11-18:2:true
 3,Pop,Mihai,mihai.pop@gmail.com,Strada Republicii nr 12,2014,0757654321,yellow,2,2,,,friday:2024-11-15:2:true
 4,Dobre,Florin,florin.dobre@yahoo.com,Strada Zorilor nr 14,2011,0744112233,orange,3,3,,,friday:2024-10-15:2:true;monday:2024-11-18:2:true

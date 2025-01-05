@@ -196,9 +196,9 @@ public class Student extends Person{
 
         student.setParent(Integer.parseInt(values[9]));
 
-        List<Integer> contestList =  values[10].isEmpty() ? List.of() : Arrays.stream(values[10].split(";")).map(Integer::parseInt).collect(Collectors.toList());
-        List<Integer> trainingCampList =  values[11].isEmpty() ? List.of() : Arrays.stream(values[10].split(";")).map(Integer::parseInt).collect(Collectors.toList());
-        List<SessionDate> sessionDateList = values[12].isEmpty() ? List.of() : Arrays.stream(values[12].split(";")).map(SessionDate::fromString).collect(Collectors.toList());
+        List<Integer> contestList =  values[10].isEmpty() ? new ArrayList<>() : Arrays.stream(values[10].split(";")).map(Integer::parseInt).collect(Collectors.toList());
+        List<Integer> trainingCampList =  values[11].isEmpty() ? new ArrayList<>() : Arrays.stream(values[10].split(";")).map(Integer::parseInt).collect(Collectors.toList());
+        List<SessionDate> sessionDateList = values[12].isEmpty() ? new ArrayList<>() : Arrays.stream(values[12].split(";")).map(SessionDate::fromString).collect(Collectors.toList());
 
         student.setContestList(contestList);
         student.setTrainingCampList(trainingCampList);
