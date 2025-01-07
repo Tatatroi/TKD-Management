@@ -19,11 +19,10 @@ public class Parent extends Person{
      * @param lastName      The last name of the person.
      * @param email         The email of the person.
      * @param address       The address of the person.
-     * @param dateOfBirth   The date of birth of the person.
      * @param number        The telephone number of the person.
      */
-    public Parent(Integer id,String name, String lastName, String email, String address, int dateOfBirth,String number) {
-        super(id,name, lastName, email, address, dateOfBirth, number);
+    public Parent(Integer id,String name, String lastName, String email, String address,String number) {
+        super(id,name, lastName, email, address, number);
     }
     public Parent(){}
     /**
@@ -68,25 +67,24 @@ public class Parent extends Person{
                 ANSI_YELLOW + "  Name: " + ANSI_RESET + name + " " + lastName + "\n" +
                 ANSI_GREEN + "  Email: " + ANSI_RESET + email + "\n" +
                 ANSI_GREEN + "  Phone: " + ANSI_RESET + number + "\n" +
-                ANSI_GREEN + "  Date of Birth: " + ANSI_RESET + dateOfBirth + "\n" +
                 ANSI_GREEN + "  Address: " + ANSI_RESET + address + "\n";
     }
 
     @Override
     public String[] getHeader() {
-        return new String[]{"id", "name", "lastName", "email", "address", "dateOfBirth", "number","children"};
+        return new String[]{"id", "name", "lastName", "email", "address", "number","children"};
     }
 
     @Override
     public String toCSV() {
         String childrenToCSV = this.getChildren().stream().map(String::valueOf).collect(Collectors.joining(";"));
-        return String.join(",",String.valueOf(this.getId()),this.getName(),this.getLastName(),this.getEmail(),this.getAddress(),String.valueOf(this.getDateOfBirth()),this.getNumber(),childrenToCSV);
+        return String.join(",",String.valueOf(this.getId()),this.getName(),this.getLastName(),this.getEmail(),this.getAddress(),this.getNumber(),childrenToCSV);
     }
 
     public static Parent fromCSV(String csv) {
-        String[] parts = csv.split(",");
-        Parent p = new Parent(Integer.parseInt(parts[0]),parts[1],parts[2],parts[3],parts[4], Integer.parseInt(parts[5]),parts[6]);
-        List<Integer> childrenList =  parts[7].isEmpty() ? new ArrayList<>() : Arrays.stream(parts[7].split(";")).map(Integer::parseInt).collect(Collectors.toList());
+        String[] parts = csv.split(",",-1);
+        Parent p = new Parent(Integer.parseInt(parts[0]),parts[1],parts[2],parts[3],parts[4],parts[5]);
+        List<Integer> childrenList =  parts[6].isEmpty() ? new ArrayList<>() : Arrays.stream(parts[6].split(";")).map(Integer::parseInt).collect(Collectors.toList());
         p.setChildren(childrenList);
         return p;
     }

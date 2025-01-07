@@ -32,16 +32,6 @@ public class TKDUI {
     IRepo<Contest> contestRepo;
     IRepo<TrainingCamp> trainingCampRepo;
     IRepo<BeltExam> beltExamRepo;
-
-//    /**
-//     * Constructs a new UI with tha given TKD controller
-//     * @param tkdController the controller that contains the business logic for the TKD management system
-//     */
-//    public TKDUI(TKDController tkdController) {
-//        this.tkdController = tkdController;
-//        this.scanner = new Scanner(System.in);
-//    }
-
     /**
      * Constructor for UI, creates just a new Scanner
      */
@@ -93,7 +83,7 @@ public class TKDUI {
     /**
      * makes a repo for Database
      * @return a Service that contains Database Repos
-     * @throws DatabaseException when can t connect to Database
+     * @throws DatabaseException when it can't connect to Database
      */
     private TKD_Service databaseRepo() throws DatabaseException {
         DatabaseRepo<Student> studentRepo = new DatabaseStudent("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
@@ -108,7 +98,7 @@ public class TKDUI {
         try {
             DriverManager.getConnection("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println("Error: "+e.getMessage());
         }
 
         return new TKD_Service(studentRepo,trainerRepo,parentRepo,sessionRepo,contestRepo,trainingCampRepo,beltExamRepo);
@@ -149,52 +139,6 @@ public class TKDUI {
 
         return new TKD_Service(studentRepo,trainerRepo,parentRepo,sessionRepo,contestRepo,trainingCampRepo,beltExamRepo);
     }
-
-//    public void start() {
-//
-//        boolean continueLoop = true;
-//
-//        while (continueLoop) {
-//            printMenu();
-//            String option = scanner.nextLine();
-//
-//            try {
-//                switch (option) {
-//                    case "0" -> continueLoop = false;
-////                    case "1" -> startStudent();
-////                    case "2" -> startTrainer();
-////                    case "3" -> startSession();
-////                    case "4" -> startContest();
-////                    case "5" -> startTrainingCamp();
-////                    case "6" -> startBeltExam();
-////                    case "7" -> generateBill();
-////                    case "8" -> startParent();
-////                    case "9" -> combinationsOfEvents();
-//                    case "1" -> {
-//                        displayPeople();
-//                        boolean contLoop1 = true;
-//
-//                        while(contLoop1) {
-//                            String option1 = scanner.nextLine();
-//                            switch (option1) {
-//                                case "a" -> startStudent();
-//                                case "b" -> startParent();
-//                                case "c" -> startTrainer();
-//                                case "d" -> contLoop1 = false;
-//                                default -> System.out.println("Invalid option. Please try again.");
-//                            }
-//                        }
-//                    }
-//                    case "2" ->{
-//                        displayEvents();
-//                    }
-//                    default -> System.out.println("Invalid option. Please try again.");
-//                }
-//            } catch (Exception e) {
-//                System.out.println("An error occurred: " + e.getMessage());
-//            }
-//        }
-//    }
 
     /**
      * Starts the UI application displaying a menu and handling user input
@@ -279,20 +223,6 @@ public class TKDUI {
      */
     private void printMenu() {
         System.out.println("\n==== TKD Management Console ====");
-        /*
-//        System.out.println("1 - Students");
-//        System.out.println("2 - Trainers");
-//        System.out.println("3 - Sessions");
-//        System.out.println("4 - Contests");
-//        System.out.println("5 - Training camps");
-//        System.out.println("6 - Belt exams");
-//        System.out.println("7 - Bill");
-//        System.out.println("8 - Parents");
-//        System.out.println("9 - Event combinations");
-//        System.out.println("0 - Exit");
-
-         */
-
         System.out.println("1 - Manage People");
         System.out.println("2 - Manage Sessions and Events");
         System.out.println("3 - Billing");
@@ -383,10 +313,9 @@ public class TKDUI {
             try {
                 switch (option) {
                     case "0" -> continueLoop = false;
-                    case "1" -> addParent();
-                    case "2" -> deleteParent();
-                    case "3" -> viewParents();
-                    case "4" -> filterParentsByNumberOfChildren();
+                    case "1" -> deleteParent();
+                    case "2" -> viewParents();
+                    case "3" -> filterParentsByNumberOfChildren();
                     default -> System.out.println("Invalid option. Please try again.");
                 }
             } catch (Exception e) {
@@ -532,10 +461,9 @@ public class TKDUI {
      */
     private void printParent(){
         System.out.println("\n==== TKD Management Console ====");
-        System.out.println("1 - Add Parent");
-        System.out.println("2 - Delete Parent");
-        System.out.println("3 - View Parents");
-        System.out.println("4 - Filter Parents by number of children");
+        System.out.println("1 - Delete Parent");
+        System.out.println("2 - View Parents");
+        System.out.println("3 - Filter Parents by number of children");
         System.out.println("0 - Exit");
         System.out.print("Select an option: ");
     }
@@ -632,20 +560,10 @@ public class TKDUI {
     //////////// METHODS FOR EACH OPTION /////////////
 
     /**
-     * request all information that a student need.  If it catches an exception it calls the function again.
+     * request all information that a student need.
      * @throws ValidationException if a specific input doesn't match the specific requests
      */
     private void addStudent() throws ValidationException{
-//        System.out.print("Enter student ID: ");
-//        int idStudent;
-//        try {
-//            idStudent = Integer.parseInt(scanner.nextLine());
-//        } catch (NumberFormatException e) {
-//            throw new ValidationException("Student ID can't be empty or contain letters");
-//        }
-//        if (idStudent == 0 || idStudent < 0) {
-//            throw new ValidationException("student ID cannot be null or negative");
-//        }
         int idStudent = tkdController.getStudentId();
         System.out.print("Enter student first name: ");
         String name = scanner.nextLine();
@@ -692,8 +610,8 @@ public class TKDUI {
             throw new ValidationException("dateOfBirth can't be empty or contain letters");
         }
 
-        if (dateOfBirth == 0 || dateOfBirth < 0) {
-            throw new ValidationException("student year of birth cannot be null or negative");
+        if (dateOfBirth < 2006) {
+            throw new ValidationException("student year of birth cannot be smaller than 2006");
         }
 
         System.out.print("Enter student telephone number: ");
@@ -727,22 +645,10 @@ public class TKDUI {
 
         Session session = null;
         session = tkdController.getSessionById(sessionId);
-//        System.out.print("Do you want to add a parent to the student? (yes/no) -> if no a person to contact will be necesary: ");
-//        String parentDecision = scanner.nextLine().trim().toLowerCase();
         Student student = new Student(idStudent, name, lastName, email, address, dateOfBirth, telNumber, beltLevel, session.getId());
         tkdController.addObject(student);
-//        Parent parent = null;
-//        if (parentDecision.equals("yes")) {
-//            parent = addParent();
-//        }else if(parentDecision.equals("no")) {
-//            System.out.println("You have to enter a person to contact in emergency case, it ca be the same person: ");
-//            parent = addParent();
-//        }
-//        System.out.println("caca");
-//        Parent p1 = parent;
         System.out.println("Every student needs a parent or a contact person:");
         Parent parent = addParent();
-//        tkdController.addObject(parent);
 
 
         //call addStudentToParent
@@ -762,17 +668,6 @@ public class TKDUI {
      * @throws ValidationException if a specific input doesn't match the specific requests
      */
     private Parent addParent() throws ValidationException {
-//        System.out.print("Enter parent ID: ");
-//        int id;
-//        try {
-//            id = Integer.parseInt(scanner.nextLine());
-//        } catch (NumberFormatException e) {
-//            throw new ValidationException("id can't be empty or contain letters");
-//        }
-//
-//        if(id == 0 || id < 0){
-//            throw new ValidationException("parent ID cannot be null or negative");
-//        }
         int id = tkdController.getParentId();
         System.out.print("Enter parent first name: ");
         String name = scanner.nextLine();
@@ -809,19 +704,6 @@ public class TKDUI {
         if(!address.matches("^[a-zA-Z]+\\s+\\d+$")){
             throw new ValidationException("parent address isn't valid");
         }
-
-        System.out.print("Enter parent year of birth: ");
-        int dateOfBirth;
-        try {
-            dateOfBirth = Integer.parseInt(scanner.nextLine());
-        } catch (NumberFormatException e) {
-            throw new ValidationException("dateOfBirth can't be empty or contain letters");
-        }
-
-        if(dateOfBirth == 0 || dateOfBirth < 0){
-            throw new ValidationException("parent year of birth cannot be null or negative");
-        }
-
         System.out.print("Enter parent number: ");
         String number = scanner.nextLine();
         if(number.isEmpty()){
@@ -830,27 +712,15 @@ public class TKDUI {
         if(!number.matches("^0\\d+$") || number.length() != 10){
             throw new ValidationException("parent number isn't valid");
         }
-        Parent newParent = new Parent(id, name, lastName, email, address, dateOfBirth,number);
-        tkdController.addObject(newParent);
+        Parent newParent = new Parent(id, name, lastName, email, address,number);
         return newParent;
     }
 
     /**
-     * request all information that a session needs.  If it catches an exception it calls the function again.
+     * request all information that a session needs.
      * @throws ValidationException if a specific input doesn't match the specific requests
      */
     private void addSession() throws ValidationException{
-//        System.out.print("Enter Session ID: ");
-//        int id;
-//        try {
-//            id = Integer.parseInt(scanner.nextLine());
-//        } catch (NumberFormatException e) {
-//            throw new ValidationException("id can't be empty or contain letters");
-//        }
-//
-//        if(id == 0 || id < 0){
-//            throw new ValidationException("Session ID cannot be null or negative");
-//        }
         int id = tkdController.getSessionId();
         System.out.print("Enter Difficulty Level (beginner, intermediary, advanced): ");
         DifficultyLevel difficultyLevel;
@@ -886,10 +756,6 @@ public class TKDUI {
 
         Trainer trainer = null;
         trainer = tkdController.getTrainerById(trainerId);
-//        if (trainer == null) {
-//            System.out.println("Trainer not found. Please check the trainer ID.");
-//            return;
-//        }
 
         System.out.print("Enter Price Per Session: ");
         double pricePerSession;
@@ -910,21 +776,10 @@ public class TKDUI {
     }
 
     /**
-     * request all information that a trainer need.  If it catches an exception it calls the function again.
+     * request all information that a trainer need.
      * @throws ValidationException if a specific input doesn't match the specific requests
      */
     private void addTrainer() throws ValidationException {
-//        System.out.print("Enter Trainer ID: ");
-//        int id;
-//        try {
-//            id = Integer.parseInt(scanner.nextLine());
-//        } catch (NumberFormatException e) {
-//            throw new ValidationException("id can't be empty or contain letters");
-//        }
-//
-//        if(id == 0 || id < 0){
-//            throw new ValidationException("Trainer ID cannot be null or negative");
-//        }
         int id = tkdController.getTrainerId();
 
         System.out.print("Enter Trainer First Name: ");
@@ -971,8 +826,8 @@ public class TKDUI {
             throw new ValidationException("dateOfBirth can't be empty or contain letters");
         }
 
-        if(dateOfBirth == 0 || dateOfBirth < 0){
-            throw new ValidationException("Trainer Year of Birth cannot be null or negative");
+        if(dateOfBirth <  1964){
+            throw new ValidationException("Trainer Year of Birth cannot be smaller than 1964");
         }
 
         System.out.print("Enter Trainer Telephone Number: ");
@@ -999,20 +854,10 @@ public class TKDUI {
     }
 
     /**
-     * request all information that a contest need. If it catches an exception it calls the function again.
+     * request all information that a contest need.
      * @throws ValidationException if a specific input doesn't match the specific requests
      */
     private void addContest() throws ValidationException {
-//        System.out.println("Enter Contest Id: ");
-//        int id;
-//        try {
-//            id = Integer.parseInt(scanner.nextLine());
-//        } catch (NumberFormatException e) {
-//            throw new ValidationException("id can't be empty or contain letters");
-//        }
-//        if(id == 0 || id < 0){
-//            throw new ValidationException("Contest ID cannot be null or negative");
-//        }
         int id = tkdController.getContestId();
 
         System.out.print("Enter start date: ");
@@ -1092,20 +937,10 @@ public class TKDUI {
     }
 
     /**
-     * request all information that a training camp need. If it catches an exception it calls the function again.
+     * request all information that a training camp need.
      * @throws ValidationException if a specific input doesn't match the specific requests
      */
     private void addTrainingCamp() throws ValidationException {
-//        System.out.println("Enter Training camp Id: ");
-//        int id;
-//        try {
-//            id = Integer.parseInt(scanner.nextLine());
-//        } catch (NumberFormatException e) {
-//            throw new ValidationException("id can't be empty or contain letters");
-//        }
-//        if(id == 0 || id < 0){
-//            throw new ValidationException("Training camp ID cannot be null or negative");
-//        }
         int id = tkdController.getTrainingCampId();
 
         System.out.print("Enter start date: ");
@@ -1188,20 +1023,10 @@ public class TKDUI {
     }
 
     /**
-     * request all information that a BeltExam need. If it catches an exception it calls the function again.
+     * request all information that a BeltExam need.
      * @throws ValidationException if a specific input doesn't match the specific requests
      */
     private void addBeltExam() throws ValidationException {
-//        System.out.println("Enter Belt Exam Id: ");
-//        int id;
-//        try {
-//            id = Integer.parseInt(scanner.nextLine());
-//        } catch (NumberFormatException e) {
-//            throw new ValidationException("id can't be empty or contain letters");
-//        }
-//        if(id == 0 || id < 0){
-//            throw new ValidationException("Belt exam ID cannot be null or negative");
-//        }
         int id = tkdController.getBeltExamId();
         System.out.print("Enter start date: ");
         String startdate = scanner.nextLine();
@@ -1282,7 +1107,7 @@ public class TKDUI {
     }
 
     /**
-     * request all information that a belt exam need. If it catches an exception it calls the function again.
+     * request all information that a belt exam need.
      * @throws ValidationException if a specific input doesn't match the specific requests
      */
     private void addStudentToBeltExam() throws ValidationException {
@@ -1313,7 +1138,7 @@ public class TKDUI {
     }
 
     /**
-     * add a student to contest based on their ID s. If it catches an exception it calls the function again.
+     * add a student to contest based on their ID s.
      * @throws ValidationException if a specific input doesn't match the specific requests
      */
     private void addStudentToContest() throws ValidationException {
@@ -1344,7 +1169,7 @@ public class TKDUI {
     }
 
     /**
-     * add a student to a training camp based on their ID s. If it catches an exception it calls the function again
+     * add a student to a training camp based on their ID s.
      * @throws ValidationException if a specific input doesn't match the specific requests
      */
     private void addStudentToTrainingCamp() throws ValidationException {
@@ -1374,17 +1199,8 @@ public class TKDUI {
         System.out.println("Student added successfully.");
     }
 
-
-//    private void promoteBeltExam() throws IOException {
-//        System.out.println("Enter Belt Exam Id: ");
-//        int idBeltExam = Integer.parseInt(scanner.nextLine());
-//
-//        tkdController.changeBeltLevel(idBeltExam);
-//        System.out.println("Belt Exams Results changed successfully.");
-//    }
-
     /**
-     * deletes a student base on ID. If it catches an exception it calls the function again.
+     * deletes a student base on ID.
 
      */
     private void deleteStudent() throws ValidationException {
@@ -1394,7 +1210,7 @@ public class TKDUI {
     }
 
     /**
-     * deletes a belt exam base on ID. If it catches an exception it calls the function again.
+     * deletes a belt exam base on ID.
      */
     private void deleteBeltExam() throws ValidationException {
         int id = readBeltExamId();
@@ -1403,7 +1219,7 @@ public class TKDUI {
     }
 
     /**
-     * deletes a training camp base on ID. If it catches an exception it calls the function again.
+     * deletes a training camp base on ID.
      */
     private void deleteTrainingCamp() throws ValidationException {
         int id = readTrainingCampId();
@@ -1412,7 +1228,7 @@ public class TKDUI {
     }
 
     /**
-     * deletes a parent base on ID. If it catches an exception it calls the function again.
+     * deletes a parent base on ID.
      */
     private void deleteParent() throws ValidationException {
         int id = readParentId();
@@ -1421,7 +1237,7 @@ public class TKDUI {
     }
 
     /**
-     * deletes a trainer base on ID. If it catches an exception it calls the function again.
+     * deletes a trainer base on ID.
      */
     private void deleteTrainer() throws ValidationException {
         int id = readTrainerId();
@@ -1430,7 +1246,7 @@ public class TKDUI {
     }
 
     /**
-     * deletes a session base on ID. If it catches an exception it calls the function again.
+     * deletes a session base on ID.
      */
     private void deleteSession() throws ValidationException{
         int id = readSessionId();
@@ -1439,7 +1255,7 @@ public class TKDUI {
     }
 
     /**
-     * deletes a contest base on ID. If it catches an exception it calls the function again.
+     * deletes a contest base on ID.
      */
     private void deleteContest() throws ValidationException {
         int id = readContestId();
@@ -1496,7 +1312,7 @@ public class TKDUI {
     }
 
     /**
-     * displays a list of attendances for a student. If it catches an exception it calls the function again.
+     * displays a list of attendances for a student.
      */
     private void viewAttendances() throws ValidationException {
         int studentId = readStudentId();
@@ -1508,7 +1324,6 @@ public class TKDUI {
 
     /**
      * Changes the session of a trainer, by reading the new session id and the trainer id from the console, and displaying a successful message.
-     * If it catches an exception it calls the function again.
      */
     private void assignSessionToTrainer() throws ValidationException {
         int sessionId = readSessionId();
@@ -1518,7 +1333,7 @@ public class TKDUI {
     }
     /**
      * Adds an attendance to a student, by reading the session id, the student id, if he attended or not, the weekday and the date from the console.
-     * If it catches an exception it calls the function again.
+     * @throws ValidationException      if a specific input doesn't match the specific requests
      */
     private void addAttendance() throws ValidationException{
         int sessionId = readSessionId();
@@ -1552,7 +1367,6 @@ public class TKDUI {
 
     /**
      * Changes the session of a student, by reading the new session id and the student id from the console, and displaying a successful message.
-     * If it catches an exception it calls the function again.
      */
     private void changeStudentSession() throws ValidationException {
         int studentId = readStudentId();
@@ -1563,7 +1377,6 @@ public class TKDUI {
 
     /**
      * Adds result for a student from the belt exam, by reading the student id, belt exam id and the result from the console and displaying it.
-     * If it catches an exception it calls the function again.
      */
     private void addResultToBeltExam() throws ValidationException {
         int studentId = readStudentId();
@@ -1574,7 +1387,8 @@ public class TKDUI {
     }
 
     /**
-     * Generates a bill for a parent and displays it in the console. If it catches an exception it calls the function again.
+     * Generates a bill for a parent and displays it in the console.
+     * @throws ValidationException      if a specific input doesn't match the specific requests
      */
     private void generateBill() throws ValidationException {
         int parentId = readParentId();
@@ -1594,6 +1408,7 @@ public class TKDUI {
     /**
      * Reads an id for a student from the console.
      * @return The id of the student.
+     * @throws ValidationException      if a specific input doesn't match the specific requests
      */
     private int readStudentId() throws ValidationException {
         System.out.print("Enter student ID: ");
@@ -1613,6 +1428,7 @@ public class TKDUI {
     /**
      * Reads an id for a parent from the console.
      * @return The id of the parent.
+     * @throws ValidationException      if a specific input doesn't match the specific requests
      */
     private int readParentId() throws ValidationException {
         System.out.print("Enter parent ID: ");
@@ -1632,6 +1448,7 @@ public class TKDUI {
     /**
      * Reads an id for a trainer from the console.
      * @return The id of the trainer.
+     * @throws ValidationException      if a specific input doesn't match the specific requests
      */
     private int readTrainerId() throws ValidationException {
         System.out.print("Enter trainer ID: ");
@@ -1651,6 +1468,7 @@ public class TKDUI {
     /**
      * Reads an id for a session from the console.
      * @return The id of the session.
+     * @throws ValidationException      if a specific input doesn't match the specific requests
      */
     private int readSessionId() throws ValidationException {
         System.out.print("Enter session ID: ");
@@ -1670,6 +1488,7 @@ public class TKDUI {
     /**
      * Reads an id for a contest from the console.
      * @return The id of the contest.
+     * @throws ValidationException      if a specific input doesn't match the specific requests
      */
     private int readContestId() throws ValidationException {
         System.out.print("Enter contest ID: ");
@@ -1689,6 +1508,7 @@ public class TKDUI {
     /**
      * Reads an id for a training camp from the console.
      * @return The id of the training camp.
+     * @throws ValidationException      if a specific input doesn't match the specific requests
      */
     private int readTrainingCampId() throws ValidationException {
         System.out.print("Enter training camp ID: ");
@@ -1708,6 +1528,7 @@ public class TKDUI {
     /**
      * Reads an id for a belt exam from the console.
      * @return The id of the belt exam.
+     * @throws ValidationException      if a specific input doesn't match the specific requests
      */
     private int readBeltExamId() throws ValidationException {
         System.out.print("Enter belt exam ID: ");
@@ -1740,6 +1561,7 @@ public class TKDUI {
 
     /**
      * call the filter students function from Controller that prints out the students filtered by a belt level read from the console
+     * @throws ValidationException      if a specific input doesn't match the specific requests
      */
     private void filterStudentsByBeltLevel() throws ValidationException {
         System.out.print("Enter the belt level for filtering: ");
@@ -1755,7 +1577,7 @@ public class TKDUI {
 
     /**
      * call the filter parents function from Controller that prints out the parents filtered by a number of children read from the console.
-     * If it catches an exception it calls the function again.
+     * @throws ValidationException      if a specific input doesn't match the specific requests
      */
     private void filterParentsByNumberOfChildren() throws ValidationException {
         System.out.println("Enter the number of children for filtering: ");
@@ -1801,7 +1623,6 @@ public class TKDUI {
 
     /**
      * Reads a session id and gives it as parameter to the getDateWithMostStudentsForSession function from controller.
-     * If it catches an exception it calls the function again.
      */
     public void getMostProfitableDateForSession() throws ValidationException {
         int sessionId = readSessionId();

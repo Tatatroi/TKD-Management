@@ -43,16 +43,14 @@ public abstract class Person implements HasID{
      * @param lastName      The last name of the person.
      * @param email         The email of the person.
      * @param address       The address of the person.
-     * @param dateOfBirth   The date of birth of the person.
      * @param number        The telephone number of the person.
      */
-    public Person(Integer id,String name, String lastName, String email, String address, int dateOfBirth,String number) {
+    public Person(Integer id,String name, String lastName, String email, String address,String number) {
         this.id=id;
         this.name = name;
         this.lastName = lastName;
         this.email = email;
         this.address = address;
-        this.dateOfBirth = dateOfBirth;
         this.number = number;
     }
 

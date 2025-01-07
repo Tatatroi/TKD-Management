@@ -63,16 +63,16 @@ public class Main {
      */
     public static void main(String[] args) throws SQLException, DatabaseException {
 
-        Trainer t1 = new Trainer(1,"Mitroi","Stefan","srefanmitroi@gmail.com","Calea Floresti nr 58B",2004,"0761969675",BeltLevel.black);
-//        trainerRepo.add(t1);
-//
-        Trainer t2 = new Trainer(2, "Popescu", "Andrei", "andrei.popescu@gmail.com", "Strada Mihai Viteazu nr 15", 1990, "0755123456", BeltLevel.red);
-//        trainerRepo.add(t2);
-//
-        Trainer t3 = new Trainer(3, "Ionescu", "Maria", "maria.ionescu@yahoo.com", "Bulevardul Eroilor nr 45", 1985, "0725987654", BeltLevel.blue);
-//        trainerRepo.add(t3);
-//
-        Trainer t4 = new Trainer(4, "Vasilescu", "Radu", "radu.vasilescu@outlook.com", "Strada Zorilor nr 23", 1992, "0744123456", BeltLevel.green);
+//        Trainer t1 = new Trainer(1,"Mitroi","Stefan","srefanmitroi@gmail.com","Calea Floresti nr 58B",2004,"0761969675",BeltLevel.black);
+////        trainerRepo.add(t1);
+////
+//        Trainer t2 = new Trainer(2, "Popescu", "Andrei", "andrei.popescu@gmail.com", "Strada Mihai Viteazu nr 15", 1990, "0755123456", BeltLevel.red);
+////        trainerRepo.add(t2);
+////
+//        Trainer t3 = new Trainer(3, "Ionescu", "Maria", "maria.ionescu@yahoo.com", "Bulevardul Eroilor nr 45", 1985, "0725987654", BeltLevel.blue);
+////        trainerRepo.add(t3);
+////
+//        Trainer t4 = new Trainer(4, "Vasilescu", "Radu", "radu.vasilescu@outlook.com", "Strada Zorilor nr 23", 1992, "0744123456", BeltLevel.green);
 //        trainerRepo.add(t4);
 //        InMemoryRepo<Trainer> trainerInMemoryRepo = new InMemoryRepo<>("trainers.json", new TypeReference<List<Trainer>>() {});
         //trainerInMemoryRepo.add(t4);

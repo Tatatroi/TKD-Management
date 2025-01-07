@@ -26,7 +26,7 @@ public class ApplicationTest {
     InMemoryRepo<BeltExam> beltExamsRepo = new InMemoryRepo<>();
     Trainer t1 = new Trainer(1,"Mitroi","Stefan","srefanmitroi@gmail.com","Calea Floresti nr 58B",2004,"0761969675",BeltLevel.black);
     Session session1 = new Session(1,DifficultyLevel.beginner,23,t1.getId(),50);
-    Parent parent1 = new Parent(1,"Muresan","Victor","muresanVictor@gmail.com","Calea Baciului nr 5",1980,"0783243165");
+    Parent parent1 = new Parent(1,"Muresan","Victor","muresanVictor@gmail.com","Calea Baciului nr 5","0783243165");
     Student student1 = new Student(1,"Muresan","Alex","alex@gmail.com","Calea Baciului nr 5",2010,"0754635543",BeltLevel.white,session1.getId());
     Contest contest1 = new Contest(101, "2024-11-28", "2024-11-30", 300, "Romania", "Cluj-Napoca", "Campionatul International", "Sala Sporturilor");
     TrainingCamp trainingCamp1 = new TrainingCamp(11, "2025-06-15", "2025-06-20", 500, "Romania", "Brasov", "Complexul Olimpic", 25);
@@ -168,7 +168,7 @@ public class ApplicationTest {
 
     @Test
     void testInvoiceNoValidData() throws EntityNotFoundException, DatabaseException, BusinessLogicException {
-        Parent parent2 = new Parent(2,"Muresan","Victor","muresanVictor@gmail.com","Calea Baciului nr 5",1980,"0783243165");
+        Parent parent2 = new Parent(2,"Muresan","Victor","muresanVictor@gmail.com","Calea Baciului nr 5","0783243165");
         parentsRepo.add(parent2);
         assertThrows(BusinessLogicException.class, () -> {tkdService.generateInvoice(2,"11");});
 

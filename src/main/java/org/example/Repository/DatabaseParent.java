@@ -30,15 +30,14 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
      */
     @Override
     public void add(Parent obj) throws DatabaseException {
-        String sql = "INSERT INTO PARENT (id,name,lastName, email, address, dateOfBirth, number) VALUES (?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO PARENT (id,name,lastName, email, address, number) VALUES (?,?,?,?,?,?)";
         try( PreparedStatement stmt= connection.prepareStatement(sql)) {
             stmt.setInt(1, obj.getId());
             stmt.setString(2, obj.getName());
             stmt.setString(3, obj.getLastName());
             stmt.setString(4, obj.getEmail());
             stmt.setString(5, obj.getAddress());
-            stmt.setInt(6, obj.getDateOfBirth());
-            stmt.setString(7, obj.getNumber());
+            stmt.setString(6, obj.getNumber());
             stmt.executeUpdate();
         }catch(Exception e) {
             throw new DatabaseException("DataBase Exception Error");
@@ -77,15 +76,14 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
      */
     @Override
     public void update(Parent obj) throws DatabaseException {
-        String sql = "UPDATE dbo.Parent SET name = ?, lastName = ?, email = ?, address = ?, dateOfBirth = ?, number=? WHERE id = ?";
+        String sql = "UPDATE dbo.Parent SET name = ?, lastName = ?, email = ?, address = ?, number=? WHERE id = ?";
         try( PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, obj.getName());
             stmt.setString(2, obj.getLastName());
             stmt.setString(3, obj.getEmail());
             stmt.setString(4, obj.getAddress());
-            stmt.setInt(5, obj.getDateOfBirth());
-            stmt.setString(6, obj.getNumber());
-            stmt.setInt(7, obj.getId());
+            stmt.setString(5, obj.getNumber());
+            stmt.setInt(6, obj.getId());
             stmt.executeUpdate();
         }catch (Exception e) {
             throw new DatabaseException("DataBase Exception Error");
@@ -209,7 +207,6 @@ public class DatabaseParent extends DatabaseRepo<org.example.Model.Parent>{
                     rs.getString("lastName"),
                     rs.getString("email"),
                     rs.getString("address"),
-                    rs.getInt("dateOfBirth"),
                     rs.getString("number"));
         } catch (SQLException e) {
             throw new DatabaseException("DataBase Exception Error");

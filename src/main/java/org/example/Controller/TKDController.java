@@ -26,11 +26,11 @@ public class TKDController {
         this.tkdService = tkdService;
     }
 
-//    /**
-//     * Constructs a new UniversityController with the given UniversityService.
-//     *
-//     * @param tkdService The service that provides the business logic for the TKD-Management system.
-//     */
+    /**
+     * Constructs a new TKDController with the given TKDService.
+     *
+     * @param tkdService The service that provides the business logic for the TKD-Management system.
+     */
     public TKDController(TKD_Service tkdService) {
         this.tkdService = tkdService;
     }
@@ -38,7 +38,6 @@ public class TKDController {
     /**
      * Adds an object to repo.
      * @param obj           The object to be added.
-     * @  If object already exists.
      */
     public void addObject(Object obj) {
         try {
@@ -66,7 +65,6 @@ public class TKDController {
     /**
      * Deletes a student from the repo.
      * @param idStudent         The unique identifier of the student.
-     * @      If no student was found.
      */
     public void deleteStudent(Integer idStudent){
         try {
@@ -80,7 +78,6 @@ public class TKDController {
     /**
      * Deletes a trainer from the repo.
      * @param idTrainer         The unique identifier of the trainer.
-     * @      If no parent was found.
      */
     public void deleteTrainer(Integer idTrainer){
         try {
@@ -94,7 +91,6 @@ public class TKDController {
     /**
      * Deletes a parent from the repo.
      * @param idParent          The unique identifier of the parent.
-     * @      If no parent was found.
      */
     public void deleteParent(Integer idParent) {
         try {
@@ -108,7 +104,6 @@ public class TKDController {
     /**
      * Deletes a session from the repo.
      * @param idSession         The unique identifier of the session.
-     * @      If no session was found.
      */
     public void deleteSession(Integer idSession) {
         try {
@@ -122,7 +117,6 @@ public class TKDController {
     /**
      * Deletes a belt exam from the repo.
      * @param idBeltExam        The unique identifier of the belt exam.
-     * @      If no belt exam was found.
      */
     public void deleteBeltExam(Integer idBeltExam) {
         try {
@@ -136,7 +130,6 @@ public class TKDController {
     /**
      * Deletes a contest from the repo.
      * @param idContest         The unique identifier of the contest.
-     * @ception      If no contest was found.
      */
     public void deleteContest(Integer idContest) {
         try {
@@ -150,7 +143,6 @@ public class TKDController {
     /**
      * Deletes a training camp from the repo.
      * @param idTrainingCamp    The unique identifier of the training camp.
-     * @      If no training camp was found.
      */
     public void deleteTrainingCamp(Integer idTrainingCamp) {
         try {
@@ -165,7 +157,6 @@ public class TKDController {
      * Changes the session of the trainer
      * @param idTrainer     The unique identifier of the trainer.
      * @param idSession     The unique identifier of the session.
-     * @  If no trainer or session was found.
      */
     public void assignSessionToTrainer(Integer idSession, Integer idTrainer) {
         try {
@@ -180,7 +171,6 @@ public class TKDController {
      * Changes the session of the student.
      * @param idStudent The unique identifier of the student.
      * @param idSession The unique identifier of the session.
-     * @  If no student or session was found.
      */
     public void changeStudentSession(Integer idStudent, Integer idSession) {
         try {
@@ -191,15 +181,9 @@ public class TKDController {
         }
     }
 
-//    public void changeBeltLevel(Integer idBeltLevel){
-//        tkdService.changeBeltlevel(idBeltLevel);
-//        System.out.println("Belt Level with ID " + idBeltLevel + " changed");
-//    }
-
     /**
      * Counts the number of attendances and absences of a student.
      * @param idStudent     The unique identifier of the student.
-     * @  If no student was found.
      */
     public void numberOfAttendances(Integer idStudent) {
         try {
@@ -215,7 +199,6 @@ public class TKDController {
      * Adds a student to a belt exam.
      * @param idBeltExam    The unique identifier of the belt exam.
      * @param idStudent     The unique identifier of the student.
-     * @  If no student or belt exam was found.
      */
         public void addStudentToBeltExam(Integer idBeltExam, Integer idStudent) {
         try {
@@ -231,7 +214,6 @@ public class TKDController {
      * @param idBeltExam    The unique identifier of the belt exam.
      * @param idStudent     The unique identifier of the student.
      * @param result        The result which is true(passed) or false(failed).
-     * @  If no student or belt exam was found.
      */
     public void addResultToBeltExam(Integer idBeltExam, Integer idStudent, Boolean result) {
         try {
@@ -253,7 +235,6 @@ public class TKDController {
      * @param attendance    The attendance which can be true(present) or false(absent).
      * @param weekDay       The day of the week of the attendance.
      * @param date          The date of the session.
-     * @  If no student or session was found.
      */
     public void addAttendance(Integer idStudent,Integer idSession, Boolean attendance, String weekDay, String date){
         try {
@@ -272,7 +253,6 @@ public class TKDController {
      * Adds a student to a contest.
      * @param idStudent     The unique identifier of the student.
      * @param idContest     The unique identifier of the contest.
-     * @  If no student or contest was found.
      */
     public void addStudentToContest(Integer idStudent, Integer idContest) {
         try {
@@ -287,7 +267,6 @@ public class TKDController {
      * Adds a student to a training camp.
      * @param idStudent         The unique identifier of the student.
      * @param idTrainingCamp    The unique identifier of the training camp.
-     * @      If no student or training camp was found.
      */
     public void addStudentToTrainingCamp(Integer idStudent, Integer idTrainingCamp) {
         try {
@@ -304,7 +283,7 @@ public class TKDController {
     public void viewStudents(){
         try{
             System.out.println("Here are all students: \n" + tkdService.viewAllStudents());
-        }catch (EntityNotFoundException | DatabaseException e) {
+        }catch (DatabaseException e) {
             System.out.println("Error: "+ e.getMessage());
         }
 //        System.out.println();
@@ -379,7 +358,7 @@ public class TKDController {
         try {
             tkdService.addStudentToParent(student, parent);
         }
-        catch (EntityNotFoundException | DatabaseException e) {
+        catch (DatabaseException e) {
             System.out.println("Error: "+ e.getMessage());
         }
     }
@@ -388,7 +367,6 @@ public class TKDController {
      * Generates an invoice for a month for a parent for all its children.
      * @param parentID          The unique identifier of a parent.
      * @param month             The month for the invoice.
-     * @      If no parent was found.
      */
     public void generateInvoice(Integer parentID,String month){
         try {
@@ -416,7 +394,6 @@ public class TKDController {
      * Gets a trainer by id.
      * @param idTrainer         The unique identifier of a trainer.
      * @return                  The trainer.
-     * @      If no trainer was found.
      */
     public Trainer getTrainerById(Integer idTrainer){
         try {
@@ -431,7 +408,6 @@ public class TKDController {
      * Gets a trainer by id.
      * @param idSession         The unique identifier of a session.
      * @return                  The session.
-     * @      If no session was found.
      */
     public Session getSessionById(Integer idSession){
         try {
@@ -551,7 +527,6 @@ public class TKDController {
     /**
      * prints a filtred list of parents that have a specific number of children
      * @param noOfChildren      number of children
-     * @      If noOfChildren is negative.
      */
     public void filterParentsByNumberOfChildren(Integer noOfChildren) {
         try {
@@ -602,7 +577,6 @@ public class TKDController {
     /**
      * Gets for a given session the date with the biggest profit made and the amount made and prints the outputs.
      * @param sessionId         The unique identifier of the session.
-     * @      If no session was found.
      */
     public void getMostProfitableDateForSession(int sessionId) {
         try {
@@ -613,6 +587,11 @@ public class TKDController {
             System.out.println("Error: " + e.getMessage());
         }
     }
+
+    /**
+     * Gets the first free student id
+     * @return  First free student id
+     */
     public int getStudentId(){
         int id = 0;
         try {
@@ -622,6 +601,11 @@ public class TKDController {
         }
         return id;
     }
+
+    /**
+     * Gets the first free session id
+     * @return  First free session id
+     */
     public int getSessionId(){
         int id = 0;
         try {
@@ -631,6 +615,11 @@ public class TKDController {
         }
         return id;
     }
+
+    /**
+     * Gets the first free trainer id
+     * @return  First free trainer id
+     */
     public int getTrainerId(){
         int id = 0;
         try {
@@ -640,6 +629,11 @@ public class TKDController {
         }
         return id;
     }
+
+    /**
+     * Gets the first free parent id
+     * @return  First free parent id
+     */
     public int getParentId(){
         int id = 0;
         try {
@@ -649,6 +643,11 @@ public class TKDController {
         }
         return id;
     }
+
+    /**
+     * Gets the first free contest id
+     * @return  First free contest id
+     */
     public int getContestId(){
         int id = 0;
         try {
@@ -658,6 +657,11 @@ public class TKDController {
         }
         return id;
     }
+
+    /**
+     * Gets the first free training camp id
+     * @return  First free training camp id
+     */
     public int getTrainingCampId(){
         int id = 0;
         try {
@@ -667,6 +671,11 @@ public class TKDController {
         }
         return id;
     }
+
+    /**
+     * Gets the first free belt exam id
+     * @return  First free belt exam id
+     */
     public int getBeltExamId(){
         int id = 0;
         try {

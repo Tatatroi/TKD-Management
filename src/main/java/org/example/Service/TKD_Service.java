@@ -60,24 +60,9 @@ public class TKD_Service {
      * Change the trainer of a session.
      * @param trainerId     The unique identifier of a trainer.
      * @param sessionId     The unique identifier of a session.
-     * @  throws EntityNoFound or DataBaseException
+     * @throws EntityNotFoundException or DataBaseException   If no trainer or session was found.
      */
     public void assignGroupToTrainer(int trainerId, int sessionId) throws EntityNotFoundException, DatabaseException {
-//        try {
-//            if(trainers.getAll().stream().noneMatch(tr -> tr.getId() == trainerId)){
-//                throw new IOException("Invalid trainer ID");
-//            }
-//        } catch (DatabaseException e) {
-//            throw e;
-//        }
-//        try {
-//            if(sessions.getAll().stream().noneMatch(ss->ss.getId()== sessionId)){
-//                throw new IOException("Invalid session ID");
-//            }
-//        } catch (DatabaseException e) {
-//            throw e;
-//        }
-
         Trainer tr = null;
         try {
             tr = trainers.get(trainerId);
@@ -110,15 +95,8 @@ public class TKD_Service {
      * @param studentId     The unique identifier of a student.
      * @param sessionId     The unique identifier of a session.
      * @throws EntityNotFoundException or DataBaseException  If no student or session was found.
-     *
      */
     public void changeStudentGroup(int studentId,int sessionId) throws EntityNotFoundException, DatabaseException, BusinessLogicException {
-//        if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
-//            throw new IOException("Invalid student ID");
-//        }
-//        if(sessions.getAll().stream().noneMatch(ss->ss.getId()== sessionId)){
-//            throw new IOException("Invalid session ID");
-//        }
         Student st = null;
         try {
             st = students.get(studentId);
@@ -173,7 +151,7 @@ public class TKD_Service {
     /**
      * Changes the belt color of a student if he passed the exam.
      * @param beltExamID  The unique identifier of a belt exam.
-     * throws EntityNoFound or DataBaseException
+     * @throws EntityNotFoundException or DataBaseException    If no student or belt exam was found.
      */
     public void changeBeltlevel(Integer beltExamID,Integer studentID) throws EntityNotFoundException, DatabaseException {
         try {
@@ -181,12 +159,6 @@ public class TKD_Service {
             if(beltExam == null){
                 throw new EntityNotFoundException("No belt exam with this ID found");
             }
-//            for(int stId: beltExams.get(beltExamID).getListOfResults().keySet()){
-//                if(beltExams.get(beltExamID).getListOfResults().get(stId)==1){
-//                    students.get(stId).setBeltLevel(beltExams.get(beltExamID).getBeltColor());
-//                    students.update(students.get(stId));
-//                }
-//            }
             Student st = students.get(studentID);
             st.setBeltLevel(beltExam.getBeltColor());
             students.update(st);
@@ -199,13 +171,10 @@ public class TKD_Service {
      * Counts the number of attendances and absences of a student.
      * @param studentId         The unique identifier of a student.
      * @return                  Map containing the number of attendances and absences of a student.
-     * @    throws EntityNoFound If no student was found.
+     * @throws EntityNotFoundException or DatabaseException     If no student was found.
      *
      */
     public Map<String,Integer> numberOfAttendencesAndAbsences(int studentId) throws EntityNotFoundException, DatabaseException {
-//        if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
-//            throw new IOException("Invalid student ID");
-//        }
         Student st= null;
         try {
             st = students.get(studentId);
@@ -263,6 +232,8 @@ public class TKD_Service {
      * it takes the amount of money given by controller and returns a list with every combination
      * @param amountOfMoney     the range that it's forbidden to be exceeded
      * @return                  a list of lists with all possible combinations
+     * @throws BusinessLogicException       If no event with max the amount of money was found
+     * @throws EntityNotFoundException or DatabaseException     If no contest or training camp was found.
      */
     public List<List<Integer>> eventsThatdontExceedAmountOfMoney(double amountOfMoney) throws DatabaseException, EntityNotFoundException, BusinessLogicException {
         try{
@@ -307,15 +278,9 @@ public class TKD_Service {
      * Adds a student to a belt exam.
      * @param idStudent     The unique identifier of a student.
      * @param idBeltExam    The unique identifier of a belt exam.
-     * @  If no student or belt exam was found.
+     * @throws EntityNotFoundException or DatabaseException  If no student or belt exam was found.
      */
     public void addStudentToBeltExam(int idStudent, int idBeltExam) throws EntityNotFoundException, DatabaseException {
-//        if(students.getAll().stream().noneMatch(st -> st.getId() == idStudent)){
-//            throw new IOException("Invalid student ID");
-//        }
-//        if(beltExams.getAll().stream().noneMatch(bt -> bt.getId() == idBeltExam)){
-//            throw new IOException("Invalid belt exam ID");
-//        }
         Student s = null;
         try {
             s = students.get(idStudent);
@@ -347,7 +312,7 @@ public class TKD_Service {
      * @param idStudent     The unique identifier of a student.
      * @param idBeltExam    The unique identifier of a belt exam.
      * @param promoted      The result of the exam, passed(true) or failed(false).
-     * @  If no student or belt exam was found.
+     * @throws EntityNotFoundException or DatabaseException  If no student or belt exam was found.
      */
     public void addResultBeltExam(int idStudent, int idBeltExam, boolean promoted) throws EntityNotFoundException, DatabaseException {
         Student s = null;
@@ -389,7 +354,7 @@ public class TKD_Service {
      * @param attendance    The attendance of a student which can be true(was present) or false(wasn't present).
      * @param weekday       The day of the week of the session.
      * @param date          The exact date the session took place.
-     * @  If no student or session was found.
+     * @throws EntityNotFoundException or DatabaseException  If no student or session was found.
      */
     public void addAttendance(int studentId,int sessionId,boolean attendance,String weekday,String date) throws EntityNotFoundException, DatabaseException {
         Student s = null;
@@ -414,7 +379,7 @@ public class TKD_Service {
      * Adds a student to a contest.
      * @param studentId     The unique identifier of a student.
      * @param contestId     The unique identifier of a contest.
-     * @  If no student or contest was found.
+     * @throws EntityNotFoundException or DatabaseException  If no student or contest was found.
      */
     public void addStudentToContest(int studentId,int contestId) throws EntityNotFoundException, DatabaseException {
         Student st = null;
@@ -453,7 +418,7 @@ public class TKD_Service {
      * Adds a student to a training camp.
      * @param studentId         The unique identifier of a student.
      * @param trainingCampId    The unique identifier of a training camp.
-     * @      If no student or training camp was found.
+     * @throws EntityNotFoundException or DatabaseException      If no student or training camp was found.
      */
     public void addStudentToTraining(int studentId,int trainingCampId) throws EntityNotFoundException, DatabaseException, BusinessLogicException {
         Student st = null;
@@ -496,8 +461,9 @@ public class TKD_Service {
      * Adds a student to a parent, by searching the for the parent by email to see if it needs to be added to the repo.
      * @param student   The student object that needs to be added to the parent.
      * @param parent    The parent object that needs to be updated/ created.
+     * @throws  DatabaseException   If error with database.
      */
-    public void addStudentToParent(Student student, Parent parent) throws EntityNotFoundException, DatabaseException {
+    public void addStudentToParent(Student student, Parent parent) throws DatabaseException {
         if(findParent(parent.getEmail())){
             Parent updateParent = null;
             try {
@@ -527,12 +493,14 @@ public class TKD_Service {
             }
             student.setParent(parent.getId());
         }
+        students.update(student);
     }
 
     /**
      * Searches in the parents repo for a parent by email and return true, if he exists.
      * @param email     the unique email of a Parent
      * @return          true/false if parent found
+     * @throws DatabaseException    If error with database.
      */
     public boolean findParent(String email) throws DatabaseException {
         try {
@@ -544,8 +512,8 @@ public class TKD_Service {
 
     /**
      * this function adds an object in their repo based on their type
-     * @param                o represent the given object
-     * @   If object id already exists.
+     * @param  o                   represent the given object
+     * @throws DatabaseException   If object id already exists.
      */
     public void addObject(Object o) throws DatabaseException {
         if(o instanceof Student){
@@ -557,9 +525,6 @@ public class TKD_Service {
 
         }
         else if(o instanceof Trainer){
-//            if(trainers.getAll().stream().anyMatch(tr->tr.getId()==((Trainer) o).getId())){
-//                throw new IOException("Trainer ID already exists");
-//            }
             try {
                 trainers.add((Trainer) o);
             } catch (DatabaseException e) {
@@ -567,9 +532,6 @@ public class TKD_Service {
             }
         }
         else if(o instanceof Parent){
-//            if(parents.getAll().stream().anyMatch(pt->pt.getId()==((Parent) o).getId())){
-//                throw new IOException("Parent ID already exists");
-//            }
             try {
                 parents.add((Parent) o);
             } catch (DatabaseException e) {
@@ -577,9 +539,6 @@ public class TKD_Service {
             }
         }
         else if(o instanceof Session){
-//            if(sessions.getAll().stream().anyMatch(ss->ss.getId()==((Session) o).getId())){
-//                throw new IOException("Session ID already exists");
-//            }
             try {
                 sessions.add((Session) o);
             } catch (DatabaseException e) {
@@ -587,9 +546,6 @@ public class TKD_Service {
             }
         }
         else if(o instanceof BeltExam){
-//            if(beltExams.getAll().stream().anyMatch(bx->bx.getId()==((BeltExam) o).getId())){
-//                throw new IOException("Belt exam ID already exists");
-//            }
             try {
                 beltExams.add((BeltExam) o);
             } catch (DatabaseException e) {
@@ -597,9 +553,6 @@ public class TKD_Service {
             }
         }
         else if(o instanceof Contest){
-//            if(contests.getAll().stream().anyMatch(ct->ct.getId()==((Contest) o).getId())){
-//                throw new RuntimeException();
-//            }
             try {
                 contests.add((Contest) o);
             } catch (DatabaseException e) {
@@ -607,9 +560,6 @@ public class TKD_Service {
             }
         }
         else if(o instanceof TrainingCamp){
-//            if(trainingCamps.getAll().stream().anyMatch(tc->tc.getId()==((TrainingCamp) o).getId())){
-//                throw new IOException("Training camp ID already exists");
-//            }
             try {
                 trainingCamps.add((TrainingCamp) o);
             } catch (DatabaseException e) {
@@ -624,7 +574,7 @@ public class TKD_Service {
      * @param parentID          the ID of the parent
      * @param month             the month they want an invoice
      * @return                  a string that holds information an invoice need to have (for every child they have)
-     * @      If no parent was found.
+     * @throws EntityNotFoundException or DatabaseException      If no parent was found.
      */
 
     public String generateInvoice(Integer parentID,String month) throws DatabaseException, EntityNotFoundException, BusinessLogicException {
@@ -674,7 +624,7 @@ public class TKD_Service {
     /**
      * it deletes a student based on their ID
      * @param studentID         the id of the student
-     * @      If no student was found.
+     * @throws EntityNotFoundException or DatabaseException      If no student was found.
      */
     public void removeStudent(Integer studentID) throws EntityNotFoundException, DatabaseException {
         try {
@@ -735,7 +685,7 @@ public class TKD_Service {
     /**
      * it deletes a trainer based on their ID
      * @param trainerID         the id of the trainer
-     * @      If no trainer was found.
+     * @throws EntityNotFoundException or DatabaseException      If no trainer was found.
      */
     public void removeTrainer(Integer trainerID) throws EntityNotFoundException, DatabaseException {
         try {
@@ -746,17 +696,17 @@ public class TKD_Service {
         } catch (DatabaseException e) {
             throw e;
         }
-                try {
-                    trainers.remove(trainerID);
-                } catch (DatabaseException e) {
-                    throw e;
-                }
+        try {
+            trainers.remove(trainerID);
+        } catch (DatabaseException e) {
+            throw e;
+        }
     }
 
     /**
      * it deletes a parent based on their ID
      * @param parentID          the id of the Parent
-     * @      If no parent was found.
+     * @throws EntityNotFoundException or DatabaseException     If no parent was found.
      */
     public void removeParent(Integer parentID) throws EntityNotFoundException, DatabaseException {
         try {
@@ -770,7 +720,27 @@ public class TKD_Service {
         try {
             List<Integer> children = parents.get(parentID).getChildren();
             for(int i=0; i<children.size(); i++){
-                students.remove(children.get(i));
+                Session session = null;
+                try {
+                    session = sessions.get(students.get(children.get(i)).getSession());
+                    if(session == null){
+                        throw new EntityNotFoundException("No session assign to these ID student found");
+                    }
+                } catch (DatabaseException e) {
+                    throw e;
+                }
+                session.getSessionStudents().remove(children.get(i));
+                try {
+                    sessions.update(session);
+
+                } catch (DatabaseException e) {
+                    throw e;
+                }
+                try {
+                    students.remove(children.get(i));
+                } catch (DatabaseException e) {
+                    throw e;
+                }
             }
             parents.remove(parentID);
         } catch (DatabaseException e) {
@@ -781,7 +751,7 @@ public class TKD_Service {
     /**
      * it deletes a session based on their ID
      * @param sessionID         the id of the session
-     * @      If no session was found.
+     * @throws EntityNotFoundException or DatabaseException      If no session was found.
      */
     public void removeSession(Integer sessionID) throws EntityNotFoundException, DatabaseException {
         try {
@@ -811,7 +781,7 @@ public class TKD_Service {
     /**
      * it deletes a BeltExam based on their ID
      * @param beltExamID        the id of the BeltExam
-     * @      If no belt exam was found.
+     * @throws EntityNotFoundException or DatabaseException      If no belt exam was found.
      */
     public void removeBeltExam(Integer beltExamID) throws EntityNotFoundException, DatabaseException {
         try {
@@ -832,7 +802,7 @@ public class TKD_Service {
     /**
      * it deletes a Contest based on their ID
      * @param contestID         the id of the contest
-     * @      If no contest was found.
+     * @throws EntityNotFoundException or DatabaseException      If no contest was found.
      */
     public void removeContest(Integer contestID) throws EntityNotFoundException, DatabaseException {
         try {
@@ -853,7 +823,7 @@ public class TKD_Service {
     /**
      * it deletes a training camp based on their ID
      * @param trainingCampID    the id of the trainingCamp
-     * @      If no training camp was found.
+     * @throws EntityNotFoundException or DatabaseException      If no training camp was found.
      */
     public void removeTrainingCamp(Integer trainingCampID) throws EntityNotFoundException, DatabaseException {
         try {
@@ -876,6 +846,7 @@ public class TKD_Service {
      * assign a student to a session
      * @param idSession the id of the session
      * @param studentID the id of the Student
+     * @throws EntityNotFoundException or DatabaseException     If no session or student was found.
      */
     public void addStudentToSession(Integer idSession, Integer studentID) throws EntityNotFoundException, DatabaseException, BusinessLogicException {
 
@@ -913,7 +884,7 @@ public class TKD_Service {
      * get a Trainer based on their id
      * @param trainerId         the trainer id
      * @return                  object of type Trainer
-     * @      If no trainer was found.
+     * @throws EntityNotFoundException or DatabaseException      If no trainer was found.
      */
     public Trainer getTrainerById(int trainerId) throws EntityNotFoundException, DatabaseException {
         try {
@@ -939,6 +910,7 @@ public class TKD_Service {
      * get a Contest based on their id
      * @param       contestID the contest id
      * @return      an object of type Contest
+     * @throws EntityNotFoundException or DatabaseException     If no contest was found.
      */
     public Contest getContestById(int contestID) throws EntityNotFoundException, DatabaseException {
         try {
@@ -956,6 +928,7 @@ public class TKD_Service {
      * get a Training Camp based on their id
      * @param idTrainingCamp    the Training Camp id
      * @return                  an object of type Training Camp
+     * @throws EntityNotFoundException or DatabaseException     If no training camp was found.
      */
     public TrainingCamp getTrainingCampByIs(int idTrainingCamp) throws EntityNotFoundException, DatabaseException {
         try {
@@ -973,7 +946,7 @@ public class TKD_Service {
      * get a session based on their id
      * @param sessionId         the session id
      * @return                  an object of type Session
-     * @      If no session was found.
+     * @throws EntityNotFoundException or DatabaseException      If no session was found.
      */
     public Session getSessionById(int sessionId) throws EntityNotFoundException, DatabaseException {
         try {
@@ -998,8 +971,9 @@ public class TKD_Service {
     /** display all Students
      *
      * @return a String that holds all students
+     * @throws DatabaseException    If error in database.
      */
-    public String viewAllStudents() throws EntityNotFoundException, DatabaseException {
+    public String viewAllStudents() throws DatabaseException {
         StringBuilder allStudents= new StringBuilder();
         try {
             for(Session s: sessions.getAll()){
@@ -1017,6 +991,7 @@ public class TKD_Service {
     /**
      * display all Trainers
      * @return a String that holds all trainers
+     * @throws DatabaseException    If error in database.
      */
     public String viewAllTrainers() throws DatabaseException {
         StringBuilder allTrainers= new StringBuilder();
@@ -1033,18 +1008,8 @@ public class TKD_Service {
     /**
      * dispaly all Parents
      * @return a String that holds all Parents
+     * @throws DatabaseException    If error in database.
      */
-//    public String viewAllParents(){
-//        StringBuilder allParents= new StringBuilder();
-//        for(Parent p: parents.getAll()){
-//            allParents.append(" Parent with id: ").append(p.getId()).append(", name ").append(p.getName()).append(" ").append(p.getLastName()).append(" has childrens: " );
-//            for(Student s: p.getChildren()){
-//                allParents.append("\n").append("Student with id: ").append(s.getId()).append(" ").append(s.getLastName()).append(s.getName()).append(" ").append(s.getLastName());
-//            }
-//            allParents.append("\n");
-//        }
-//        return allParents.toString();
-//    }
     public String viewAllParents() throws DatabaseException {
         StringBuilder allParents = new StringBuilder();
         // Coduri ANSI pentru culori
@@ -1081,19 +1046,8 @@ public class TKD_Service {
     /**
      * display all contests
      * @return a string that holds all contests
+     * @throws DatabaseException    If error in database.
      */
-//    public String viewAllContests(){
-//        StringBuilder allContests = new StringBuilder();
-//        for(Contest c: contests.getAll()){
-//            allContests.append("Contest with id ").append(c.getId()).append(", name ").append(c.getName()).append(", start date ").append(c.startDate).
-//                    append(", end date ").append(c.endDate).append(", price ").append(c.price).append(" and students: ");
-//            for(Student s: c.getStudents()){
-//                allContests.append("   Name ").append(s.getLastName()).append(" ").append(s.getName()).append(" and belt level: ").append(s.getBeltLevel()).append('\n');
-//            }
-//            allContests.append('\n');
-//        }
-//        return allContests.toString();
-//    }
     public String viewAllContests()  throws DatabaseException {
         StringBuilder allContests = new StringBuilder();
 
@@ -1123,6 +1077,7 @@ public class TKD_Service {
     /**
      * display all Training Camps
      * @return a String that holds all Training Camps
+     * @throws DatabaseException    If error in database.
      */
     public String viewTrainingCamps() throws DatabaseException {
         StringBuilder allTrainingCamps = new StringBuilder();
@@ -1143,6 +1098,7 @@ public class TKD_Service {
     /**
      * display all BeltExams
      * @return a string that holds all BeltExams
+     * @throws DatabaseException    If error in database.
      */
     public String viewBeltExams()  throws DatabaseException {
         StringBuilder allBeltExams = new StringBuilder();
@@ -1164,6 +1120,7 @@ public class TKD_Service {
     /**
      * Sorts the contests based on their starting date.
      * @return a sorted List of Contests based on ther starting dates
+     * @throws DatabaseException    If error in database.
      */
     public List<Contest> sortContestsByDates() throws DatabaseException{
         List<Contest> sorted = null;
@@ -1182,8 +1139,9 @@ public class TKD_Service {
     }
 
     /**
-     *  Sorts the belt exams based on their starting date.
-     *  @return a sorted List of Belt Exams based on their starting dates
+     * Sorts the belt exams based on their starting date.
+     * @return a sorted List of Belt Exams based on their starting dates
+     * @throws DatabaseException    If error in database.
      */
 
     public List<BeltExam> sortBeltExamnsByDates() throws DatabaseException{
@@ -1205,6 +1163,7 @@ public class TKD_Service {
     /**
      * Sorts the training camps based on their starting dates.
      * @return a sorted list of training Camps based on their starting date
+     * @throws DatabaseException    If error in database.
      */
     public List<TrainingCamp> sortTrainingCampsByDates() throws DatabaseException{
         List<TrainingCamp> sorted = null;
@@ -1225,6 +1184,7 @@ public class TKD_Service {
     /**
      * Sorts the sessions based on their number of participants.
      * @return a list of Session sorted based on their number of participants
+     * @throws DatabaseException    If error in database.
      */
     public List<Session> sortSessionByNumberOfParticipants() throws DatabaseException{
         List<Session> sorted = null;
@@ -1240,6 +1200,7 @@ public class TKD_Service {
     /**
      * Sorts the students based on their name.
      * @return a list of students ordered alphabetical
+     * @throws DatabaseException    If error in database.
      */
     public List<Student> sortStudentsAlphabetical() throws DatabaseException{
         List<Student> sorted = null;
@@ -1255,6 +1216,7 @@ public class TKD_Service {
     /**
      * Sorts the students based on their number of attendances.
      * @return a list of Students ordered by number of Attendances
+     * @throws EntityNotFoundException or DatabaseException    If no student found.
      */
     public List<Student> sortStudentsByNumberOfAttendences() throws DatabaseException, EntityNotFoundException {
         List<Student> sorted = null;
@@ -1291,6 +1253,7 @@ public class TKD_Service {
      * Filters the students based on a belt level
      * @param   beltLevel The belt level upon which the filter will apply
      * @return  List of all students having the belt level specified
+     * @throws DatabaseException    If error in database.
      */
     public List<Student> filterStudentsByBelt(BeltLevel beltLevel) throws DatabaseException {
         List<Student> filtered = null;
@@ -1307,7 +1270,7 @@ public class TKD_Service {
      * Filters parents based of their number of children
      * @param noOfChildren      number of children we want to filter
      * @return                  a list of parents that have noOfChildren as number of children
-     * @      If noOfChildren is negative.
+     * @throws DatabaseException    If error in database.
      */
     public List<Parent> filterParentsNumberOfChildren(int noOfChildren) throws DatabaseException{
         try {
@@ -1324,7 +1287,8 @@ public class TKD_Service {
      * session date list to find the most attended date for all students.
      * @param sessionId         The unique identifier of the session.
      * @return                  A simple entry containing the most attended date and the number of students.
-     * @      If no session was found.
+     * @throws EntityNotFoundException or DatabaseException      If no session was found.
+     * @throws BusinessLogicException       If there wasn't a profitable date found.
      */
     public AbstractMap.SimpleEntry<String, Double> getMostProfitableDateForSession(int sessionId) throws DatabaseException, EntityNotFoundException, BusinessLogicException {
         try {
@@ -1364,30 +1328,72 @@ public class TKD_Service {
             }
         }
         if(max == 0){
-            throw new BusinessLogicException("No session is profitable");
+            throw new BusinessLogicException("No date is profitable");
         }
         else {
             return new AbstractMap.SimpleEntry<String, Double>(date, max);
         }
     }
+
+    /**
+     * Gets the first free student id
+     * @return  First free student id
+     * @throws DatabaseException    If error in database.
+     */
     public int getStudentId() throws DatabaseException {
         return students.getAll().size()+1;
     }
+
+    /**
+     * Gets the first free session id
+     * @return  First free session id
+     * @throws DatabaseException    If error in database.
+     */
     public int getSessionId() throws DatabaseException {
         return sessions.getAll().size()+1;
     }
+
+    /**
+     * Gets the first free trainer id
+     * @return  First free trainer id
+     * @throws DatabaseException    If error in database.
+     */
     public int getTrainerId() throws DatabaseException {
         return trainers.getAll().size()+1;
     }
+
+    /**
+     * Gets the first free parent id
+     * @return  First free parent id
+     * @throws DatabaseException    If error in database.
+     */
     public int getParentId() throws DatabaseException {
         return parents.getAll().size()+1;
     }
+
+    /**
+     * Gets the first free contest id
+     * @return  First free contest id
+     * @throws DatabaseException    If error in database.
+     */
     public int getContestId() throws DatabaseException {
         return contests.getAll().size()+1;
     }
+
+    /**
+     * Gets the first free training camp id
+     * @return  First free training camp id
+     * @throws DatabaseException    If error in database.
+     */
     public int getTrainingCampId() throws DatabaseException {
         return trainingCamps.getAll().size()+1;
     }
+
+    /**
+     * Gets the first free belt exam id
+     * @return  First free belt exam id
+     * @throws DatabaseException    If error in database.
+     */
     public int getBeltExamId() throws DatabaseException {
         return beltExams.getAll().size()+1;
     }
