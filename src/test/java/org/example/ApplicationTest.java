@@ -24,13 +24,13 @@ public class ApplicationTest {
     InMemoryRepo<Contest> contestsRepo = new InMemoryRepo<>();
     InMemoryRepo<TrainingCamp> trainingCampsRepo = new InMemoryRepo<>();
     InMemoryRepo<BeltExam> beltExamsRepo = new InMemoryRepo<>();
-    Trainer t1 = new Trainer(1,"Mitroi","Stefan","srefanmitroi@gmail.com","Calea Floresti nr 58B",2004,"0761969675","black");
+    Trainer t1 = new Trainer(1,"Mitroi","Stefan","srefanmitroi@gmail.com","Calea Floresti nr 58B",2004,"0761969675",BeltLevel.black);
     Session session1 = new Session(1,DifficultyLevel.beginner,23,t1.getId(),50);
     Parent parent1 = new Parent(1,"Muresan","Victor","muresanVictor@gmail.com","Calea Baciului nr 5",1980,"0783243165");
-    Student student1 = new Student(1,"Muresan","Alex","alex@gmail.com","Calea Baciului nr 5",2010,"0754635543","white",session1.getId());
+    Student student1 = new Student(1,"Muresan","Alex","alex@gmail.com","Calea Baciului nr 5",2010,"0754635543",BeltLevel.white,session1.getId());
     Contest contest1 = new Contest(101, "2024-11-28", "2024-11-30", 300, "Romania", "Cluj-Napoca", "Campionatul International", "Sala Sporturilor");
     TrainingCamp trainingCamp1 = new TrainingCamp(11, "2025-06-15", "2025-06-20", 500, "Romania", "Brasov", "Complexul Olimpic", 25);
-    BeltExam beltExam1 = new BeltExam(1, "2025-05-05", "2025-05-06", 150, "Romania", "Cluj-Napoca", "Sala Sporturilor", "yellow");
+    BeltExam beltExam1 = new BeltExam(1, "2025-05-05", "2025-05-06", 150, "Romania", "Cluj-Napoca", "Sala Sporturilor", BeltLevel.yellow);
 
     TKD_Service tkdService = new TKD_Service(studentsRepo, trainersRepo, parentsRepo,sessionsRepo,contestsRepo,trainingCampsRepo,beltExamsRepo);
 
@@ -103,9 +103,9 @@ public class ApplicationTest {
     void TestCRUDBeltExamns() {
         beltExamsRepo.add(beltExam1);
         assertEquals(beltExam1, beltExamsRepo.get(beltExam1.getId()));
-        beltExam1.setBeltColor("red");
+        beltExam1.setBeltColor(BeltLevel.red);
         beltExamsRepo.update(beltExam1);
-        assertEquals("yellow",beltExamsRepo.get(beltExam1.getId()).getBeltColor());
+        assertEquals(BeltLevel.red,beltExamsRepo.get(beltExam1.getId()).getBeltColor());
         beltExamsRepo.remove(beltExam1.getId());
         assertNull(beltExamsRepo.get(beltExam1.getId()));
     }
@@ -177,9 +177,9 @@ public class ApplicationTest {
 
     @Test
     void testGetMostProfitableDateForSessionValidData() throws EntityNotFoundException, DatabaseException, BusinessLogicException {
-        Student student1 = new Student(2,"Mitroi","Stefan","srefanmitroi@gmial.com","Calea Baciului nr 34", 2004, "074635428","black", session1.getId());
-        Student student2 = new Student(3, "Popescu", "Ioana", "ioanapopescu@gmail.com", "Strada Republicii nr. 12", 2006, "0723456789", "red", session1.getId());
-        Student student3 = new Student(4, "Ionescu", "Radu", "raduionescu@yahoo.com", "Bulevardul Muncii nr. 56", 2005, "0765432109", "blue", session1.getId());
+        Student student1 = new Student(2,"Mitroi","Stefan","srefanmitroi@gmial.com","Calea Baciului nr 34", 2004, "074635428",BeltLevel.black, session1.getId());
+        Student student2 = new Student(3, "Popescu", "Ioana", "ioanapopescu@gmail.com", "Strada Republicii nr. 12", 2006, "0723456789", BeltLevel.red, session1.getId());
+        Student student3 = new Student(4, "Ionescu", "Radu", "raduionescu@yahoo.com", "Bulevardul Muncii nr. 56", 2005, "0765432109", BeltLevel.blue, session1.getId());
 
         sessionsRepo.add(session1);
         studentsRepo.add(student1);
@@ -198,9 +198,9 @@ public class ApplicationTest {
 
     @Test
     void testGetMostProfitableDateForSessionNoValidData() {
-        Student student1 = new Student(2, "Mitroi", "Stefan", "srefanmitroi@gmial.com", "Calea Baciului nr 34", 2004, "074635428", "black", session1.getId());
-        Student student2 = new Student(3, "Popescu", "Ioana", "ioanapopescu@gmail.com", "Strada Republicii nr. 12", 2006, "0723456789", "red", session1.getId());
-        Student student3 = new Student(4, "Ionescu", "Radu", "raduionescu@yahoo.com", "Bulevardul Muncii nr. 56", 2005, "0765432109", "blue", session1.getId());
+        Student student1 = new Student(2, "Mitroi", "Stefan", "srefanmitroi@gmial.com", "Calea Baciului nr 34", 2004, "074635428", BeltLevel.black, session1.getId());
+        Student student2 = new Student(3, "Popescu", "Ioana", "ioanapopescu@gmail.com", "Strada Republicii nr. 12", 2006, "0723456789", BeltLevel.red, session1.getId());
+        Student student3 = new Student(4, "Ionescu", "Radu", "raduionescu@yahoo.com", "Bulevardul Muncii nr. 56", 2005, "0765432109", BeltLevel.blue, session1.getId());
 
         sessionsRepo.add(session1);
         studentsRepo.add(student1);

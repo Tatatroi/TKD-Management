@@ -30,7 +30,7 @@ public class Student extends Person{
      * @param beltLevel     The belt level of the student.
      * @param session       The unique identifier of the session to which the student belongs.
      */
-    public Student(Integer id, String name, String lastName, String email, String address, int dateOfBirth, String number, String beltLevel, int session) {
+    public Student(Integer id, String name, String lastName, String email, String address, int dateOfBirth, String number, BeltLevel beltLevel, int session) {
         super(id,name, lastName, email, address, dateOfBirth, number, beltLevel);
         this.session=session;
     }
@@ -184,7 +184,7 @@ public class Student extends Person{
                 .map(SessionDate::toString)
                 .collect(Collectors.joining(";"));
         return String.join(",",String.valueOf(this.getId()),this.getName(),this.getLastName(),this.getEmail(),this.getAddress(),
-                String.valueOf(this.getDateOfBirth()),this.getNumber(),this.getBeltLevel(),String.valueOf(this.getSession()),String.valueOf(this.getParent()),
+                String.valueOf(this.getDateOfBirth()),this.getNumber(),String.valueOf(this.getBeltLevel()),String.valueOf(this.getSession()),String.valueOf(this.getParent()),
                 contestToCSV,trainingCampToCSV,sessionDateToCSV
         );
     }
@@ -192,7 +192,7 @@ public class Student extends Person{
     public static Student fromCSV(String csv) {
         String[] values = csv.split(",",-1);
         Student student = new Student(Integer.parseInt(values[0]),values[1],values[2],values[3],values[4],Integer.parseInt(values[5]),
-                values[6],values[7], Integer.parseInt(values[8]));
+                values[6],BeltLevel.valueOf(values[7]), Integer.parseInt(values[8]));
 
         student.setParent(Integer.parseInt(values[9]));
 

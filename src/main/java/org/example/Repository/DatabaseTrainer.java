@@ -1,6 +1,7 @@
 package org.example.Repository;
 
 import org.example.Exceptions.DatabaseException;
+import org.example.Model.BeltLevel;
 import org.example.Model.Contest;
 import org.example.Model.Trainer;
 
@@ -43,7 +44,7 @@ public class DatabaseTrainer extends DatabaseRepo<org.example.Model.Trainer>{
             stmt.setString(5, obj.getAddress());
             stmt.setInt(6,obj.getDateOfBirth());
             stmt.setString(7, obj.getNumber());
-            stmt.setString(8, obj.getBeltLevel());
+            stmt.setString(8, String.valueOf(obj.getBeltLevel()));
             stmt.executeUpdate();
         }catch(Exception e){
             throw new DatabaseException("DataBase Exception Error");
@@ -85,7 +86,7 @@ public class DatabaseTrainer extends DatabaseRepo<org.example.Model.Trainer>{
             stmt.setString(4, obj.getAddress());
             stmt.setInt(5, obj.getDateOfBirth());
             stmt.setString(6, obj.getNumber());
-            stmt.setString(7, obj.getBeltLevel());
+            stmt.setString(7, String.valueOf(obj.getBeltLevel()));
             stmt.setInt(8, obj.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -115,7 +116,7 @@ public class DatabaseTrainer extends DatabaseRepo<org.example.Model.Trainer>{
                             rs.getString("address"),
                             rs.getInt("dateOfBirth"),
                             rs.getString("number"),
-                            rs.getString("beltLevel")
+                            BeltLevel.valueOf(rs.getString("beltLevel"))
                     );
                 }
             }catch (SQLException e){
@@ -151,7 +152,7 @@ public class DatabaseTrainer extends DatabaseRepo<org.example.Model.Trainer>{
                             rs.getString("address"),
                             rs.getInt("dateOfBirth"),
                             rs.getString("number"),
-                            rs.getString("beltLevel")
+                            BeltLevel.valueOf(rs.getString("beltLevel"))
                     ));
                 }
             }catch (SQLException e){

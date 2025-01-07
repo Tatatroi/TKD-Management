@@ -11,7 +11,7 @@ public abstract class Person implements HasID{
     public String address;
     public int dateOfBirth;
     public String number;
-    public String beltLevel;
+    public BeltLevel beltLevel;
 
     /**
      * Constructs a new Person with the specified ID, name, last name, email, address, date of birth, number and belt level.
@@ -24,7 +24,7 @@ public abstract class Person implements HasID{
      * @param number        The telephone number of the person.
      * @param beltLevel     The belt level of the person.
      */
-    public Person(Integer id,String name, String lastName, String email, String address, int dateOfBirth, String number, String beltLevel) {
+    public Person(Integer id,String name, String lastName, String email, String address, int dateOfBirth, String number, BeltLevel beltLevel) {
         this.id=id;
         this.name = name;
         this.lastName = lastName;
@@ -164,7 +164,7 @@ public abstract class Person implements HasID{
      * Gets the belt level of the person.
      * @return The belt level of the person.
      */
-    public String getBeltLevel() {
+    public BeltLevel getBeltLevel() {
         return beltLevel;
     }
 
@@ -172,7 +172,7 @@ public abstract class Person implements HasID{
      * Sets the belt level of the person.
      * @param beltLevel  The belt level of the person.
      */
-    public void setBeltLevel(String beltLevel) {
+    public void setBeltLevel(BeltLevel beltLevel) {
         this.beltLevel = beltLevel;
     }
 

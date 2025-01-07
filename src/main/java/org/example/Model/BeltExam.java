@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 public class BeltExam extends Event{
 
     public Map< Integer,Integer> listOfResults = new HashMap<>();// 1: passed, 0: failed, -1: absent
-    public String beltColor;
+    public BeltLevel beltColor;
 
     /**
      * Constructs a new belt exam with the specified ID, start date, end date, price, country, city, address and belt color.
@@ -23,7 +23,7 @@ public class BeltExam extends Event{
      * @param address       The address where the event takes place.
      * @param beltColor     The belt color for which the exam is taken.
      */
-    public BeltExam(int id,String startDate, String endDate, double price, String country, String city, String address, String beltColor) {
+    public BeltExam(int id,String startDate, String endDate, double price, String country, String city, String address, BeltLevel beltColor) {
         super(id,startDate, endDate, price, country, city, address);
         this.beltColor = beltColor;
     }
@@ -51,7 +51,7 @@ public class BeltExam extends Event{
      * Gets the belt color from the exam.
      * @return The belt color from the exam.
      */
-    public String getBeltColor() {
+    public BeltLevel getBeltColor() {
         return beltColor;
     }
 
@@ -59,8 +59,8 @@ public class BeltExam extends Event{
      * Sets the belt color from the exam.
      * @param beltColor  The belt color from the exam to set.
      */
-    public void setBeltColor(String beltColor) {
-        beltColor = beltColor;
+    public void setBeltColor(BeltLevel beltColor) {
+        this.beltColor = beltColor;
     }
 
     @Override
@@ -106,12 +106,12 @@ public class BeltExam extends Event{
                 .map(entry -> entry.getKey() + ":" + entry.getValue())
                 .collect(Collectors.joining(";"));
         return String.join(",",String.valueOf(this.getId()),this.getStartDate(),this.getEndDate(),String.valueOf(this.getPrice()),
-                this.getCountry(),this.getCity(),this.getAddress(), this.getBeltColor(),listOfResultsToCSV);
+                this.getCountry(),this.getCity(),this.getAddress(), String.valueOf(this.getBeltColor()),listOfResultsToCSV);
     }
 
     public static BeltExam fromCSV(String csv) {
         String[] values = csv.split(",",-1);
-        BeltExam beltExam = new BeltExam(Integer.parseInt(values[0]),values[1],values[2],Double.parseDouble(values[3]),values[4],values[5],values[6],values[7]);
+        BeltExam beltExam = new BeltExam(Integer.parseInt(values[0]),values[1],values[2],Double.parseDouble(values[3]),values[4],values[5],values[6],BeltLevel.valueOf(values[7]));
         Map<Integer, Integer> listOfResults = new HashMap<>();
         if (!values[8].isEmpty()) {
             String[] entries = values[8].split(";");

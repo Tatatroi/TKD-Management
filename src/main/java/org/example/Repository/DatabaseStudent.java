@@ -1,6 +1,7 @@
 package org.example.Repository;
 
 import org.example.Exceptions.DatabaseException;
+import org.example.Model.BeltLevel;
 import org.example.Model.SessionDate;
 import org.example.Model.Student;
 
@@ -39,7 +40,7 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
             stmt.setString(5, student.getAddress());
             stmt.setInt(6, student.getDateOfBirth());
             stmt.setString(7, student.getNumber());
-            stmt.setString(8, student.getBeltLevel());
+            stmt.setString(8, String.valueOf(student.getBeltLevel()));
             stmt.setInt(9, student.getSession());
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -144,7 +145,7 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
             statement.setString(4,obj.getAddress());
             statement.setInt(5,obj.getDateOfBirth());
             statement.setString(6,obj.getNumber());
-            statement.setString(7,obj.getBeltLevel());
+            statement.setString(7,String.valueOf(obj.getBeltLevel()));
             statement.setInt(8,obj.getSession());
             statement.setInt(9,obj.getId());
 
@@ -250,7 +251,7 @@ public class DatabaseStudent extends DatabaseRepo<org.example.Model.Student> {
 
     public static Student extractFromResultSet(ResultSet resultSet,List<SessionDate> sessionDateList, List<Integer> trainingCamps,List<Integer> contests, int parentId) throws SQLException {
         Student student = new Student(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getString("lastName"),resultSet.getString("email"),
-                resultSet.getString("address"),resultSet.getInt("dateOfBirth"),resultSet.getString("number"),resultSet.getString("beltLevel"),
+                resultSet.getString("address"),resultSet.getInt("dateOfBirth"),resultSet.getString("number"), BeltLevel.valueOf(resultSet.getString("beltLevel")),
                 resultSet.getInt("session"));
         student.setSessionDateList(sessionDateList);
         student.setTrainingCampList(trainingCamps);

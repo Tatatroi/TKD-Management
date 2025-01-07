@@ -535,7 +535,7 @@ public class TKDController {
      * prints a filtered list containing just students with the specified belt level
      * @param beltLevel The belt level that is used for filtering the students
      */
-    public void filteredStudentsByBeltLevel(String beltLevel) {
+    public void filteredStudentsByBeltLevel(BeltLevel beltLevel) {
         try{
             for(Student s1 : tkdService.filterStudentsByBelt(beltLevel)){
                 System.out.println(s1.toString2());

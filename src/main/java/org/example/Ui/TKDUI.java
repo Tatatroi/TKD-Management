@@ -710,12 +710,11 @@ public class TKDUI {
 
 
         System.out.print("Enter student belt level: ");
-        String beltLevel = scanner.nextLine();
-        if (beltLevel.isEmpty()) {
-            throw new ValidationException("student belt level cannot be empty");
-        }
-        if(!beltLevel.matches("^[a-zA-Z]+$")){
-            throw new ValidationException("student belt level isn't valid");
+        BeltLevel beltLevel;
+        try{
+            beltLevel = BeltLevel.valueOf(scanner.nextLine());
+        } catch (IllegalArgumentException e) {
+            throw new ValidationException("Invalid belt level");
         }
         System.out.print("Enter session ID: ");
         int sessionId;
@@ -859,8 +858,7 @@ public class TKDUI {
         try {
             difficultyLevel = DifficultyLevel.valueOf(scanner.nextLine());
         } catch (IllegalArgumentException e) {
-            System.out.println("Invalid difficulty level. Please enter beginner, intermediary, advanced.");
-            difficultyLevel = DifficultyLevel.valueOf(scanner.nextLine());
+            throw new ValidationException("Invalid difficulty level. Please enter beginner, intermediary, advanced.");
         }
 
         System.out.print("Enter Maximum Number of Participants: ");
@@ -987,12 +985,11 @@ public class TKDUI {
         }
 
         System.out.print("Enter Trainer Belt Level: ");
-        String beltLevel = scanner.nextLine();
-        if(beltLevel.isEmpty()){
-            throw new ValidationException("Trainer Belt Level cannot be empty");
-        }
-        if(!beltLevel.matches("^[a-zA-Z]+$")){
-            throw new ValidationException("trainer belt level isn't valid");
+        BeltLevel beltLevel;
+        try{
+            beltLevel = BeltLevel.valueOf(scanner.nextLine());
+        } catch (IllegalArgumentException e) {
+            throw new ValidationException("Invalid belt level");
         }
 
         Trainer newTrainer = new Trainer(id, name, lastName, email, address, dateOfBirth, number, beltLevel);
@@ -1268,12 +1265,11 @@ public class TKDUI {
 
 
         System.out.print("Enter belt color: ");
-        String beltColor = scanner.nextLine();
-        if(beltColor.isEmpty()){
-            throw new ValidationException(" belt color cannot be empty");
-        }
-        if(!beltColor.matches("^[a-zA-Z]+$")){
-            throw new ValidationException("belt color isn't valid");
+        BeltLevel beltColor;
+        try{
+            beltColor = BeltLevel.valueOf(scanner.nextLine());
+        } catch (IllegalArgumentException e) {
+            throw new ValidationException("Invalid belt level");
         }
 
         BeltExam beltExam = new BeltExam(id,startdate,enddate,price, country, city, address, beltColor);
@@ -1740,12 +1736,11 @@ public class TKDUI {
      */
     private void filterStudentsByBeltLevel() throws ValidationException {
         System.out.print("Enter the belt level for filtering: ");
-        String beltLevel = scanner.nextLine();
-        if(beltLevel.isEmpty()){
-            throw new ValidationException(" the belt level for filtering cannot be empty");
-        }
-        if(!beltLevel.matches("^[a-zA-Z]+$")){
-            throw new ValidationException("The belt level isn't valid");
+        BeltLevel beltLevel;
+        try{
+            beltLevel = BeltLevel.valueOf(scanner.nextLine());
+        } catch (IllegalArgumentException e) {
+            throw new ValidationException("Invalid belt level");
         }
 
         tkdController.filteredStudentsByBeltLevel(beltLevel);

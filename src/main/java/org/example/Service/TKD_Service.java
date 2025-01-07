@@ -109,8 +109,8 @@ public class TKD_Service {
      * Change the session of a student and remove him from the previous one.
      * @param studentId     The unique identifier of a student.
      * @param sessionId     The unique identifier of a session.
-     * @  If no student or session was found.
-     * throws EntityNoFound or DataBaseException
+     * @throws EntityNotFoundException or DataBaseException  If no student or session was found.
+     *
      */
     public void changeStudentGroup(int studentId,int sessionId) throws EntityNotFoundException, DatabaseException, BusinessLogicException {
 //        if(students.getAll().stream().noneMatch(st -> st.getId() == studentId)){
@@ -1292,7 +1292,7 @@ public class TKD_Service {
      * @param   beltLevel The belt level upon which the filter will apply
      * @return  List of all students having the belt level specified
      */
-    public List<Student> filterStudentsByBelt(String beltLevel) throws DatabaseException {
+    public List<Student> filterStudentsByBelt(BeltLevel beltLevel) throws DatabaseException {
         List<Student> filtered = null;
         try {
             filtered = new ArrayList<>(students.getAll());

@@ -18,7 +18,7 @@ public class Trainer extends Person{
      * @param number        The telephone number of the trainer.
      * @param beltLevel     The belt level of the trainer.
      */
-    public Trainer(Integer id,String name, String lastName, String email, String address, int dateOfBirth, String number, String beltLevel) {
+    public Trainer(Integer id,String name, String lastName, String email, String address, int dateOfBirth, String number, BeltLevel beltLevel) {
         super(id,name, lastName, email, address, dateOfBirth, number, beltLevel);
     }
     public Trainer(){}
@@ -66,11 +66,11 @@ public class Trainer extends Person{
     @Override
     public String toCSV() {
         return String.join(",",String.valueOf(this.getId()),this.getName(),this.getLastName(),this.getEmail(),this.getAddress(),
-                String.valueOf(this.getDateOfBirth()),this.getNumber(),this.getBeltLevel());
+                String.valueOf(this.getDateOfBirth()),this.getNumber(),String.valueOf(this.getBeltLevel()));
     }
 
     public static Trainer fromCSV(String csv) {
         String[] values = csv.split(",");
-        return new Trainer(Integer.parseInt(values[0]),values[1],values[2],values[3],values[4],Integer.parseInt(values[5]),values[6],values[7]);
+        return new Trainer(Integer.parseInt(values[0]),values[1],values[2],values[3],values[4],Integer.parseInt(values[5]),values[6],BeltLevel.valueOf(values[7]));
     }
 }

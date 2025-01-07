@@ -2,6 +2,7 @@ package org.example.Repository;
 
 import org.example.Exceptions.DatabaseException;
 import org.example.Model.BeltExam;
+import org.example.Model.BeltLevel;
 import org.example.Model.Student;
 
 import java.sql.Date;
@@ -45,7 +46,7 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
             stmt.setString(5, beltExam.getCountry());
             stmt.setString(6, beltExam.getCity());
             stmt.setString(7, beltExam.getAddress());
-            stmt.setString(8, beltExam.getBeltColor());
+            stmt.setString(8, String.valueOf(beltExam.getBeltColor()));
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new DatabaseException("DataBase Exception Error");
@@ -95,7 +96,7 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
             stmt.setString(4, beltExam.getCountry());
             stmt.setString(5, beltExam.getCity());
             stmt.setString(6, beltExam.getAddress());
-            stmt.setString(7, beltExam.getBeltColor());
+            stmt.setString(7, String.valueOf(beltExam.getBeltColor()));
             stmt.setInt(8, beltExam.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -187,7 +188,7 @@ public class DatabaseBeltExam extends DatabaseRepo<BeltExam> {
         BeltExam beltExam = null;
         try {
             beltExam = new BeltExam(resultSet.getInt("id"),resultSet.getDate("startDate").toString(), resultSet.getDate("endDate").toString(),resultSet.getDouble("price"),
-                    resultSet.getString("country"),resultSet.getString("city"),resultSet.getString("address"),resultSet.getString("beltColor"));
+                    resultSet.getString("country"),resultSet.getString("city"),resultSet.getString("address"), BeltLevel.valueOf(resultSet.getString("beltColor")));
         } catch (SQLException e) {
             throw new DatabaseException("DataBase Exception Error");
         }
