@@ -173,7 +173,7 @@ public class Session implements HasID{
                 .append(ANSI_GREEN).append("  Max Participants: ").append(ANSI_RESET).append(maximumParticipants).append("\n")
                 .append(ANSI_GREEN).append("  Trainer: ").append(ANSI_RESET).append(trainer).append("\n")
                 .append(ANSI_GREEN).append("  Price per Session: ").append(ANSI_RESET).append(pricePerSession).append(" lei/h\n")
-                .append(ANSI_RED).append("  Students in Session: ").append(ANSI_RESET);
+                .append(ANSI_RED).append("  Students in Session: ").append(ANSI_RESET).append(sessionStudents.size());
 
         // Apelează toString2 pentru fiecare student din sessionStudents
 //        for (Student student : sessionStudents) {
