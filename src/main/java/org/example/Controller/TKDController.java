@@ -303,7 +303,7 @@ public class TKDController {
      */
     public void viewStudents(){
         try{
-            System.out.println("Here are all students with id, name and level: \n" + tkdService.viewAllStudents());
+            System.out.println("Here are all students: \n" + tkdService.viewAllStudents());
         }catch (EntityNotFoundException | DatabaseException e) {
             System.out.println("Error: "+ e.getMessage());
         }
@@ -315,7 +315,7 @@ public class TKDController {
      */
     public void viewTrainers(){
         try {
-            System.out.println("Here are all trainers with id, name, belt color and level: ");
+            System.out.println("Here are all trainers: ");
             System.out.println(tkdService.viewAllTrainers());
         }catch (DatabaseException e) {
             System.out.println("Error: "+ e.getMessage());
@@ -327,7 +327,7 @@ public class TKDController {
      */
     public void viewContests(){
         try {
-            System.out.println("Here are all contests with id, name, start date, end date, price and list of students: ");
+            System.out.println("Here are all contests: ");
             System.out.println(tkdService.viewAllContests());
         }catch (DatabaseException e) {
             System.out.println("Error: "+ e.getMessage());
@@ -339,7 +339,7 @@ public class TKDController {
      */
     public void viewTrainingCamps() {
         try {
-            System.out.println("Here are all training camps with id, start date, end date, price, max number of participants and list of students: ");
+            System.out.println("Here are all training camps: ");
             System.out.println(tkdService.viewTrainingCamps());
         }catch (DatabaseException e) {
             System.out.println("Error: "+ e.getMessage());
@@ -351,7 +351,7 @@ public class TKDController {
      */
     public void viewBeltExams() {
         try {
-            System.out.println("Here are all belt exams with id, start date, end date, price, belt color and list of students: ");
+            System.out.println("Here are all belt exams: ");
             System.out.println(tkdService.viewBeltExams());
         }catch (DatabaseException e) {
             System.out.println("Error: "+ e.getMessage());

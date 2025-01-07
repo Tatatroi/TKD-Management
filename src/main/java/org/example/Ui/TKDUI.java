@@ -41,10 +41,18 @@ public class TKDUI {
 //        this.tkdController = tkdController;
 //        this.scanner = new Scanner(System.in);
 //    }
+
+    /**
+     * Constructor for UI, creates just a new Scanner
+     */
     public TKDUI(){
           this.scanner = new Scanner(System.in);
     }
 
+    /**
+     * setter for controller
+     * @param tkdController it gives the specific controller
+     */
     public void setTkdController(TKDController tkdController) {
         this.tkdController = tkdController;
     }
@@ -79,49 +87,14 @@ public class TKDUI {
     }
 
 
-    //////// ADD OBJECTS /////////
-
-    /**
-     * Adds a student to a parent, session and adds the objects to the repos.
-     * @param session       The session, where the student is added.
-     * @param student       The session, where the student is added.
-     * @param parent        The parent, where the student is added.
-     * @param parentRepo    The parent repo, where the parent is added.
-     * @param studentRepo   The student repo, where the parent is added.
-     * @param sessionRepo   The session repo, where the parent is added.
-     */
-    public static void parentChild(Session session, Student student, Parent parent, DatabaseRepo<Parent> parentRepo, DatabaseRepo<Student> studentRepo, DatabaseRepo<Session> sessionRepo) {
-        //System.out.println(student);
-        session.getSessionStudents().add(student.getId());
-        try {
-            sessionRepo.update(session);
-        } catch (DatabaseException e) {
-            throw new RuntimeException(e);
-        }
-        parent.getChildren().add(student.getId());
-        student.setParent(parent.getId());
-
-        try {
-            if(parentRepo.get(parent.getId()) == null) {
-                parentRepo.add(parent);
-            }
-        } catch (DatabaseException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            studentRepo.add(student);
-            studentRepo.update(student);
-            parentRepo.update(parent);
-        }
-        catch (DatabaseException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
 
     //////// DATABASE REPOSITORY /////////
 
+    /**
+     * makes a repo for Database
+     * @return a Service that contains Database Repos
+     * @throws DatabaseException when can t connect to Database
+     */
     private TKD_Service databaseRepo() throws DatabaseException {
         DatabaseRepo<Student> studentRepo = new DatabaseStudent("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
         DatabaseRepo<Parent> parentRepo = new DatabaseParent("jdbc:sqlserver://localhost:1433;database=TKD-Management;integratedSecurity=true;trustServerCertificate=true;");
@@ -144,6 +117,10 @@ public class TKDUI {
 
     //////// IN MEMORY REPOSITORY /////////
 
+    /**
+     * makes a repo for Memory
+     * @return a Service that contains Memory Repos
+     */
     private TKD_Service inMemoryRepo(){
         InMemoryRepo<Student> studentRepo = new InMemoryRepo<>();
         InMemoryRepo<Parent> parentRepo = new InMemoryRepo<>();
@@ -157,6 +134,10 @@ public class TKDUI {
     }
 
     //////// IN FILE REPOSITORY /////////
+    /**
+     * makes a repo for Files
+     * @return a Service that contains File Repos
+     */
     private TKD_Service inFileRepo(){
         InFileRepo<Student> studentRepo = new InFileRepo<>("src/main/java/org/example/Data/students.csv",Student::fromCSV);
         InFileRepo<Parent> parentRepo = new InFileRepo<>("src/main/java/org/example/Data/parents.csv",Parent::fromCSV);
@@ -169,9 +150,6 @@ public class TKDUI {
         return new TKD_Service(studentRepo,trainerRepo,parentRepo,sessionRepo,contestRepo,trainingCampRepo,beltExamRepo);
     }
 
-    /**
-     * Starts the UI application displaing a menu and handiling user input
-     */
 //    public void start() {
 //
 //        boolean continueLoop = true;
@@ -218,6 +196,9 @@ public class TKDUI {
 //        }
 //    }
 
+    /**
+     * Starts the UI application displaying a menu and handling user input
+     */
     public void start() {
         boolean continueLoop = true;
 
@@ -240,6 +221,9 @@ public class TKDUI {
         }
     }
 
+    /**
+     * Display Ui menu for People
+     */
     private void startPeopleMenu() {
         boolean contLoop1 = true;
         while (contLoop1) {
@@ -256,6 +240,9 @@ public class TKDUI {
         }
     }
 
+    /**
+     * Display Ui menu for Events
+     */
     private void startEventsMenu() throws ValidationException {
         boolean contLoop2 = true;
 
@@ -275,6 +262,9 @@ public class TKDUI {
         }
     }
 
+    /**
+     * Display Ui menu for Repos
+     */
     private static void printRepo(){
         System.out.println("\n==== TKD Management Console ====");
         System.out.println("\n Select Repo you want to use: ");
@@ -310,6 +300,9 @@ public class TKDUI {
         System.out.print("Select an option: ");
     }
 
+    /**
+     * Display a menu for people
+     */
     private void displayPeople(){
         System.out.println("\ta. Students");
         System.out.println("\tb. Parents");
@@ -318,6 +311,9 @@ public class TKDUI {
         System.out.print("Select an option: ");
     }
 
+    /**
+     * Display a menu for events
+     */
     private void displayEvents(){
         System.out.println("\ta. Sessions");
         System.out.println("\tb. Contests");
@@ -633,10 +629,11 @@ public class TKDUI {
         System.out.print("Select an option: ");
     }
 
-    // Methods for each option
+    //////////// METHODS FOR EACH OPTION /////////////
 
     /**
      * request all information that a student need.  If it catches an exception it calls the function again.
+     * @throws ValidationException if a specific input doesn't match the specific requests
      */
     private void addStudent() throws ValidationException{
 //        System.out.print("Enter student ID: ");
@@ -760,8 +757,9 @@ public class TKDUI {
     }
 
     /**
-     * request all information that a parent need
-     * @return a Parent object
+     ** request all information that a parent need
+     *  @return a Parent object
+     * @throws ValidationException if a specific input doesn't match the specific requests
      */
     private Parent addParent() throws ValidationException {
 //        System.out.print("Enter parent ID: ");
@@ -839,6 +837,7 @@ public class TKDUI {
 
     /**
      * request all information that a session needs.  If it catches an exception it calls the function again.
+     * @throws ValidationException if a specific input doesn't match the specific requests
      */
     private void addSession() throws ValidationException{
 //        System.out.print("Enter Session ID: ");
@@ -912,6 +911,7 @@ public class TKDUI {
 
     /**
      * request all information that a trainer need.  If it catches an exception it calls the function again.
+     * @throws ValidationException if a specific input doesn't match the specific requests
      */
     private void addTrainer() throws ValidationException {
 //        System.out.print("Enter Trainer ID: ");
@@ -997,8 +997,10 @@ public class TKDUI {
         tkdController.addObject(newTrainer);
         System.out.println("Trainer added successfully.");
     }
+
     /**
      * request all information that a contest need. If it catches an exception it calls the function again.
+     * @throws ValidationException if a specific input doesn't match the specific requests
      */
     private void addContest() throws ValidationException {
 //        System.out.println("Enter Contest Id: ");
@@ -1091,6 +1093,7 @@ public class TKDUI {
 
     /**
      * request all information that a training camp need. If it catches an exception it calls the function again.
+     * @throws ValidationException if a specific input doesn't match the specific requests
      */
     private void addTrainingCamp() throws ValidationException {
 //        System.out.println("Enter Training camp Id: ");
@@ -1186,6 +1189,7 @@ public class TKDUI {
 
     /**
      * request all information that a BeltExam need. If it catches an exception it calls the function again.
+     * @throws ValidationException if a specific input doesn't match the specific requests
      */
     private void addBeltExam() throws ValidationException {
 //        System.out.println("Enter Belt Exam Id: ");
@@ -1279,7 +1283,7 @@ public class TKDUI {
 
     /**
      * request all information that a belt exam need. If it catches an exception it calls the function again.
-     *
+     * @throws ValidationException if a specific input doesn't match the specific requests
      */
     private void addStudentToBeltExam() throws ValidationException {
         System.out.println("Enter Belt Exam Id: ");
@@ -1310,6 +1314,7 @@ public class TKDUI {
 
     /**
      * add a student to contest based on their ID s. If it catches an exception it calls the function again.
+     * @throws ValidationException if a specific input doesn't match the specific requests
      */
     private void addStudentToContest() throws ValidationException {
         System.out.println("Enter Contest Id: ");
@@ -1339,7 +1344,8 @@ public class TKDUI {
     }
 
     /**
-     * add a student to a trianing camp based on their ID s. If it catches an exception it calls the function again.
+     * add a student to a training camp based on their ID s. If it catches an exception it calls the function again
+     * @throws ValidationException if a specific input doesn't match the specific requests
      */
     private void addStudentToTrainingCamp() throws ValidationException {
         System.out.println("Enter Student Id: ");
@@ -1379,6 +1385,7 @@ public class TKDUI {
 
     /**
      * deletes a student base on ID. If it catches an exception it calls the function again.
+
      */
     private void deleteStudent() throws ValidationException {
         int id = readStudentId();
