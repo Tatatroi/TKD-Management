@@ -30,7 +30,8 @@ Die Teilnehmer konnen auch an Veranstaltungen(Trainingslager,Wettberwerb,Gurtelp
   -die Eltern nach einer gegebenen Anzahl von Kindern zu filtrieren
 
 ![image](https://github.com/user-attachments/assets/3e0abb8b-d709-4e57-b6a0-f1ab4537f2d2)
-![image](https://github.com/user-attachments/assets/3d430dac-10c4-4889-b9c7-870d3cb33ec5)
+![image](https://github.com/user-attachments/assets/6c4caca1-8ad6-4010-81a0-20e2980df6c1)
+
 
 
 
