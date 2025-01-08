@@ -29,8 +29,9 @@ Die Teilnehmer konnen auch an Veranstaltungen(Trainingslager,Wettberwerb,Gurtelp
   -die Studenten nach einer gegebenen Gurtel zu filtrieren
   -die Eltern nach einer gegebenen Anzahl von Kindern zu filtrieren
 
-![image](https://github.com/user-attachments/assets/3e0abb8b-d709-4e57-b6a0-f1ab4537f2d2)
-![image](https://github.com/user-attachments/assets/6c4caca1-8ad6-4010-81a0-20e2980df6c1)
+![image](https://github.com/user-attachments/assets/257815ce-3076-4ef3-8123-de07ce200f85)
+![image](https://github.com/user-attachments/assets/b4af939b-8d62-4564-a0c4-78e7025ca779)
+
 
 
 
